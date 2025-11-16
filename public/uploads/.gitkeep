@@ -1,0 +1,8 @@
+# Upload Directory
+This directory stores uploaded files (images, documents, etc.)
+
+Subdirectories:
+- programs/
+- articles/
+- employees/
+- awards/
