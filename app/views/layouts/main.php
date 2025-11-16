@@ -148,6 +148,9 @@
             
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; <?= date('Y') ?> <?= e($settings['school_name'] ?? APP_NAME) ?>. All rights reserved.</p>
+                <p class="mt-2">
+                    <a href="<?= url('/admin') ?>" class="text-gray-500 hover:text-gray-300 text-sm">Admin Login</a>
+                </p>
             </div>
         </div>
     </footer>

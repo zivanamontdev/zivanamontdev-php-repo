@@ -3,7 +3,7 @@ class Registration extends Model {
     protected $table = 'registrations';
     
     public function getRecent($limit = 10) {
-        return $this->all('created_at DESC')->slice(0, $limit);
+        return $this->where('1=1', [], 'created_at DESC', $limit);
     }
     
     public function getByStatus($status) {
