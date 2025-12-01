@@ -7,9 +7,16 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Tailwind Custom Colors Config -->
+    <?= tailwind_config() ?>
+    
+    <!-- Google Fonts - Onest -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        * { font-family: 'Inter', sans-serif; }
+        * { font-family: 'Onest', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100">

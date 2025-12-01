@@ -1,0 +1,112 @@
+<?php
+/**
+ * Button Component
+ * 
+ * @param string $text - Button text
+ * @param string $variant - Button variant (1, 2, 3, 4)
+ * @param string $href - Optional link URL (renders as <a> if provided)
+ * @param string $type - Button type for form (button, submit, reset)
+ * @param string $class - Additional CSS classes
+ * @param string $id - Button ID
+ * @param bool $disabled - Disabled state
+ * @param array $attrs - Additional HTML attributes
+ */
+
+$text = $text ?? 'Button';
+$variant = $variant ?? '1';
+$href = $href ?? null;
+$type = $type ?? 'button';
+$class = $class ?? '';
+$id = $id ?? '';
+$disabled = $disabled ?? false;
+$attrs = $attrs ?? [];
+
+// Base styles (shared)
+$baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200 hover:opacity-90 active:scale-95';
+
+// Variant styles
+$variants = [
+    // Variant 1: Large primary button
+    '1' => [
+        'padding' => 'py-3 px-6',           // 12px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-secondary',              // #FAA30F
+        'text' => 'text-white',              // #FFFFFF
+        'font' => 'font-bold text-xl',       // 700, 20px
+    ],
+    
+    // Variant 2: Small accent button
+    '2' => [
+        'padding' => 'py-2 px-[13px]',       // 8px top/bottom, 13px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-pale-accent',            // #FEDBA9
+        'text' => 'text-secondary',          // #FAA30F
+        'font' => 'font-bold text-base',     // 700, 16px
+    ],
+    
+    // Variant 3: Normal weight button
+    '3' => [
+        'padding' => 'py-2 px-6',            // 8px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-pale-accent',            // #FEDBA9
+        'text' => 'text-black-soft',         // #151419
+        'font' => 'font-normal text-base',   // 400, 16px
+    ],
+    
+    // Variant 4: Back button with arrow icon
+    '4' => [
+        'padding' => 'py-2 px-6',            // 8px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-pale-accent',            // #FEDBA9
+        'text' => 'text-black-soft',         // #151419
+        'font' => 'font-normal text-base',   // 400, 16px
+        'icon' => 'arrow_left',
+    ],
+];
+
+// Get variant config
+$config = $variants[$variant] ?? $variants['1'];
+
+// Build classes
+$classes = implode(' ', [
+    $baseStyles,
+    $config['padding'],
+    $config['radius'],
+    $config['bg'],
+    $config['text'],
+    $config['font'],
+    $class,
+    $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+]);
+
+// Build additional attributes string
+$attrString = '';
+if ($id) {
+    $attrString .= ' id="' . e($id) . '"';
+}
+if ($disabled) {
+    $attrString .= ' disabled';
+}
+foreach ($attrs as $key => $value) {
+    $attrString .= ' ' . e($key) . '="' . e($value) . '"';
+}
+
+// Arrow left icon SVG
+$arrowLeftIcon = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>';
+
+// Render button
+if ($href): ?>
+    <a href="<?= e($href) ?>" class="<?= $classes ?>"<?= $attrString ?>>
+        <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
+            <?= $arrowLeftIcon ?>
+        <?php endif; ?>
+        <?= e($text) ?>
+    </a>
+<?php else: ?>
+    <button type="<?= e($type) ?>" class="<?= $classes ?>"<?= $attrString ?>>
+        <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
+            <?= $arrowLeftIcon ?>
+        <?php endif; ?>
+        <?= e($text) ?>
+    </button>
+<?php endif; ?>

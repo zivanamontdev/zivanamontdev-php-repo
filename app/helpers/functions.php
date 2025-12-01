@@ -4,6 +4,93 @@
  */
 
 /**
+ * Get colors configuration
+ */
+function colors($key = null) {
+    static $colors = null;
+    
+    if ($colors === null) {
+        $colors = require CONFIG_PATH . '/colors.php';
+    }
+    
+    if ($key === null) {
+        return $colors;
+    }
+    
+    // Support dot notation: 'primary.600', 'brand.purple'
+    $keys = explode('.', $key);
+    $value = $colors;
+    
+    foreach ($keys as $k) {
+        if (isset($value[$k])) {
+            $value = $value[$k];
+        } else {
+            return null;
+        }
+    }
+    
+    return $value;
+}
+
+/**
+ * Get Tailwind config script with custom colors
+ */
+function tailwind_config() {
+    $colors = colors();
+    $config = [
+        'theme' => [
+            'extend' => [
+                'colors' => [
+                    'primary'            => $colors['primary'],
+                    'secondary'          => $colors['secondary'],
+                    'pale-accent'        => $colors['pale_accent'],
+                    'pink-accent'        => $colors['pink_accent'],
+                    'black-neutral'      => $colors['black_neutral'],
+                    'black-soft'         => $colors['black_soft'],
+                    'black-highlight'    => $colors['black_highlight'],
+                    'black-soft-highlight' => $colors['black_soft_highlight'],
+                    'white-neutral'      => $colors['white_neutral'],
+                    'white-secondary'    => $colors['white_secondary'],
+                    'white-soft'         => $colors['white_soft'],
+                    'white-shadow'       => $colors['white_shadow'],
+                    'white-dim'          => $colors['white_dim'],
+                    'white-pure'         => $colors['white_pure'],
+                ]
+            ]
+        ]
+    ];
+    
+    return '<script>tailwind.config = ' . json_encode($config) . '</script>';
+}
+
+/**
+ * Render a UI component
+ * 
+ * @param string $name Component name (e.g., 'button', 'card')
+ * @param array $data Data to pass to component
+ * @return void
+ */
+function component(string $name, array $data = []): void
+{
+    extract($data);
+    include VIEW_PATH . '/components/' . $name . '.php';
+}
+
+/**
+ * Render a UI component and return as string
+ * 
+ * @param string $name Component name
+ * @param array $data Data to pass to component
+ * @return string
+ */
+function render_component(string $name, array $data = []): string
+{
+    ob_start();
+    component($name, $data);
+    return ob_get_clean();
+}
+
+/**
  * Generate URL
  */
 function url($path = '') {
