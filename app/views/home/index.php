@@ -68,8 +68,45 @@ $keunggulanItems = [
         class="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[143px] h-[143px] pointer-events-none z-10"
     >
     
-    <div class="container mx-auto">
+    <div class="container mx-auto relative">
         <?php component('widget/home_about'); ?>
+        
+        <!-- Vector Pita (floating at bottom right of container) -->
+        <img 
+            src="<?= url('/images/vectors/vector_pita.png') ?>" 
+            alt="" 
+            class="absolute -bottom-[50px] -right-[10px] w-[140px] h-[110px] pointer-events-none z-10"
+        >
+    </div>
+</section>
+
+<!-- Program Sekolah Section -->
+<section class="mt-[120px] relative">
+    <!-- Vector Program (floating between sections) -->
+    <img 
+        src="<?= url('/images/vectors/vector_program.png') ?>" 
+        alt="" 
+        class="absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-10"
+    >
+    
+    <div class="container mx-auto relative">
+        <?php component('badge', ['text' => 'Program Sekolah']); ?>
+        
+        <!-- Program Grid -->
+        <div class="mt-[32px]">
+            <?php component('widget/home_program'); ?>
+        </div>
+    </div>
+</section>
+
+<!-- Testimoni Orang Tua Siswa Section -->
+<section class="mt-[120px]">
+    <div class="container mx-auto">
+        <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa', 'class' => 'mb-[24px]']); ?>
+        
+        <div class="mt-[24px]">
+            <?php component('widget/home_testimoni'); ?>
+        </div>
     </div>
 </section>
 
