@@ -7,6 +7,7 @@
 return [
     // Brand Colors
     'primary'            => '#C92C2F',
+    'primary_dark'       => '#9E1E20',
     'secondary'          => '#FAA30F',
     'pale_accent'        => '#FEDBA9',
     'pink_accent'        => '#CF5390',

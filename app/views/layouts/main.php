@@ -9,6 +9,10 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    
     <!-- Tailwind Custom Colors Config -->
     <?= tailwind_config() ?>
     
@@ -82,53 +86,6 @@
             
             <?= $content ?? '' ?>
         </main>
-        
-        <!-- Footer -->
-        <footer class="bg-black-neutral text-white-neutral mt-20">
-            <div class="container mx-auto px-4 py-12">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <h3 class="text-2xl font-bold mb-4"><?= e($settings['school_name'] ?? APP_NAME) ?></h3>
-                        <p class="text-gray-400"><?= e($settings['school_description'] ?? 'Quality Montessori education for your child') ?></p>
-                    </div>
-                    
-                    <div>
-                        <h4 class="text-lg font-semibold mb-4">Contact</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <?php if (!empty($settings['school_address'])): ?>
-                                <li><?= e($settings['school_address']) ?></li>
-                            <?php endif; ?>
-                            <?php if (!empty($settings['school_phone'])): ?>
-                                <li>Phone: <?= e($settings['school_phone']) ?></li>
-                            <?php endif; ?>
-                            <?php if (!empty($settings['school_email'])): ?>
-                                <li>Email: <?= e($settings['school_email']) ?></li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
-                        <div class="flex space-x-4">
-                            <?php if (isset($socialMedia) && !empty($socialMedia)): ?>
-                                <?php foreach ($socialMedia as $social): ?>
-                                    <a href="<?= e($social['url']) ?>" target="_blank" class="text-gray-400 hover:text-white">
-                                        <?= e($social['platform']) ?>
-                                    </a>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; <?= date('Y') ?> <?= e($settings['school_name'] ?? APP_NAME) ?>. All rights reserved.</p>
-                    <p class="mt-2">
-                        <a href="<?= url('/admin') ?>" class="text-gray-500 hover:text-gray-300 text-sm">Admin Login</a>
-                    </p>
-                </div>
-            </div>
-        </footer>
     </div>
     
     <script>

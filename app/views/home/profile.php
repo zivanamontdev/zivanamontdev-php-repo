@@ -97,6 +97,8 @@ ob_start();
 </section>
 <?php endif; ?>
 
+<?php component('footer', ['showCta' => true]); ?>
+
 <?php 
 $content = ob_get_clean();
 require VIEW_PATH . '/layouts/main.php';

@@ -6,6 +6,7 @@
 // Public routes
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/activities', [HomeController::class, 'activities']);
+$router->get('/activities-gallery', [HomeController::class, 'activitiesGallery']);
 $router->get('/profile', [HomeController::class, 'profile']);
 $router->get('/articles', [HomeController::class, 'articles']);
 $router->get('/article/{slug}', [HomeController::class, 'article']);

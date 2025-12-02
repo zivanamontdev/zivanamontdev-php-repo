@@ -49,6 +49,17 @@ class HomeController extends Controller {
         $this->view('home/activities', $data);
     }
     
+    public function activitiesGallery() {
+        track_visit('/activities-gallery');
+        
+        $data = [
+            'socialMedia' => $this->socialMediaModel->getActive(),
+            'settings' => $this->getSettings(),
+        ];
+        
+        $this->view('home/activities-gallery', $data);
+    }
+    
     public function profile() {
         track_visit('/profile');
         

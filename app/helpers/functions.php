@@ -42,6 +42,7 @@ function tailwind_config() {
             'extend' => [
                 'colors' => [
                     'primary'            => $colors['primary'],
+                    'primary-dark'       => $colors['primary_dark'],
                     'secondary'          => $colors['secondary'],
                     'pale-accent'        => $colors['pale_accent'],
                     'pink-accent'        => $colors['pink_accent'],

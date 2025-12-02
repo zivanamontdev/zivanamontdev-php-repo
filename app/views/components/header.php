@@ -18,6 +18,11 @@ $menuItems = [
 
 // Get current URL path for active state
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Check if current path starts with /activities (for sub-pages like /activities-gallery)
+function isActivitiesPage($path) {
+    return $path === '/activities' || strpos($path, '/activities-') === 0;
+}
 ?>
 
 <!-- Navigation -->
@@ -36,11 +41,16 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 </svg>
             </button>
             
-            <!-- Desktop menu - Centered -->
             <div class="hidden md:flex items-center justify-center flex-1 px-8">
                 <div class="flex items-center gap-[16px]">
                     <?php foreach ($menuItems as $item): 
-                        $isActive = $currentPath === parse_url($item['url'], PHP_URL_PATH);
+                        $itemPath = parse_url($item['url'], PHP_URL_PATH);
+                        // Special handling for Aktifitas menu - also active on sub-pages
+                        if ($itemPath === '/activities') {
+                            $isActive = isActivitiesPage($currentPath);
+                        } else {
+                            $isActive = $currentPath === $itemPath;
+                        }
                     ?>
                         <a href="<?= $item['url'] ?>" class="w-[136px] text-center <?= $isActive ? 'text-primary font-semibold' : 'text-black-highlight hover:text-primary' ?> font-medium transition-colors duration-200">
                             <?= e($item['label']) ?>
@@ -63,7 +73,13 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         <div id="mobile-menu" class="hidden md:hidden pb-4">
             <div class="flex flex-col space-y-3">
                 <?php foreach ($menuItems as $item): 
-                    $isActive = $currentPath === parse_url($item['url'], PHP_URL_PATH);
+                    $itemPath = parse_url($item['url'], PHP_URL_PATH);
+                    // Special handling for Aktifitas menu - also active on sub-pages
+                    if ($itemPath === '/activities') {
+                        $isActive = isActivitiesPage($currentPath);
+                    } else {
+                        $isActive = $currentPath === $itemPath;
+                    }
                 ?>
                     <a href="<?= $item['url'] ?>" class="<?= $isActive ? 'text-primary font-semibold' : 'text-black-highlight hover:text-primary' ?> font-medium py-2 transition-colors duration-200">
                         <?= e($item['label']) ?>
