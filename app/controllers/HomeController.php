@@ -73,6 +73,17 @@ class HomeController extends Controller {
         $this->view('home/profile', $data);
     }
     
+    public function profileGallery() {
+        track_visit('/profile-gallery');
+        
+        $data = [
+            'socialMedia' => $this->socialMediaModel->getActive(),
+            'settings' => $this->getSettings(),
+        ];
+        
+        $this->view('home/profile-gallery', $data);
+    }
+    
     public function articles() {
         track_visit('/articles');
         
@@ -110,6 +121,26 @@ class HomeController extends Controller {
         $data = [
             'article' => $article,
             'relatedArticles' => $relatedArticles,
+            'socialMedia' => $this->socialMediaModel->getActive(),
+            'settings' => $this->getSettings(),
+        ];
+        
+        $this->view('home/article-detail', $data);
+    }
+    
+    public function articleDetail() {
+        track_visit('/article-detail');
+        
+        // Static article data for demo purposes
+        $article = [
+            'title' => 'Parenting Ala Rasulullah',
+            'author_name' => 'Admin Zivana',
+            'published_at' => '2025-11-19',
+            'content' => ''
+        ];
+        
+        $data = [
+            'article' => $article,
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
         ];

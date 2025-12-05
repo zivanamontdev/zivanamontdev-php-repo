@@ -28,7 +28,7 @@ ob_start();
         <?php component('badge', ['text' => 'Kurikulum Sekolah']); ?>
     </div>
     
-    <?php component('widget/activities_kurikulum'); ?>
+    <?php component('widget/activities/activities_kurikulum'); ?>
 </section>
 
 <!-- Kelas-kelas Section -->
@@ -61,7 +61,7 @@ ob_start();
             'jumlah_murid' => '20 anak/kelas'
         ]
     ];
-    component('widget/activities_kelas', ['kelas' => $kelasData]); 
+    component('widget/activities/activities_kelas', ['kelas' => $kelasData]); 
     ?>
 </section>
 
@@ -99,7 +99,7 @@ ob_start();
             'description' => 'Upacara kelulusan yang meriah untuk merayakan pencapaian anak-anak.'
         ]
     ];
-    component('widget/activities_card', ['programs' => $programData, 'floatingVector' => 'vector_highlight_program_tahun.png']); 
+    component('widget/activities/activities_card', ['programs' => $programData, 'floatingVector' => 'vector_highlight_program_tahun.png']); 
     ?>
     
     <!-- Tampilkan Lebih Banyak Button -->
@@ -140,7 +140,7 @@ ob_start();
             'description' => 'Kegiatan seni dan kerajinan untuk mengekspresikan kreativitas anak.'
         ]
     ];
-    component('widget/activities_card', ['programs' => $programHarianData, 'floatingVectorCenter' => 'vector_highlight_program_harian.png']); 
+    component('widget/activities/activities_card', ['programs' => $programHarianData, 'floatingVectorCenter' => 'vector_highlight_program_harian.png']); 
     ?>
 </section>
 

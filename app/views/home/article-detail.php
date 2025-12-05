@@ -1,78 +1,83 @@
 <?php 
-$pageTitle = $article['title'];
+// Load dummy data
+require VIEW_PATH . '/data/articles_data.php';
+
+// Get article by id from query parameter
+$articleId = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+$currentArticle = getArticleById($articleId, $dummyArticles);
+
+// Fallback to first article if not found
+if (!$currentArticle) {
+    $currentArticle = $dummyArticles[0];
+}
+
+// Get other articles for "Baca Artikel Lainnya" section
+$otherArticles = getOtherArticles($currentArticle['id'], 2, $dummyArticles);
+
+$pageTitle = $currentArticle['title'];
 ob_start(); 
 ?>
 
-<!-- Article Header -->
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <a href="<?= url('/articles') ?>" class="text-purple-600 hover:text-purple-700 mb-4 inline-block">← Back to Articles</a>
-            
-            <?php if ($article['is_featured']): ?>
-                <span class="inline-block bg-purple-600 text-white text-sm px-4 py-1 rounded-full mb-4">Featured</span>
-            <?php endif; ?>
-            
-            <h1 class="text-4xl md:text-5xl font-bold mb-6"><?= e($article['title']) ?></h1>
-            
-            <div class="flex items-center text-gray-600 mb-8">
-                <span><?= format_date($article['published_at']) ?></span>
-                <span class="mx-3">•</span>
-                <span>By <?= e($article['author_name']) ?></span>
-                <span class="mx-3">•</span>
-                <span><?= $article['views'] ?> views</span>
-            </div>
+<!-- Back Button -->
+<div class="container mx-auto mt-[52px] mb-[32px]">
+    <?php component('button', ['text' => 'Kembali ke Artikel', 'variant' => '4', 'href' => url('/articles')]); ?>
+</div>
+
+<!-- Featured Image -->
+<section class="container mx-auto mb-[32px]">
+    <div class="w-full h-[432px] rounded-[16px] overflow-hidden">
+        <img 
+            src="<?= url('images/' . $currentArticle['image']) ?>" 
+            alt="<?= e($currentArticle['title']) ?>" 
+            class="w-full h-full object-cover object-center"
+        >
+    </div>
+</section>
+
+<!-- Article Content Card -->
+<section class="container mx-auto mb-[32px]">
+    <div class="bg-white-neutral rounded-[24px] p-[32px]">
+        <!-- Title -->
+        <h1 class="font-bold text-[32px] leading-[100%] text-black-soft mb-[8px]">
+            <?= e($currentArticle['title']) ?>
+        </h1>
+        
+        <!-- Author & Date Row -->
+        <div class="flex justify-between items-center mb-[24px]">
+            <span class="font-normal text-[20px] leading-[100%] text-black-highlight">
+                <?= e($currentArticle['author']) ?>
+            </span>
+            <span class="font-normal text-[20px] leading-[100%] text-black-highlight">
+                <?php 
+                    $date = $currentArticle['date_full'];
+                    $timestamp = strtotime($date);
+                    $bulan = [
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                    ];
+                    echo date('d', $timestamp) . ' ' . $bulan[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp);
+                ?>
+            </span>
+        </div>
+        
+        <!-- Description/Content -->
+        <div class="font-normal text-[20px] leading-[150%] text-black-highlight">
+            <?= $currentArticle['content'] ?>
         </div>
     </div>
 </section>
 
-<!-- Article Content -->
-<section class="py-12">
-    <div class="container mx-auto px-4">
-        <article class="max-w-4xl mx-auto">
-            <?php if ($article['featured_image']): ?>
-                <img src="<?= upload($article['featured_image']) ?>" alt="<?= e($article['title']) ?>" class="w-full rounded-xl mb-8 shadow-lg">
-            <?php endif; ?>
-            
-            <div class="prose prose-lg max-w-none">
-                <?= $article['content'] ?>
-            </div>
-        </article>
+<!-- Other Articles Section -->
+<section class="container mx-auto mt-[32px]">
+    <?php component('badge', ['text' => 'Baca Artikel Lainnya']); ?>
+    
+    <div class="mt-[16px]">
+        <?php component('widget/articles/articles_other', ['articles' => $otherArticles, 'currentId' => $currentArticle['id']]); ?>
     </div>
 </section>
 
-<!-- Related Articles -->
-<?php if (!empty($relatedArticles)): ?>
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold mb-8">Related Articles</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <?php foreach ($relatedArticles as $related): ?>
-                    <?php if ($related['id'] != $article['id']): ?>
-                        <article class="bg-white rounded-xl overflow-hidden shadow-lg card-hover">
-                            <?php if ($related['featured_image']): ?>
-                                <img src="<?= upload($related['featured_image']) ?>" alt="<?= e($related['title']) ?>" class="w-full h-48 object-cover">
-                            <?php else: ?>
-                                <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-indigo-600"></div>
-                            <?php endif; ?>
-                            
-                            <div class="p-6">
-                                <h3 class="text-lg font-bold mb-2 hover:text-purple-600">
-                                    <a href="<?= url('/article/' . $related['slug']) ?>"><?= e($related['title']) ?></a>
-                                </h3>
-                                <p class="text-gray-600 text-sm mb-3"><?= format_date($related['published_at']) ?></p>
-                                <a href="<?= url('/article/' . $related['slug']) ?>" class="text-purple-600 font-semibold hover:text-purple-700">Read More →</a>
-                            </div>
-                        </article>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
+<?php component('footer', ['showCta' => false]); ?>
 
 <?php 
 $content = ob_get_clean();

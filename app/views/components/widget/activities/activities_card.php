@@ -57,7 +57,7 @@ $floatingVectorCenter = $floatingVectorCenter ?? null;
         
         <!-- Button -->
         <div class="mt-auto pt-[30px]">
-            <?php component('button', ['text' => 'Lihat Galeri', 'variant' => '1', 'href' => url('/activities-gallery')]); ?>
+            <?php component('button', ['text' => 'Lihat Galeri', 'variant' => '7', 'href' => url('/activities-gallery')]); ?>
         </div>
     </div>
     <?php endforeach; ?>

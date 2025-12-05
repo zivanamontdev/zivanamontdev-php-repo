@@ -39,7 +39,7 @@ $ctaButtonHref = $ctaButtonHref ?? '#';
                 <!-- Vector Button CTA 2 - Bottom Left -->
                 <img src="<?= url('images/vectors/vector_button_cta2.png') ?>" alt="" class="absolute bottom-0 left-0 -translate-x-full translate-y-full pointer-events-none w-[21px] h-[21px]" style="bottom: 200px;">
                 
-                <?php component('button', ['text' => $ctaButtonText, 'variant' => '1', 'href' => $ctaButtonHref]); ?>
+                <?php component('button', ['text' => $ctaButtonText, 'variant' => '6', 'href' => $ctaButtonHref]); ?>
             </div>
         </div>
     </section>

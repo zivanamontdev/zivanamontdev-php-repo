@@ -23,6 +23,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 function isActivitiesPage($path) {
     return $path === '/activities' || strpos($path, '/activities-') === 0;
 }
+
+// Check if current path is article related (for sub-pages like /article/slug)
+function isArticlesPage($path) {
+    return $path === '/articles' || strpos($path, '/article/') === 0 || strpos($path, '/article-') === 0;
+}
 ?>
 
 <!-- Navigation -->
@@ -48,6 +53,8 @@ function isActivitiesPage($path) {
                         // Special handling for Aktifitas menu - also active on sub-pages
                         if ($itemPath === '/activities') {
                             $isActive = isActivitiesPage($currentPath);
+                        } elseif ($itemPath === '/articles') {
+                            $isActive = isArticlesPage($currentPath);
                         } else {
                             $isActive = $currentPath === $itemPath;
                         }
@@ -77,6 +84,8 @@ function isActivitiesPage($path) {
                     // Special handling for Aktifitas menu - also active on sub-pages
                     if ($itemPath === '/activities') {
                         $isActive = isActivitiesPage($currentPath);
+                    } elseif ($itemPath === '/articles') {
+                        $isActive = isArticlesPage($currentPath);
                     } else {
                         $isActive = $currentPath === $itemPath;
                     }

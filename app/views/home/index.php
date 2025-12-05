@@ -29,7 +29,7 @@ $keunggulanItems = [
 
 <!-- Hero Section -->
 <div class="mt-[52px]">
-    <?php component('widget/home_hero'); ?>
+    <?php component('widget/home/home_hero'); ?>
 </div>
 
 <!-- Keunggulan Sekolah Section -->
@@ -48,7 +48,7 @@ $keunggulanItems = [
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-[32px]">
                 <?php foreach ($keunggulanItems as $item): ?>
-                    <?php component('widget/card_keunggulan', [
+                    <?php component('widget/home/home_card_keunggulan', [
                         'image' => $item['image'],
                         'title' => $item['title'],
                         'description' => $item['description']
@@ -69,7 +69,7 @@ $keunggulanItems = [
     >
     
     <div class="container mx-auto relative">
-        <?php component('widget/home_about'); ?>
+        <?php component('widget/home/home_about'); ?>
         
         <!-- Vector Pita (floating at bottom right of container) -->
         <img 
@@ -94,7 +94,7 @@ $keunggulanItems = [
         
         <!-- Program Grid -->
         <div class="mt-[32px]">
-            <?php component('widget/home_program'); ?>
+            <?php component('widget/home/home_program'); ?>
         </div>
     </div>
 </section>
@@ -105,7 +105,7 @@ $keunggulanItems = [
         <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa']); ?>
         
         <div class="mt-[32px]">
-            <?php component('widget/home_testimoni'); ?>
+            <?php component('widget/home/home_testimoni'); ?>
         </div>
     </div>
 </section>
@@ -116,7 +116,7 @@ $keunggulanItems = [
         <?php component('badge', ['text' => 'Kegiatan yang Akan Datang']); ?>
         
         <div class="mt-[32px] flex flex-col gap-[24px]">
-            <?php component('widget/home_kegiatan', [
+            <?php component('widget/home/home_kegiatan', [
                 'tanggal' => '20',
                 'bulan' => 'NOV',
                 'tahun' => '2025',
@@ -126,7 +126,7 @@ $keunggulanItems = [
                 'status' => 'public'
             ]); ?>
             
-            <?php component('widget/home_kegiatan', [
+            <?php component('widget/home/home_kegiatan', [
                 'tanggal' => '25',
                 'bulan' => 'NOV',
                 'tahun' => '2025',
@@ -136,7 +136,7 @@ $keunggulanItems = [
                 'status' => 'private'
             ]); ?>
             
-            <?php component('widget/home_kegiatan', [
+            <?php component('widget/home/home_kegiatan', [
                 'tanggal' => '05',
                 'bulan' => 'DES',
                 'tahun' => '2025',
@@ -155,7 +155,7 @@ $keunggulanItems = [
         <?php component('badge', ['text' => 'Frequently Ask Questions (FAQs)']); ?>
         
         <div class="mt-[32px]">
-            <?php component('widget/home_faq', [
+            <?php component('widget/home/home_faq', [
                 'faqs' => [
                     [
                         'question' => 'Apa itu metode Montessori?',

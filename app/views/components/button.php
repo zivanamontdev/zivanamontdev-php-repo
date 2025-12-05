@@ -22,7 +22,7 @@ $disabled = $disabled ?? false;
 $attrs = $attrs ?? [];
 
 // Base styles (shared)
-$baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200 hover:opacity-90 active:scale-95';
+$baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200';
 
 // Variant styles
 $variants = [
@@ -30,9 +30,10 @@ $variants = [
     '1' => [
         'padding' => 'py-3 px-6',           // 12px top/bottom, 24px left/right
         'radius' => 'rounded-xl',            // 12px
-        'bg' => 'bg-secondary',              // #FAA30F
+        'bg' => 'bg-primary',                // #C92C2F
         'text' => 'text-white',              // #FFFFFF
-        'font' => 'font-bold text-xl',       // 700, 20px
+        'font' => 'font-bold text-base',     // 700, 16px
+        'hover' => 'hover:opacity-90 active:scale-95',
     ],
     
     // Variant 2: Small accent button
@@ -42,6 +43,7 @@ $variants = [
         'bg' => 'bg-pale-accent',            // #FEDBA9
         'text' => 'text-secondary',          // #FAA30F
         'font' => 'font-bold text-base',     // 700, 16px
+        'hover' => 'hover:opacity-90 active:scale-95',
     ],
     
     // Variant 3: Normal weight button
@@ -51,6 +53,7 @@ $variants = [
         'bg' => 'bg-pale-accent',            // #FEDBA9
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base',   // 400, 16px
+        'hover' => 'hover:opacity-90 active:scale-95',
     ],
     
     // Variant 4: Back button with arrow icon
@@ -61,6 +64,40 @@ $variants = [
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base',   // 400, 16px
         'icon' => 'arrow_left',
+        'hover' => 'hover:opacity-90 active:scale-95',
+    ],
+    
+    // Variant 5: Disabled-style button with 50% opacity
+    '5' => [
+        'padding' => 'py-2 px-6',            // 8px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-white-neutral',          // #FCFCFD
+        'text' => 'text-black-soft',         // #151419
+        'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
+        'opacity' => 'opacity-50',
+        'hover' => 'hover:opacity-90 active:scale-95',
+    ],
+    
+    // Variant 6: White neutral button
+    '6' => [
+        'padding' => 'py-3 px-6',            // 12px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-white-neutral',          // #FCFCFD
+        'text' => 'text-black-soft',         // #151419
+        'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
+        'hover' => 'hover:opacity-90 active:scale-95',
+    ],
+    
+    // Variant 7: Text button with chevron right
+    '7' => [
+        'padding' => 'py-3 px-3',            // 12px all around
+        'radius' => 'rounded-xl',            // 12px for hover background
+        'bg' => 'bg-transparent',            // transparent
+        'text' => 'text-primary',            // #C92C2F
+        'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
+        'icon' => 'chevron_right',
+        'fullWidth' => true,
+        'hover' => 'hover:bg-white-secondary',
     ],
 ];
 
@@ -68,16 +105,19 @@ $variants = [
 $config = $variants[$variant] ?? $variants['1'];
 
 // Build classes
-$classes = implode(' ', [
+$classes = implode(' ', array_filter([
     $baseStyles,
     $config['padding'],
     $config['radius'],
     $config['bg'],
     $config['text'],
     $config['font'],
+    $config['opacity'] ?? null,
+    $config['hover'] ?? '',
+    isset($config['fullWidth']) && $config['fullWidth'] ? 'w-full justify-between' : '',
     $class,
     $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-]);
+]));
 
 // Build additional attributes string
 $attrString = '';
@@ -94,6 +134,9 @@ foreach ($attrs as $key => $value) {
 // Arrow left icon SVG
 $arrowLeftIcon = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>';
 
+// Chevron right icon SVG (16x16, primary color)
+$chevronRightIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
+
 // Render button
 if ($href): ?>
     <a href="<?= e($href) ?>" class="<?= $classes ?>"<?= $attrString ?>>
@@ -101,6 +144,9 @@ if ($href): ?>
             <?= $arrowLeftIcon ?>
         <?php endif; ?>
         <?= e($text) ?>
+        <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>
+            <?= $chevronRightIcon ?>
+        <?php endif; ?>
     </a>
 <?php else: ?>
     <button type="<?= e($type) ?>" class="<?= $classes ?>"<?= $attrString ?>>
@@ -108,5 +154,8 @@ if ($href): ?>
             <?= $arrowLeftIcon ?>
         <?php endif; ?>
         <?= e($text) ?>
+        <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>
+            <?= $chevronRightIcon ?>
+        <?php endif; ?>
     </button>
 <?php endif; ?>

@@ -16,7 +16,7 @@ ob_start();
         </div>
         
         <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-white-neutral text-center">
+        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-black-soft text-center">
             Galeri Aktivitas Sensori
         </h1>
     </div>
@@ -53,7 +53,7 @@ ob_start();
             'description' => 'Kegiatan menyusun balok dan puzzle untuk mengembangkan kemampuan problem solving.'
         ]
     ];
-    component('widget/gallery_card', ['items' => $galleryData]); 
+    component('widget/activities/activities_gallery_card', ['items' => $galleryData]); 
     ?>
     
     <!-- Tampilkan Lebih Banyak Button -->

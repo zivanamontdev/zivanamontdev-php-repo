@@ -47,7 +47,7 @@
             <div>
                 <?php component('button', [
                     'text' => 'Daftar Sekarang',
-                    'variant' => '1',
+                    'variant' => '6',
                     'href' => url('/registration')
                 ]); ?>
             </div>
