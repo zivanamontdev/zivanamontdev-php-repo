@@ -41,8 +41,8 @@ $variants = [
         'padding' => 'py-2 px-[13px]',       // 8px top/bottom, 13px left/right
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-pale-accent',            // #FEDBA9
-        'text' => 'text-secondary',          // #FAA30F
-        'font' => 'font-bold text-base',     // 700, 16px
+        'text' => '!text-[#59360F]',         // #59360F (forced with !)
+        'font' => 'font-normal text-base',   // 400, 16px
         'hover' => 'hover:opacity-90 active:scale-95',
     ],
     
@@ -99,6 +99,18 @@ $variants = [
         'fullWidth' => true,
         'hover' => 'hover:bg-white-secondary',
     ],
+    
+    // Variant 8: Add button with plus icon
+    '8' => [
+        'padding' => 'py-[10px] px-[12px]',  // 10px top/bottom, 12px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-white-secondary',        // white_secondary
+        'text' => 'text-black-highlight',    // black_highlight
+        'font' => 'font-normal text-[12px] leading-[100%]', // 400, 12px, line-height 100%
+        'icon' => 'plus',
+        'gap' => 'gap-2',                    // 8px gap
+        'hover' => 'hover:opacity-80 active:scale-95',
+    ],
 ];
 
 // Get variant config
@@ -113,6 +125,7 @@ $classes = implode(' ', array_filter([
     $config['text'],
     $config['font'],
     $config['opacity'] ?? null,
+    $config['gap'] ?? null,
     $config['hover'] ?? '',
     isset($config['fullWidth']) && $config['fullWidth'] ? 'w-full justify-between' : '',
     $class,
@@ -137,11 +150,17 @@ $arrowLeftIcon = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" vi
 // Chevron right icon SVG (16x16, primary color)
 $chevronRightIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
 
+// Plus icon SVG (10x10, black_highlight)
+$plusIcon = '<svg class="w-[10px] h-[10px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>';
+
 // Render button
 if ($href): ?>
-    <a href="<?= e($href) ?>" class="<?= $classes ?>"<?= $attrString ?>>
+    <a href="<?= e($href) ?>" class="btn-component <?= $classes ?>"<?= $attrString ?>>
         <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
             <?= $arrowLeftIcon ?>
+        <?php endif; ?>
+        <?php if (isset($config['icon']) && $config['icon'] === 'plus'): ?>
+            <?= $plusIcon ?>
         <?php endif; ?>
         <?= e($text) ?>
         <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>
@@ -149,9 +168,12 @@ if ($href): ?>
         <?php endif; ?>
     </a>
 <?php else: ?>
-    <button type="<?= e($type) ?>" class="<?= $classes ?>"<?= $attrString ?>>
+    <button type="<?= e($type) ?>" class="btn-component <?= $classes ?>"<?= $attrString ?>>
         <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
             <?= $arrowLeftIcon ?>
+        <?php endif; ?>
+        <?php if (isset($config['icon']) && $config['icon'] === 'plus'): ?>
+            <?= $plusIcon ?>
         <?php endif; ?>
         <?= e($text) ?>
         <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>

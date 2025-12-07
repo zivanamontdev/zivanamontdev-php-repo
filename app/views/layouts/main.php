@@ -48,45 +48,93 @@
         #page-content {
             transition: opacity 0.15s ease;
         }
-        
+
         #page-content.loading {
             opacity: 0.5;
         }
-    </style>
-    
-    <?php if (isset($customStyles)): ?>
+
+        /* Reset visited link colors for buttons */
+        a.btn-component:visited {
+            color: inherit;
+        }
+    </style>    <?php if (isset($customStyles)): ?>
         <?= $customStyles ?>
     <?php endif; ?>
 </head>
+
 <body class="bg-white-secondary">
-    <!-- Header Component (rendered once) -->
-    <?php component('header', [
-        'settings' => $settings ?? [],
-        'socialMedia' => $socialMedia ?? []
-    ]); ?>
-    
-    <!-- Main Content Container -->
-    <div id="page-content">
-        <main class="pt-20">
-            <?php if (flash('success')): ?>
-                <div class="container mx-auto px-4 pt-4">
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                        <span class="block sm:inline"><?= e(flash('success')) ?></span>
-                    </div>
+    <?php if (strpos($_SERVER['REQUEST_URI'], '/admin') === 0): ?>
+        <?php
+        // Tentukan currentPage dari URL
+        $adminPages = [
+            'dashboard' => '/admin/dashboard',
+            'registrations' => '/admin/registrations',
+            'activities' => '/admin/activities',
+            'articles' => '/admin/articles',
+            'management' => '/admin/management',
+            'settings' => '/admin/settings',
+        ];
+        $currentPage = 'dashboard';
+        foreach ($adminPages as $key => $path) {
+            if (strpos($_SERVER['REQUEST_URI'], $path) === 0) {
+                $currentPage = $key;
+                break;
+            }
+        }
+        ?>
+        <div class="flex">
+            <div>
+                <?php component('admin-sidebar', ['currentPage' => $currentPage]); ?>
+            </div>
+            <div class="flex-1">
+                <div id="page-content">
+                    <main class="pt-8">
+                        <?php if (flash('success')): ?>
+                            <div class="container mx-auto px-4 pt-4">
+                                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                    <span class="block sm:inline"><?= e(flash('success')) ?></span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (flash('error')): ?>
+                            <div class="container mx-auto px-4 pt-4">
+                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <span class="block sm:inline"><?= e(flash('error')) ?></span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?= $content ?? '' ?>
+                    </main>
                 </div>
-            <?php endif; ?>
-            
-            <?php if (flash('error')): ?>
-                <div class="container mx-auto px-4 pt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <span class="block sm:inline"><?= e(flash('error')) ?></span>
+            </div>
+        </div>
+    <?php else: ?>
+        <!-- Header Component (rendered once, non-admin only) -->
+        <?php component('header', [
+            'settings' => $settings ?? [],
+            'socialMedia' => $socialMedia ?? []
+        ]); ?>
+        <!-- Main Content Container -->
+        <div id="page-content">
+            <main class="pt-20">
+                <?php if (flash('success')): ?>
+                    <div class="container mx-auto px-4 pt-4">
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline"><?= e(flash('success')) ?></span>
+                        </div>
                     </div>
-                </div>
-            <?php endif; ?>
-            
-            <?= $content ?? '' ?>
-        </main>
-    </div>
+                <?php endif; ?>
+                <?php if (flash('error')): ?>
+                    <div class="container mx-auto px-4 pt-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline"><?= e(flash('error')) ?></span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?= $content ?? '' ?>
+            </main>
+        </div>
+    <?php endif; ?>
     
     <script>
         // AJAX Navigation - Header stays, only content changes

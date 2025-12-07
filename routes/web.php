@@ -71,6 +71,14 @@ $router->post('/admin/management/social-media/{id}/delete', [ManagementControlle
 $router->get('/admin/management/settings', [ManagementController::class, 'settings']);
 $router->post('/admin/management/settings/update', [ManagementController::class, 'updateSettings']);
 
+// Admin registrations
+$router->get('/admin/registrations', [RegistrationController::class, 'index']);
+$router->get('/admin/registrations/{id}', [RegistrationController::class, 'show']);
+$router->post('/admin/registrations/{id}/delete', [RegistrationController::class, 'delete']);
+
+// Admin activities
+$router->get('/admin/activities', [ActivityController::class, 'index']);
+
 // 404 handler
 $router->notFound(function() {
     http_response_code(404);

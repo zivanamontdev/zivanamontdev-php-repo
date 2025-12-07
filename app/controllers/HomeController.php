@@ -11,6 +11,7 @@ class HomeController extends Controller {
     private $awardModel;
     private $socialMediaModel;
     private $settingModel;
+    private $registrationModel;
     
     public function __construct() {
         parent::__construct();
@@ -21,6 +22,7 @@ class HomeController extends Controller {
         $this->awardModel = new Award();
         $this->socialMediaModel = new SocialMedia();
         $this->settingModel = new Setting();
+        $this->registrationModel = new Registration();
     }
     
     public function index() {
@@ -170,51 +172,45 @@ class HomeController extends Controller {
         
         csrf_verify();
         
-        $registrationModel = new Registration();
-        
         $data = [
-            'child_name' => sanitize($this->input('child_name')),
             'parent_name' => sanitize($this->input('parent_name')),
-            'email' => sanitize($this->input('email')),
-            'phone' => sanitize($this->input('phone')),
+            'child_name' => sanitize($this->input('child_name')),
+            'child_age' => sanitize($this->input('child_age')),
             'address' => sanitize($this->input('address')),
-            'message' => sanitize($this->input('message')),
-            'ip_address' => get_client_ip(),
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            'whatsapp' => sanitize($this->input('whatsapp')),
         ];
         
         // Validation
-        if (empty($data['child_name']) || empty($data['parent_name']) || 
-            empty($data['email']) || empty($data['phone'])) {
-            flash('error', 'Please fill in all required fields');
+        if (empty($data['parent_name']) || empty($data['child_name']) || 
+            empty($data['child_age']) || empty($data['address']) || empty($data['whatsapp'])) {
+            flash('error', 'Mohon lengkapi semua field yang diperlukan');
             set_old($_POST);
             $this->redirect('/registration');
             return;
         }
         
-        if (!is_email($data['email'])) {
-            flash('error', 'Please provide a valid email address');
-            set_old($_POST);
-            $this->redirect('/registration');
-            return;
-        }
+        // Save registration to database
+        $registrationData = [
+            'parent_name' => $data['parent_name'],
+            'child_name' => $data['child_name'],
+            'child_age' => $data['child_age'],
+            'address' => $data['address'],
+            'whatsapp' => $data['whatsapp'],
+            'status' => 'new',
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+        ];
         
-        // Save to database
-        $registrationModel->create($data);
+        $this->registrationModel->create($registrationData);
         
         // Build WhatsApp message
-        $whatsappNumber = $this->settingModel->get('whatsapp_number', '');
+        $whatsappNumber = $this->settingModel->get('whatsapp_number', '6281234567890');
         $message = "Halo, saya ingin mendaftarkan anak saya di Zivana Montessori School\n\n";
-        $message .= "Nama Anak: {$data['child_name']}\n";
         $message .= "Nama Orang Tua: {$data['parent_name']}\n";
-        $message .= "Email: {$data['email']}\n";
-        $message .= "No. Telepon: {$data['phone']}\n";
-        if (!empty($data['address'])) {
-            $message .= "Alamat: {$data['address']}\n";
-        }
-        if (!empty($data['message'])) {
-            $message .= "Pesan: {$data['message']}\n";
-        }
+        $message .= "Nama Anak: {$data['child_name']}\n";
+        $message .= "Usia Anak: {$data['child_age']}\n";
+        $message .= "Alamat: {$data['address']}\n";
+        $message .= "Nomor WhatsApp: {$data['whatsapp']}\n";
         
         $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . urlencode($message);
         

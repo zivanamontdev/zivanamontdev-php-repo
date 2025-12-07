@@ -71,10 +71,10 @@ function tailwind_config() {
  * @param array $data Data to pass to component
  * @return void
  */
-function component(string $name, array $data = []): void
+function component(string $__component_name__, array $__component_data__ = []): void
 {
-    extract($data);
-    include VIEW_PATH . '/components/' . $name . '.php';
+    extract($__component_data__);
+    include VIEW_PATH . '/components/' . $__component_name__ . '.php';
 }
 
 /**
@@ -84,10 +84,10 @@ function component(string $name, array $data = []): void
  * @param array $data Data to pass to component
  * @return string
  */
-function render_component(string $name, array $data = []): string
+function render_component(string $__component_name__, array $__component_data__ = []): string
 {
     ob_start();
-    component($name, $data);
+    component($__component_name__, $__component_data__);
     return ob_get_clean();
 }
 

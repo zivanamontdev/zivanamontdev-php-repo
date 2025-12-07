@@ -84,7 +84,15 @@ class Router {
         return '#^' . $pattern . '$#';
     }
     
-    public static function redirect($url, $statusCode = 302) {
+    public static function redirect($path, $statusCode = 302) {
+        // If already a full URL (external), redirect directly
+        if (preg_match('/^https?:\/\//', $path)) {
+            header('Location: ' . $path, true, $statusCode);
+            exit;
+        }
+        
+        // Use absolute URL with APP_URL for internal paths
+        $url = rtrim(APP_URL, '/') . '/' . ltrim($path, '/');
         header('Location: ' . $url, true, $statusCode);
         exit;
     }

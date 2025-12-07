@@ -107,12 +107,11 @@ CREATE TABLE IF NOT EXISTS social_media (
 -- Registrations table (enrollment form submissions)
 CREATE TABLE IF NOT EXISTS registrations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    child_name VARCHAR(100) NOT NULL,
     parent_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
+    child_name VARCHAR(100) NOT NULL,
+    child_age VARCHAR(50) NULL,
     address TEXT NULL,
-    message TEXT NULL,
+    whatsapp VARCHAR(20) NOT NULL,
     status ENUM('new', 'contacted', 'enrolled', 'rejected') DEFAULT 'new',
     ip_address VARCHAR(45) NULL,
     user_agent TEXT NULL,
@@ -160,7 +159,7 @@ CREATE TABLE IF NOT EXISTS form_fields (
 
 -- Insert default admin user (password: admin123)
 INSERT INTO users (username, email, password, full_name, role, is_active) VALUES
-('admin', 'admin@zivanamontessori.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator', 'super_admin', 1);
+('admin', 'admin@zivanamontessori.com', '$2y$12$p5ByTYTRtenkK4vdWX3Qh.L3f1Mchj5tZwFYP4OWGhK.PkKX44.dK', 'Administrator', 'super_admin', 1);
 
 -- Insert default settings
 INSERT INTO settings (setting_key, setting_value, setting_type, setting_group) VALUES
