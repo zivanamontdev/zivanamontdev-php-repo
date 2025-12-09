@@ -87,14 +87,14 @@ ob_start();
     <div class="flex items-center gap-2">
         <?php if ((int)($currentPage ?? 1) > 1): ?>
         <a href="?page=<?= (int)($currentPage ?? 1) - 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
-           class="px-3 py-2 text-[12px] text-black-highlight bg-white-neutral border border-border-soft rounded-[8px] hover:bg-white-secondary transition-colors">
+            class="px-3 py-2 text-[12px] text-black-highlight bg-white-neutral border border-border-soft rounded-[8px] hover:bg-white-secondary transition-colors">
             Sebelumnya
         </a>
         <?php endif; ?>
         
         <?php if ((int)($currentPage ?? 1) < $totalPages): ?>
         <a href="?page=<?= (int)($currentPage ?? 1) + 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
-           class="px-3 py-2 text-[12px] text-white-neutral bg-primary rounded-[8px] hover:bg-opacity-90 transition-colors">
+            class="px-3 py-2 text-[12px] text-white-neutral bg-primary rounded-[8px] hover:bg-opacity-90 transition-colors">
             Selanjutnya
         </a>
         <?php endif; ?>

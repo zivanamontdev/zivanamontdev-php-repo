@@ -78,6 +78,35 @@ $router->post('/admin/registrations/{id}/delete', [RegistrationController::class
 
 // Admin activities
 $router->get('/admin/activities', [ActivityController::class, 'index']);
+$router->post('/admin/activities/classes/store', [ActivityController::class, 'storeClass']);
+$router->post('/admin/activities/classes/{id}/update', [ActivityController::class, 'updateClass']);
+$router->post('/admin/activities/classes/{id}/delete', [ActivityController::class, 'deleteClass']);
+
+// Admin activities - Program Tahun Ajaran
+$router->post('/admin/activities/programs-tahun/store', [ActivityController::class, 'storeProgramTahun']);
+$router->post('/admin/activities/programs-tahun/{id}/update', [ActivityController::class, 'updateProgramTahun']);
+$router->post('/admin/activities/programs-tahun/{id}/delete', [ActivityController::class, 'deleteProgramTahun']);
+
+// Admin activities - Program Gallery
+$router->post('/admin/activities/programs-tahun/{programId}/gallery/store', [ActivityController::class, 'storeGalleryImage']);
+$router->post('/admin/activities/programs-tahun/{programId}/gallery/{galleryId}/update', [ActivityController::class, 'updateGalleryImage']);
+$router->post('/admin/activities/programs-tahun/{programId}/gallery/{galleryId}/delete', [ActivityController::class, 'deleteGalleryImage']);
+
+// Admin activities - Update/Delete Program Image via Gallery Modal
+$router->post('/admin/activities/programs-tahun/{programId}/update-program-image', [ActivityController::class, 'updateProgramImage']);
+$router->post('/admin/activities/programs-tahun/{programId}/delete-program-image', [ActivityController::class, 'deleteProgramImage']);
+
+// Admin activities - Program Harian
+$router->post('/admin/activities/programs-harian/{id}/update', [ActivityController::class, 'updateProgramHarian']);
+
+// Admin activities - Program Harian Gallery
+$router->post('/admin/activities/programs-harian/{programId}/gallery/store', [ActivityController::class, 'storeGalleryHarianImage']);
+$router->post('/admin/activities/programs-harian/{programId}/gallery/{galleryId}/update', [ActivityController::class, 'updateGalleryHarianImage']);
+$router->post('/admin/activities/programs-harian/{programId}/gallery/{galleryId}/delete', [ActivityController::class, 'deleteGalleryHarianImage']);
+
+// Admin activities - Update/Delete Program Harian Image via Gallery Modal
+$router->post('/admin/activities/programs-harian/{programId}/update-program-image', [ActivityController::class, 'updateProgramHarianImage']);
+$router->post('/admin/activities/programs-harian/{programId}/delete-program-image', [ActivityController::class, 'deleteProgramHarianImage']);
 
 // 404 handler
 $router->notFound(function() {

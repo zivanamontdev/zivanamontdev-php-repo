@@ -56,6 +56,10 @@ function tailwind_config() {
                     'white-shadow'       => $colors['white_shadow'],
                     'white-dim'          => $colors['white_dim'],
                     'white-pure'         => $colors['white_pure'],
+                    'text-dark'          => $colors['text_dark'],
+                    'gray-placeholder'   => $colors['gray_placeholder'],
+                    'border-light'       => $colors['border_light'],
+                    'border-soft'        => $colors['border_soft'],
                 ]
             ]
         ]

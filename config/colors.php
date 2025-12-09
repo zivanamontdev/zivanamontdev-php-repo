@@ -28,6 +28,12 @@ return [
     'white_dim'          => '#B3B3B3',
     'white_pure'         => '#FFFFFF',
     
+    // Text Colors
+    'text_dark'          => '#171717',
+    
+    // Placeholder Colors
+    'gray_placeholder'   => '#D9D9D9',
+    
     // Neutral / Gray
     'color_neutral'      => '#888888',
     'border_light'       => '#E0E0E0',
