@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?>Admin Panel - <?= APP_NAME ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="<?= url('images/activity_logo.png') ?>">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Tailwind Custom Colors Config -->
@@ -49,23 +52,30 @@
     
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar Component (Fixed) -->
-        <?php component('admin-sidebar', ['currentPage' => $currentPage ?? 'dashboard']); ?>
+        <?php if (!isset($hideSidebar) || !$hideSidebar): ?>
+            <?php component('admin-sidebar', ['currentPage' => $currentPage ?? 'dashboard']); ?>
+        <?php endif; ?>
         
         <!-- Main Content (Scrollable) -->
         <main id="admin-main-content" class="flex-1 overflow-y-auto transition-all duration-300 h-screen">
             <div class="p-8">
-                <?php if (flash('success')): ?>
+                <?php 
+                $successMessage = flash('success');
+                $errorMessage = flash('error');
+                ?>
+                
+                <?php if ($successMessage): ?>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                            showToast('<?= e(flash('success')) ?>', 'success', 4000);
+                            showToast(<?= json_encode($successMessage) ?>, 'success', 4000);
                         });
                     </script>
                 <?php endif; ?>
                 
-                <?php if (flash('error')): ?>
+                <?php if ($errorMessage): ?>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                            showToast('<?= e(flash('error')) ?>', 'error', 5000);
+                            showToast(<?= json_encode($errorMessage) ?>, 'error', 5000);
                         });
                     </script>
                 <?php endif; ?>

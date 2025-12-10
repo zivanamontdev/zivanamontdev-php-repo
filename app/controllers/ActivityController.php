@@ -172,7 +172,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menambah kelas. Silakan coba lagi.')]);
         }
     }
     
@@ -252,7 +252,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah kelas. Silakan coba lagi.')]);
         }
     }
     
@@ -283,7 +283,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus kelas. Silakan coba lagi.')]);
         }
     }
     
@@ -345,7 +345,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal membuat program. Silakan coba lagi.')]);
         }
     }
     
@@ -418,7 +418,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah program. Silakan coba lagi.')]);
         }
     }
     
@@ -448,7 +448,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus program. Silakan coba lagi.')]);
         }
     }
     
@@ -533,7 +533,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menambah gambar galeri. Silakan coba lagi.')]);
         }
     }
     
@@ -623,7 +623,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah gambar galeri. Silakan coba lagi.')]);
         }
     }
     
@@ -697,7 +697,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah gambar program. Silakan coba lagi.')]);
         }
     }
     
@@ -739,7 +739,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus gambar program. Silakan coba lagi.')]);
         }
     }
     
@@ -776,7 +776,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus gambar galeri. Silakan coba lagi.')]);
         }
     }
     
@@ -861,7 +861,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah program. Silakan coba lagi.')]);
         }
     }
     
@@ -939,7 +939,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menambah gambar galeri. Silakan coba lagi.')]);
         }
     }
     
@@ -1025,7 +1025,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah gambar galeri. Silakan coba lagi.')]);
         }
     }
     
@@ -1105,7 +1105,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal mengubah gambar program. Silakan coba lagi.')]);
         }
     }
     
@@ -1143,7 +1143,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus gambar program. Silakan coba lagi.')]);
         }
     }
     
@@ -1180,7 +1180,7 @@ class ActivityController extends Controller {
         } catch (Exception $e) {
             http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus gambar galeri. Silakan coba lagi.')]);
         }
     }
 }

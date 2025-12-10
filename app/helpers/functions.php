@@ -169,6 +169,18 @@ function flash($key, $message = null) {
 }
 
 /**
+ * Sanitize error message for user display
+ * Logs technical details and returns user-friendly message
+ */
+function sanitize_error($exception, $userMessage = 'Terjadi kesalahan. Silakan coba lagi.') {
+    // Log technical error
+    error_log(get_class($exception) . ': ' . $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine());
+    
+    // Return user-friendly message
+    return $userMessage;
+}
+
+/**
  * Old input value
  */
 function old($key, $default = '') {

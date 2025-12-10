@@ -18,13 +18,14 @@ class ArticleController extends Controller {
         $data = [
             'articles' => $pagination['data'],
             'pagination' => $pagination,
+            'currentPage' => 'articles',
         ];
         
         $this->view('admin/articles/index', $data);
     }
     
     public function create() {
-        $this->view('admin/articles/create');
+        $this->view('admin/articles/create/index');
     }
     
     public function store() {

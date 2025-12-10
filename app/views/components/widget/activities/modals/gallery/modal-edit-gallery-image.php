@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.reload();
                     }, 1000);
                 } else {
-                    showToast('Error: ' + data.message, 'error', 5000);
+                    showToast(data.message || 'Terjadi kesalahan saat mengubah data', 'error', 5000);
                 }
             })
             .catch(error => {
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     window.location.reload();
                                 }, 1000);
                             } else {
-                                showToast('Error: ' + data.message, 'error', 5000);
+                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
                             }
                         })
                         .catch(error => {
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     window.location.reload();
                                 }, 1000);
                             } else {
-                                showToast('Error: ' + data.message, 'error', 5000);
+                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
                             }
                         })
                         .catch(error => {
