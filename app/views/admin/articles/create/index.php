@@ -33,16 +33,19 @@ ob_start();
     <!-- Right: Publish Button with margin-right 32px -->
     <div class="mr-8">
         <?php component('button', [
-            'variant' => '1',
+            'variant' => '15',
             'text' => 'Publish Artikel',
             'type' => 'button',
             'id' => 'btn-publish-article',
             'attrs' => [
-                'onclick' => 'publishArticle()'
+                'onclick' => 'openPublishArticleModal()'
             ]
         ]); ?>
     </div>
 </div>
+
+<!-- Publish Article Modal -->
+<?php component('widget/articles/modals/modal-publish-article'); ?>
 
 <!-- Main Card Container for Article Creation -->
 <div class="mx-32 mb-6">
@@ -69,22 +72,22 @@ ob_start();
 </div>
 
 <script>
-function publishArticle() {
+// Validation helper function (can be used if needed)
+function validateArticleForm() {
     const title = document.getElementById('article-title').value.trim();
     const content = document.getElementById('article-content').value.trim();
     
     if (!title) {
         showToast('Judul artikel tidak boleh kosong', 'error', 3000);
-        return;
+        return false;
     }
     
     if (!content) {
         showToast('Konten artikel tidak boleh kosong', 'error', 3000);
-        return;
+        return false;
     }
     
-    // TODO: Implement article publish functionality
-    showToast('Fungsi publish artikel akan segera diimplementasikan', 'error', 3000);
+    return true;
 }
 </script>
 

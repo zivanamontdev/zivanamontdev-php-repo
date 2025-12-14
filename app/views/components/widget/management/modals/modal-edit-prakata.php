@@ -1,18 +1,18 @@
 <?php
 /**
- * Modal Edit Program Harian Component
- * Modal for editing existing program harian
+ * Modal Edit Prakata Sekolah Component
+ * Modal for editing school introduction/foreword
  */
 ?>
 
 <!-- Modal Backdrop -->
-<div id="modal-edit-program-harian" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+<div id="modal-edit-prakata" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <!-- Modal Container -->
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-[621px] px-[24px] py-[20px]">
         <!-- Header: Title and Close Button -->
         <div class="flex items-start justify-between mb-[32px]">
-            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft">Ubah Informasi Program</h3>
-            <button type="button" id="close-modal-edit-program-harian" class="text-black-highlight hover:text-black-soft transition-colors">
+            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft">Ubah Prakata Sekolah</h3>
+            <button type="button" id="close-modal-edit-prakata" class="text-black-highlight hover:text-black-soft transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -24,18 +24,18 @@
             <!-- Image Preview Container with Caution -->
             <div class="flex flex-col items-center gap-[8px]">
                 <div class="w-[124px] h-[124px] rounded-[14px] bg-gray-placeholder flex items-center justify-center flex-shrink-0">
-                    <img id="preview-image-program-harian-edit" src="" alt="Preview" class="w-full h-full object-cover rounded-[14px] hidden" onerror="this.style.display='none'; document.getElementById('placeholder-icon-program-harian-edit').classList.remove('hidden');">
-                    <svg class="w-12 h-12 text-white-shadow" id="placeholder-icon-program-harian-edit" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <img id="preview-image-prakata-edit" src="" alt="Preview" class="w-full h-full object-cover rounded-[14px] hidden" onerror="this.style.display='none'; document.getElementById('placeholder-icon-prakata-edit').classList.remove('hidden');">
+                    <svg class="w-12 h-12 text-white-shadow" id="placeholder-icon-prakata-edit" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <p id="caution-text-edit-program-harian" class="text-[10px] leading-[16px] text-white-shadow font-normal">Maksimal ukuran file 2MB</p>
+                <p id="caution-text-edit-prakata" class="text-[10px] leading-[16px] text-white-shadow font-normal">Maksimal ukuran file 2MB</p>
             </div>
             
             <!-- Upload and Delete Buttons -->
             <div class="flex flex-col justify-between h-[124px]">
                 <!-- Upload Button -->
-                <label for="program-harian-image-input-edit" class="cursor-pointer">
+                <label for="prakata-image-input-edit" class="cursor-pointer">
                     <?php component('button', [
                         'text' => 'Upload Gambar',
                         'variant' => '6',
@@ -43,62 +43,65 @@
                         'class' => 'pointer-events-none'
                     ]); ?>
                 </label>
-                <input type="file" id="program-harian-image-input-edit" accept="image/*" class="hidden">
+                <input type="file" id="prakata-image-input-edit" accept="image/*" class="hidden">
                 
                 <!-- Delete Button -->
-                <div id="delete-button-wrapper-program-harian-edit">
+                <div id="delete-button-wrapper-prakata-edit">
                     <?php component('button', [
                         'text' => 'Hapus Gambar',
                         'variant' => '10',
                         'type' => 'button',
-                        'id' => 'delete-image-btn-program-harian-edit'
+                        'id' => 'delete-image-btn-prakata-edit'
                     ]); ?>
                 </div>
             </div>
         </div>
         
         <!-- Form Fields -->
-        <form id="form-edit-program-harian" class="space-y-[24px]">
-            <!-- Hidden field for program ID -->
-            <input type="hidden" id="program-harian-id-edit" name="program_id">
+        <form id="form-edit-prakata" class="space-y-[24px]">
+            <!-- Hidden field for prakata ID -->
+            <input type="hidden" id="prakata-id-edit" name="prakata_id">
             
-            <!-- Nama Program -->
+            <!-- Judul Prakata -->
             <div>
-                <label for="program-harian-name-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
-                    Nama Program
+                <label for="prakata-title-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
+                    Judul Prakata Sekolah
                 </label>
                 <input 
                     type="text" 
-                    id="program-harian-name-edit" 
-                    name="program_name"
-                    placeholder="Isi nama program"
+                    id="prakata-title-edit" 
+                    name="prakata_title"
+                    placeholder="Isi judul prakata"
                     class="w-full h-[52px] px-[24px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors"
                 >
             </div>
             
             <!-- Deskripsi Program -->
             <div>
-                <label for="program-harian-description-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
+                <label for="prakata-description-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
                     Deskripsi Program
                 </label>
                 <textarea 
-                    id="program-harian-description-edit" 
-                    name="program_description"
+                    id="prakata-description-edit" 
+                    name="prakata_description"
                     placeholder="Isi deskripsi program"
                     rows="5"
+                    maxlength="600"
                     class="w-full px-[24px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors resize-none"
                 ></textarea>
+                <!-- Character Counter -->
+                <p id="char-counter" class="text-[12px] text-black-highlight mt-2">Maksimal 0/600 Karakter</p>
             </div>
             
             <!-- Action Buttons -->
-            <div class="pt-[8px] flex items-center justify-center gap-[12px]">
+            <div class="pt-[8px] flex items-center justify-center">
                 <!-- Submit Button -->
-                <div id="submit-button-wrapper-program-harian-edit">
+                <div id="submit-button-wrapper-prakata-edit">
                     <?php component('button', [
-                        'text' => 'Ubah Informasi Program',
-                        'variant' => '10',
+                        'text' => 'Ubah Prakata Sekolah',
+                        'variant' => '1',
                         'type' => 'submit',
-                        'id' => 'submit-edit-program-harian-btn'
+                        'id' => 'submit-edit-prakata-btn'
                     ]); ?>
                 </div>
             </div>
@@ -108,29 +111,34 @@
 
 <!-- Modal Script -->
 <script>
-// Function to open edit modal (will be called from activities/index.php)
-window.openEditProgramHarianModal = function(programData) {
-    const modal = document.getElementById('modal-edit-program-harian');
-    const previewImage = document.getElementById('preview-image-program-harian-edit');
-    const placeholderIcon = document.getElementById('placeholder-icon-program-harian-edit');
+// Function to open edit modal (will be called from management/index.php)
+window.openEditPrakataModal = function(prakataData) {
+    const modal = document.getElementById('modal-edit-prakata');
+    const previewImage = document.getElementById('preview-image-prakata-edit');
+    const placeholderIcon = document.getElementById('placeholder-icon-prakata-edit');
+    const charCounter = document.getElementById('char-counter');
     
     // Fill form fields
-    document.getElementById('program-harian-id-edit').value = programData.id;
-    document.getElementById('program-harian-name-edit').value = programData.name;
-    document.getElementById('program-harian-description-edit').value = programData.description;
+    document.getElementById('prakata-id-edit').value = prakataData.id;
+    document.getElementById('prakata-title-edit').value = prakataData.title;
+    document.getElementById('prakata-description-edit').value = prakataData.description;
+    
+    // Update character counter
+    const descLength = prakataData.description.length;
+    charCounter.textContent = `Maksimal ${descLength}/600 Karakter`;
     
     // Set image preview if exists
-    if (programData.image) {
-        previewImage.src = programData.image;
+    if (prakataData.image) {
+        previewImage.src = prakataData.image;
         previewImage.style.display = 'block';
         previewImage.classList.remove('hidden');
         placeholderIcon.classList.add('hidden');
         
         // Change delete button to variant 11
-        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-program-harian-edit');
+        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-prakata-edit');
         if (deleteButtonWrapper) {
             deleteButtonWrapper.innerHTML = `
-                <button type="button" id="delete-image-btn-program-harian-edit" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
+                <button type="button" id="delete-image-btn-prakata-edit" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
                     Hapus Gambar
                 </button>
             `;
@@ -138,25 +146,27 @@ window.openEditProgramHarianModal = function(programData) {
     }
     
     // Trigger form validation
-    validateEditHarianForm();
+    validateEditPrakataForm();
     
     // Show modal
     modal.classList.remove('hidden');
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('modal-edit-program-harian');
-    const closeBtn = document.getElementById('close-modal-edit-program-harian');
-    const imageInput = document.getElementById('program-harian-image-input-edit');
-    const previewImage = document.getElementById('preview-image-program-harian-edit');
-    const placeholderIcon = document.getElementById('placeholder-icon-program-harian-edit');
-    const deleteImageBtn = document.getElementById('delete-image-btn-program-harian-edit');
+    const modal = document.getElementById('modal-edit-prakata');
+    const closeBtn = document.getElementById('close-modal-edit-prakata');
+    const imageInput = document.getElementById('prakata-image-input-edit');
+    const previewImage = document.getElementById('preview-image-prakata-edit');
+    const placeholderIcon = document.getElementById('placeholder-icon-prakata-edit');
+    const deleteImageBtn = document.getElementById('delete-image-btn-prakata-edit');
+    const descriptionTextarea = document.getElementById('prakata-description-edit');
+    const charCounter = document.getElementById('char-counter');
     
     // Close modal
     if (closeBtn) {
         closeBtn.addEventListener('click', function() {
             modal.classList.add('hidden');
-            resetEditHarianForm();
+            resetEditPrakataForm();
         });
     }
     
@@ -164,15 +174,23 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.classList.add('hidden');
-            resetEditHarianForm();
+            resetEditPrakataForm();
         }
     });
+    
+    // Character counter for description
+    if (descriptionTextarea && charCounter) {
+        descriptionTextarea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            charCounter.textContent = `Maksimal ${currentLength}/600 Karakter`;
+        });
+    }
     
     // Image upload preview
     if (imageInput) {
         imageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            const cautionText = document.getElementById('caution-text-edit-program-harian');
+            const cautionText = document.getElementById('caution-text-edit-prakata');
             
             if (file) {
                 // Validate file type before preview
@@ -208,16 +226,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // Change delete button to variant 11
-                    const deleteButtonWrapper = document.getElementById('delete-button-wrapper-program-harian-edit');
+                    const deleteButtonWrapper = document.getElementById('delete-button-wrapper-prakata-edit');
                     if (deleteButtonWrapper) {
                         deleteButtonWrapper.innerHTML = `
-                            <button type="button" id="delete-image-btn-program-harian-edit" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
+                            <button type="button" id="delete-image-btn-prakata-edit" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
                                 Hapus Gambar
                             </button>
                         `;
                         
                         // Re-attach event listener
-                        const newDeleteBtn = document.getElementById('delete-image-btn-program-harian-edit');
+                        const newDeleteBtn = document.getElementById('delete-image-btn-prakata-edit');
                         if (newDeleteBtn) {
                             newDeleteBtn.addEventListener('click', deleteImage);
                         }
@@ -234,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Delete image function
     function deleteImage() {
-        const cautionText = document.getElementById('caution-text-edit-program-harian');
+        const cautionText = document.getElementById('caution-text-edit-prakata');
         imageInput.value = '';
         previewImage.src = '';
         previewImage.classList.add('hidden');
@@ -247,16 +265,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Change delete button back to variant 10
-        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-program-harian-edit');
+        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-prakata-edit');
         if (deleteButtonWrapper) {
             deleteButtonWrapper.innerHTML = `
-                <button type="button" id="delete-image-btn-program-harian-edit" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
+                <button type="button" id="delete-image-btn-prakata-edit" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
                     Hapus Gambar
                 </button>
             `;
             
             // Re-attach event listener
-            const newDeleteBtn = document.getElementById('delete-image-btn-program-harian-edit');
+            const newDeleteBtn = document.getElementById('delete-image-btn-prakata-edit');
             if (newDeleteBtn) {
                 newDeleteBtn.addEventListener('click', deleteImage);
             }
@@ -269,57 +287,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Form validation
-    function validateEditHarianForm() {
-        const programName = document.getElementById('program-harian-name-edit').value.trim();
-        const programDescription = document.getElementById('program-harian-description-edit').value.trim();
+    function validateEditPrakataForm() {
+        const prakataTitle = document.getElementById('prakata-title-edit').value.trim();
+        const prakataDescription = document.getElementById('prakata-description-edit').value.trim();
         
-        const allFilled = programName && programDescription;
-        const submitButtonWrapper = document.getElementById('submit-button-wrapper-program-harian-edit');
+        const allFilled = prakataTitle && prakataDescription;
+        const submitButtonWrapper = document.getElementById('submit-button-wrapper-prakata-edit');
         
         if (allFilled) {
-            // Change to variant 1 (primary)
+            // Change to variant 1
             submitButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-edit-program-harian-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-6 rounded-xl bg-primary text-white font-bold text-base h-[52px] hover:opacity-90 active:scale-95 cursor-pointer">
-                    Ubah Informasi Program
+                <button type="submit" id="submit-edit-prakata-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-primary text-white hover:bg-primary-dark active:scale-95 cursor-pointer">
+                    Ubah Prakata Sekolah
                 </button>
             `;
         } else {
             // Change to variant 10
             submitButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-edit-program-harian-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
-                    Ubah Informasi Program
+                <button type="submit" id="submit-edit-prakata-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
+                    Ubah Prakata Sekolah
                 </button>
             `;
         }
     }
     
-    // Make validateEditHarianForm available globally
-    window.validateEditHarianForm = validateEditHarianForm;
+    // Make validateEditPrakataForm available globally
+    window.validateEditPrakataForm = validateEditPrakataForm;
     
     // Add input listeners for form validation
-    const formInputs = ['program-harian-name-edit', 'program-harian-description-edit'];
+    const formInputs = ['prakata-title-edit', 'prakata-description-edit'];
     formInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
         if (input) {
-            input.addEventListener('input', validateEditHarianForm);
+            input.addEventListener('input', validateEditPrakataForm);
         }
     });
     
     // Form submit (Update)
-    const form = document.getElementById('form-edit-program-harian');
+    const form = document.getElementById('form-edit-prakata');
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
             // Store active tab before submit to prevent glitch on reload
-            localStorage.setItem('activeTabIndex', '2');
+            localStorage.setItem('activeManagementTabIndex', '0');
             
-            const programId = document.getElementById('program-harian-id-edit').value;
+            const prakataId = document.getElementById('prakata-id-edit').value;
             
             // Prepare form data
             const formData = new FormData();
-            formData.append('program_name', document.getElementById('program-harian-name-edit').value);
-            formData.append('description', document.getElementById('program-harian-description-edit').value);
+            formData.append('title', document.getElementById('prakata-title-edit').value);
+            formData.append('description', document.getElementById('prakata-description-edit').value);
             
             // Add image if uploaded
             if (imageInput.files[0]) {
@@ -327,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Send AJAX request
-            fetch(`/admin/activities/programs-harian/${programId}/update`, {
+            fetch(`/admin/management/prakata/update`, {
                 method: 'POST',
                 body: formData
             })
@@ -335,8 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     modal.classList.add('hidden');
-                    resetEditHarianForm();
-                    showToast('Program berhasil diubah!', 'success', 3000);
+                    resetEditPrakataForm();
+                    showToast('Prakata berhasil diubah!', 'success', 3000);
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
@@ -352,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Reset form
-    function resetEditHarianForm() {
+    function resetEditPrakataForm() {
         if (form) form.reset();
         if (imageInput) imageInput.value = '';
         if (previewImage) {
@@ -360,23 +378,24 @@ document.addEventListener('DOMContentLoaded', function() {
             previewImage.classList.add('hidden');
         }
         if (placeholderIcon) placeholderIcon.classList.remove('hidden');
+        if (charCounter) charCounter.textContent = 'Maksimal 0/600 Karakter';
         
         // Reset delete button to variant 10
-        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-program-harian-edit');
+        const deleteButtonWrapper = document.getElementById('delete-button-wrapper-prakata-edit');
         if (deleteButtonWrapper) {
             deleteButtonWrapper.innerHTML = `
-                <button type="button" id="delete-image-btn-program-harian-edit" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
+                <button type="button" id="delete-image-btn-prakata-edit" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
                     Hapus Gambar
                 </button>
             `;
         }
         
         // Reset submit button to variant 10
-        const submitButtonWrapper = document.getElementById('submit-button-wrapper-program-harian-edit');
+        const submitButtonWrapper = document.getElementById('submit-button-wrapper-prakata-edit');
         if (submitButtonWrapper) {
             submitButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-edit-program-harian-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
-                    Ubah Informasi Program
+                <button type="submit" id="submit-edit-prakata-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
+                    Ubah Prakata Sekolah
                 </button>
             `;
         }

@@ -331,6 +331,25 @@ function delete_file($path) {
 }
 
 /**
+ * Get asset URL for uploaded files
+ */
+function asset_url($path) {
+    if (empty($path)) {
+        return '';
+    }
+    // If path already starts with http:// or https://, return as is
+    if (preg_match('/^https?:\/\//', $path)) {
+        return $path;
+    }
+    // If path starts with /, return as is
+    if (substr($path, 0, 1) === '/') {
+        return $path;
+    }
+    // Otherwise, prepend /uploads/
+    return '/uploads/' . ltrim($path, '/');
+}
+
+/**
  * Get client IP
  */
 function get_client_ip() {

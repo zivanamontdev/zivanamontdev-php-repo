@@ -8,6 +8,7 @@
  * @param string $author - Author name
  * @param string $date - Article date (timestamp or date string)
  * @param string $image - Article image URL (optional)
+ * @param string $status - Article status: 'draft' or 'published' (optional)
  */
 
 $id = $id ?? 0;
@@ -16,6 +17,7 @@ $excerpt = $excerpt ?? 'Article description goes here...';
 $author = $author ?? 'Author Name';
 $date = $date ?? date('Y-m-d H:i:s');
 $image = $image ?? '';
+$status = $status ?? 'published';
 
 // Format date to "Kamis, 27 November 2025"
 $timestamp = is_numeric($date) ? $date : strtotime($date);
@@ -28,22 +30,27 @@ $year = date('Y', $timestamp);
 $formattedDate = "$dayName, $day $monthName $year";
 ?>
 
-<div class="flex items-start justify-between py-3">
+<div class="flex items-start gap-3 py-3">
     <!-- Left Content -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 min-w-0 flex flex-col">
         <!-- Title -->
-        <h4 class="font-bold text-[14px] leading-[100%] text-text-dark mb-2"><?= e($title) ?></h4>
+        <h4 class="font-bold text-[14px] leading-[100%] text-text-dark mb-2 truncate"><?= e($title) ?></h4>
         
         <!-- Description -->
-        <p class="font-normal text-[12px] leading-[100%] text-black-highlight mb-[20px] overflow-hidden text-ellipsis whitespace-nowrap" style="word-spacing: 1px; max-width: calc(100% - 52px);"><?= e($excerpt) ?></p>
+        <p class="font-normal text-[12px] leading-[100%] text-black-highlight mb-[20px] overflow-hidden text-ellipsis whitespace-nowrap" style="word-spacing: 1px;"><?= e($excerpt) ?></p>
         
         <!-- Author and Date Container -->
-        <div class="flex items-center justify-between">
-            <!-- Author and Date -->
-            <div class="flex items-center gap-2 text-black-highlight font-normal text-[12px] leading-[100%]">
-                <span><?= e($author) ?></span>
+        <div class="flex items-center justify-between gap-2">
+            <!-- Author, Date, and Status Badge -->
+            <div class="flex items-center gap-2 text-black-highlight font-normal text-[12px] leading-[100%] flex-wrap">
+                <span class="whitespace-nowrap"><?= e($author) ?></span>
                 <span>•</span>
-                <span><?= e($formattedDate) ?></span>
+                <span class="whitespace-nowrap"><?= e($formattedDate) ?></span>
+                <?php if ($status === 'draft'): ?>
+                    <span class="px-2 py-1 bg-gray-200 text-gray-700 rounded-md text-[10px] font-semibold uppercase whitespace-nowrap">Draft</span>
+                <?php else: ?>
+                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-[10px] font-semibold uppercase whitespace-nowrap">Published</span>
+                <?php endif; ?>
             </div>
             
             <!-- Edit Button -->
@@ -52,10 +59,8 @@ $formattedDate = "$dayName, $day $monthName $year";
                     'variant' => '9',
                     'icon' => 'edit',
                     'type' => 'button',
-                    'id' => 'btn-edit-article-' . $id,
-                    'class' => 'w-8 h-8 p-2',
                     'attrs' => [
-                        'data-article-id' => $id
+                        'onclick' => 'window.location.href="' . url('/admin/articles/' . $id . '/edit') . '"'
                     ]
                 ]); ?>
             </div>
@@ -63,14 +68,14 @@ $formattedDate = "$dayName, $day $monthName $year";
     </div>
     
     <!-- Right Image Container -->
-    <div class="w-[111px] h-[87px] ml-3 flex-shrink-0">
+    <div class="w-[111px] h-[87px] flex-shrink-0">
         <div class="w-full h-full rounded-lg bg-gray-placeholder relative overflow-hidden">
             <?php if ($image): ?>
                 <img 
-                    src="<?= e($image) ?>" 
+                    src="<?= e(asset_url($image)) ?>" 
                     alt="<?= e($title) ?>" 
                     class="w-full h-full object-cover"
-                    onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+                    onerror="this.style.display='none'; this.parentElement.querySelector('svg').classList.remove('hidden');"
                 >
                 <svg class="hidden absolute inset-0 w-8 h-8 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>

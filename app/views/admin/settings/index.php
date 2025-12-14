@@ -1,0 +1,126 @@
+<?php
+/**
+ * Settings Page
+ * Page for managing school settings
+ */
+
+$pageTitle = 'Pengaturan';
+$currentPage = 'settings';
+
+// Start output buffering
+ob_start();
+?>
+
+<!-- Admin Navbar -->
+<?php component('admin-navbar', ['title' => 'Pengaturan']); ?>
+
+<!-- Tabs -->
+<?php component('tabs', [
+    'tabs' => [
+        'Pendaftaran',
+        'Highlight Program',
+        'Testimoni',
+        'Events',
+        'FAQ'
+    ],
+    'active' => 0
+]); ?>
+
+<!-- Tab Content Panels -->
+<div class="mt-3">
+    <!-- Tab 1: Pendaftaran -->
+    <div id="tab-panel-0" class="tab-panel">
+        <?php require VIEW_PATH . '/components/widget/setting/setting-register-tab-v2.php'; ?>
+    </div>
+    
+    <!-- Tab 2: Highlight Program -->
+    <div id="tab-panel-1" class="tab-panel hidden">
+        <?php component('widget/setting/highlight-program-sekolah-tab'); ?>
+    </div>
+    
+    <!-- Tab 3: Testimoni -->
+    <div id="tab-panel-2" class="tab-panel hidden">
+        <?php component('widget/setting/highlight-testimoni-tab'); ?>
+    </div>
+    
+    <!-- Tab 4: Events -->
+    <div id="tab-panel-3" class="tab-panel hidden">
+        <?php component('tab-content-card', [
+            'title' => 'Kalender Events',
+            'description' => 'Daftar event yang akan datang ditampilkan di halaman utama website',
+            'buttonText' => 'Tambah Event',
+            'buttonId' => 'btn-add-event'
+        ]); ?>
+    </div>
+    
+    <!-- Tab 5: FAQ -->
+    <div id="tab-panel-4" class="tab-panel hidden">
+        <?php component('tab-content-card', [
+            'title' => 'Frequently Asked Questions',
+            'description' => 'Atur pertanyaan dan jawaban FAQ yang ditampilkan di website utama',
+            'buttonText' => 'Tambah FAQ',
+            'buttonId' => 'btn-add-faq'
+        ]); ?>
+    </div>
+</div>
+
+<!-- Tab Switching Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('[data-tab-index]');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    
+    // Get color values from component
+    const selectedBg = '<?= colors("white_neutral") ?>';
+    const selectedShadow = '0px 2px 5.5px 0px rgba(0,0,0,0.07)';
+    
+    // Restore active tab from localStorage
+    const activeTabIndex = localStorage.getItem('activeSettingsTabIndex') || '0';
+    
+    // Function to update tab button styles
+    function updateTabButtons(activeIndex) {
+        tabButtons.forEach(button => {
+            if (button.dataset.tabIndex === activeIndex) {
+                button.style.background = selectedBg;
+                button.style.boxShadow = selectedShadow;
+            } else {
+                button.style.background = 'transparent';
+                button.style.boxShadow = 'none';
+            }
+        });
+    }
+    
+    // Function to show active tab panel
+    function showActiveTab(index) {
+        tabPanels.forEach(panel => {
+            panel.classList.add('hidden');
+        });
+        const activePanel = document.getElementById('tab-panel-' + index);
+        if (activePanel) {
+            activePanel.classList.remove('hidden');
+        }
+    }
+    
+    // Initialize - show active tab from localStorage
+    showActiveTab(activeTabIndex);
+    updateTabButtons(activeTabIndex);
+    
+    // Add click event listeners
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.dataset.tabIndex;
+            
+            // Store active tab in localStorage
+            localStorage.setItem('activeSettingsTabIndex', index);
+            
+            // Update UI
+            updateTabButtons(index);
+            showActiveTab(index);
+        });
+    });
+});
+</script>
+
+<?php
+$content = ob_get_clean();
+require VIEW_PATH . '/layouts/admin.php';

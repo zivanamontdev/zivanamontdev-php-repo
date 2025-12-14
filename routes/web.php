@@ -53,23 +53,65 @@ $router->post('/admin/employees/{id}/update', [EmployeeController::class, 'updat
 $router->post('/admin/employees/{id}/delete', [EmployeeController::class, 'delete']);
 
 // Admin management
+$router->get('/admin/management', [ManagementController::class, 'index']);
+
+// Admin settings
+$router->get('/admin/settings', [SettingsController::class, 'index']);
+$router->post('/admin/settings/registration/save', [SettingsController::class, 'saveRegistrationSettings']);
+$router->get('/admin/settings/fields/get', [SettingsController::class, 'getFields']);
+$router->post('/admin/settings/fields/create', [SettingsController::class, 'createField']);
+$router->post('/admin/settings/fields/update', [SettingsController::class, 'updateField']);
+$router->post('/admin/settings/fields/delete', [SettingsController::class, 'deleteField']);
+$router->post('/admin/settings/fields/update-order', [SettingsController::class, 'updateFieldOrder']);
+
+// Prakata routes
+$router->get('/admin/management/prakata/get', [ManagementController::class, 'getPrakata']);
+$router->post('/admin/management/prakata/update', [ManagementController::class, 'updatePrakata']);
+
+// Kepala Sekolah routes
+$router->get('/admin/management/kepala-sekolah/get', [ManagementController::class, 'getKepalaSekolah']);
+$router->post('/admin/management/kepala-sekolah/update', [ManagementController::class, 'updateKepalaSekolah']);
+
+// Karyawan routes
+$router->get('/admin/management/karyawan/{id}/get', [ManagementController::class, 'getKaryawan']);
+$router->post('/admin/management/karyawan/create', [ManagementController::class, 'createKaryawan']);
+$router->post('/admin/management/karyawan/{id}/update', [ManagementController::class, 'updateKaryawan']);
+$router->post('/admin/management/karyawan/{id}/delete', [ManagementController::class, 'deleteKaryawan']);
+
+// Schedule routes
 $router->get('/admin/management/schedules', [ManagementController::class, 'schedules']);
 $router->post('/admin/management/schedules/create', [ManagementController::class, 'createSchedule']);
 $router->post('/admin/management/schedules/{id}/update', [ManagementController::class, 'updateSchedule']);
 $router->post('/admin/management/schedules/{id}/delete', [ManagementController::class, 'deleteSchedule']);
 
+// Award routes
 $router->get('/admin/management/awards', [ManagementController::class, 'awards']);
 $router->post('/admin/management/awards/create', [ManagementController::class, 'createAward']);
 $router->post('/admin/management/awards/{id}/update', [ManagementController::class, 'updateAward']);
 $router->post('/admin/management/awards/{id}/delete', [ManagementController::class, 'deleteAward']);
 
+// Social media routes
 $router->get('/admin/management/social-media', [ManagementController::class, 'socialMedia']);
 $router->post('/admin/management/social-media/create', [ManagementController::class, 'createSocialMedia']);
 $router->post('/admin/management/social-media/{id}/update', [ManagementController::class, 'updateSocialMedia']);
 $router->post('/admin/management/social-media/{id}/delete', [ManagementController::class, 'deleteSocialMedia']);
 
+// Settings routes
 $router->get('/admin/management/settings', [ManagementController::class, 'settings']);
 $router->post('/admin/management/settings/update', [ManagementController::class, 'updateSettings']);
+
+// Fasilitas routes
+$router->get('/admin/management/fasilitas/{id}/get', [ManagementController::class, 'getFasilitas']);
+$router->post('/admin/management/fasilitas/create', [ManagementController::class, 'createFasilitas']);
+$router->post('/admin/management/fasilitas/{id}/update', [ManagementController::class, 'updateFasilitas']);
+$router->post('/admin/management/fasilitas/{id}/delete', [ManagementController::class, 'deleteFasilitas']);
+$router->get('/admin/management/fasilitas/{id}/gallery', [ManagementController::class, 'getGalleryImages']);
+$router->post('/admin/management/fasilitas/{id}/gallery/store', [ManagementController::class, 'storeGalleryImage']);
+$router->post('/admin/management/fasilitas/{id}/gallery/{imageId}/update', [ManagementController::class, 'updateGalleryImage']);
+$router->post('/admin/management/fasilitas/{id}/gallery/{imageId}/delete', [ManagementController::class, 'deleteGalleryImage']);
+$router->post('/admin/management/fasilitas/{id}/gallery/upload', [ManagementController::class, 'uploadGalleryImages']);
+$router->post('/admin/management/fasilitas/{id}/update-fasilitas-image', [ManagementController::class, 'updateFasilitasImage']);
+$router->post('/admin/management/fasilitas/{id}/delete-fasilitas-image', [ManagementController::class, 'deleteFasilitasImage']);
 
 // Admin registrations
 $router->get('/admin/registrations', [RegistrationController::class, 'index']);

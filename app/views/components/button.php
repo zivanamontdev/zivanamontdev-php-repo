@@ -10,6 +10,7 @@ $disabled = $disabled ?? false;
 $attrs = $attrs ?? [];
 $icon = $icon ?? 'edit'; // default icon for variant 9
 $iconPosition = $iconPosition ?? 'left'; // left or right
+$customPadding = $customPadding ?? null; // custom padding override
 
 // Base styles (shared)
 $baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200';
@@ -18,11 +19,12 @@ $baseStyles = 'inline-flex items-center justify-center font-bold transition-all 
 $variants = [
     // Variant 1: Large primary button
     '1' => [
-        'padding' => 'py-3 px-6',           // 12px top/bottom, 24px left/right
+        'padding' => 'py-[12px] px-6',       // 12px top/bottom, 24px left/right
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-primary',                // #C92C2F
         'text' => 'text-white',              // #FFFFFF
         'font' => 'font-bold text-base',     // 700, 16px
+        'height' => 'h-[52px]',              // 52px fixed height
         'hover' => 'hover:opacity-90 active:scale-95',
     ],
     
@@ -92,14 +94,14 @@ $variants = [
         'hover' => 'hover:bg-white-secondary',
     ],
     
-    // Variant 8: Add button with plus icon
+    // Variant 8: Add button with icon (text first, then icon)
     '8' => [
         'padding' => 'py-[10px] px-[12px]',  // 10px top/bottom, 12px left/right
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-white-secondary',        // white_secondary
         'text' => 'text-black-highlight',    // black_highlight
         'font' => 'font-normal text-[12px] leading-[100%]', // 400, 12px, line-height 100%
-        'icon' => 'plus',
+        'icon' => 'right',                   // icon on right side (customizable)
         'gap' => 'gap-2',                    // 8px gap
         'hover' => 'hover:opacity-80 active:scale-95',
     ],
@@ -174,6 +176,61 @@ $variants = [
         'border' => 'border border-border-light', // 1px border with border_light
         'hover' => 'hover:bg-white-secondary active:scale-95',
     ],
+    
+    // Variant 15: Primary button with smaller text (12px)
+    '15' => [
+        'padding' => 'p-3',                  // 8px all around
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-primary',                // #C92C2F
+        'text' => 'text-white',              // #FFFFFF
+        'font' => 'font-bold text-[12px]',   // 700, 12px
+        'hover' => 'hover:opacity-90 active:scale-95',
+    ],
+    
+    // Variant 16: Outline button with custom red color
+    '16' => [
+        'padding' => 'p-[10px]',             // 10px all around
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-transparent',            // no background
+        'text' => 'text-[#CD565A]',          // #CD565A custom red
+        'font' => 'font-normal text-[12px]', // 400, 12px
+        'border' => 'border border-border-light', // 1px border with border_light
+        'hover' => 'hover:bg-white-secondary active:scale-95',
+    ],
+    
+    // Variant 17: Text button without icon (variant 13 style without icon)
+    '17' => [
+        'padding' => 'py-[12px] px-3',       // 12px top/bottom, 12px left/right
+        'radius' => 'rounded-xl',            // 12px for hover background
+        'bg' => 'bg-transparent',            // transparent
+        'text' => 'text-primary',            // #C92C2F
+        'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
+        'border' => 'border border-border-light', // 1px border with border_light
+        'hover' => 'hover:bg-white-secondary',
+    ],
+    
+    // Variant 18: Outline button with outline_red color
+    '18' => [
+        'padding' => 'p-3',                  // 8px all around
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-transparent',            // no background
+        'text' => 'text-[#CD565A]',          // #CD565A (outline_red)
+        'font' => 'font-normal text-[12px]', // 400, 12px
+        'border' => 'border border-border-light', // 1px border with border_light
+        'hover' => 'hover:bg-white-secondary active:scale-95',
+    ],
+    
+    // Variant 19: WhatsApp test button (full width, outline)
+    '19' => [
+        'padding' => 'py-3 px-6',            // 12px top/bottom, 24px left/right
+        'radius' => 'rounded-xl',            // 12px
+        'bg' => 'bg-transparent',            // no background
+        'text' => 'text-black-neutral',      // black_neutral
+        'font' => 'font-bold text-base',     // 700, 16px
+        'border' => 'border border-white-soft', // 1px border with white_soft
+        'fullWidth' => 'center',             // full width with center alignment
+        'hover' => 'hover:bg-white-secondary active:scale-95',
+    ],
 ];
 
 // Get variant config
@@ -187,7 +244,7 @@ if ($variant === '10') {
 // Build classes
 $classes = implode(' ', array_filter([
     $baseStyles,
-    $config['padding'],
+    $customPadding ?? $config['padding'], // use custom padding if provided
     $config['radius'],
     $config['bg'],
     $config['text'],
@@ -197,7 +254,8 @@ $classes = implode(' ', array_filter([
     $config['border'] ?? null,
     $config['height'] ?? null,
     $config['hover'] ?? '',
-    isset($config['fullWidth']) && $config['fullWidth'] ? 'w-full justify-between' : '',
+    isset($config['fullWidth']) && $config['fullWidth'] === true ? 'w-full justify-between' : '',
+    isset($config['fullWidth']) && $config['fullWidth'] === 'center' ? 'w-full' : '',
     $class,
     $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
 ]));
@@ -251,15 +309,15 @@ if ($href): ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
                 <?= $arrowLeftIcon ?>
             <?php endif; ?>
-            <?php if (isset($config['icon']) && $config['icon'] === 'plus'): ?>
-                <?= $plusIcon ?>
-            <?php endif; ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'left'): ?>
                 <?= $selectedIcon ?>
             <?php endif; ?>
             <?= e($text) ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>
                 <?= $chevronRightIcon ?>
+            <?php endif; ?>
+            <?php if (isset($config['icon']) && $config['icon'] === 'right'): ?>
+                <?= $selectedIcon ?>
             <?php endif; ?>
         <?php endif; ?>
     </a>
@@ -271,15 +329,15 @@ if ($href): ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'arrow_left'): ?>
                 <?= $arrowLeftIcon ?>
             <?php endif; ?>
-            <?php if (isset($config['icon']) && $config['icon'] === 'plus'): ?>
-                <?= $plusIcon ?>
-            <?php endif; ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'left'): ?>
                 <?= $selectedIcon ?>
             <?php endif; ?>
             <?= e($text) ?>
             <?php if (isset($config['icon']) && $config['icon'] === 'chevron_right'): ?>
                 <?= $chevronRightIcon ?>
+            <?php endif; ?>
+            <?php if (isset($config['icon']) && $config['icon'] === 'right'): ?>
+                <?= $selectedIcon ?>
             <?php endif; ?>
         <?php endif; ?>
     </button>

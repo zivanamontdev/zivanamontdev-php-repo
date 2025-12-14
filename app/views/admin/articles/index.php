@@ -13,57 +13,6 @@ ob_start();
 // Get articles data from controller
 $articles = $articles ?? [];
 $pagination = $pagination ?? null;
-
-// Dummy data for testing
-if (empty($articles)) {
-    $articles = [
-        [
-            'id' => 1,
-            'title' => 'Kegiatan Pembelajaran Outdoor di Taman Kota',
-            'excerpt' => 'Siswa-siswi TK Zivana Mont mengikuti kegiatan pembelajaran outdoor yang menyenangkan di Taman Kota. Mereka belajar mengenal berbagai jenis tanaman dan hewan.',
-            'content' => 'Siswa-siswi TK Zivana Mont mengikuti kegiatan pembelajaran outdoor yang menyenangkan di Taman Kota. Mereka belajar mengenal berbagai jenis tanaman dan hewan.',
-            'author_name' => 'Bu Siti Aminah',
-            'created_at' => '2025-11-27 10:30:00',
-            'featured_image' => '/images/activity_logo.png'
-        ],
-        [
-            'id' => 2,
-            'title' => 'Peringatan Hari Kartini di TK Zivana Mont',
-            'excerpt' => 'Para siswa dan guru merayakan Hari Kartini dengan mengenakan pakaian adat dari berbagai daerah di Indonesia. Acara ini bertujuan untuk mengenalkan keberagaman budaya.',
-            'content' => 'Para siswa dan guru merayakan Hari Kartini dengan mengenakan pakaian adat dari berbagai daerah di Indonesia. Acara ini bertujuan untuk mengenalkan keberagaman budaya.',
-            'author_name' => 'Bu Rina Kusuma',
-            'created_at' => '2025-11-25 14:15:00',
-            'featured_image' => ''
-        ],
-        [
-            'id' => 3,
-            'title' => 'Workshop Parenting: Mendidik Anak di Era Digital',
-            'excerpt' => 'TK Zivana Mont mengadakan workshop parenting dengan tema "Mendidik Anak di Era Digital". Acara ini dihadiri oleh puluhan orang tua siswa.',
-            'content' => 'TK Zivana Mont mengadakan workshop parenting dengan tema "Mendidik Anak di Era Digital". Acara ini dihadiri oleh puluhan orang tua siswa.',
-            'author_name' => 'Pak Ahmad Wijaya',
-            'created_at' => '2025-11-20 09:00:00',
-            'featured_image' => '/images/activity_logo.png'
-        ],
-        [
-            'id' => 4,
-            'title' => 'Pentas Seni Akhir Semester Ganjil 2025',
-            'excerpt' => 'Siswa-siswi menampilkan berbagai pertunjukan seni seperti menyanyi, menari, dan drama. Para orang tua sangat antusias menyaksikan penampilan anak-anak mereka.',
-            'content' => 'Siswa-siswi menampilkan berbagai pertunjukan seni seperti menyanyi, menari, dan drama. Para orang tua sangat antusias menyaksikan penampilan anak-anak mereka.',
-            'author_name' => 'Bu Dewi Sartika',
-            'created_at' => '2025-11-18 13:30:00',
-            'featured_image' => ''
-        ],
-        [
-            'id' => 5,
-            'title' => 'Kunjungan Edukatif ke Museum Nasional',
-            'excerpt' => 'Dalam rangka mengenalkan sejarah dan budaya Indonesia, siswa-siswi kelas besar mengunjungi Museum Nasional Jakarta untuk belajar tentang berbagai koleksi bersejarah.',
-            'content' => 'Dalam rangka mengenalkan sejarah dan budaya Indonesia, siswa-siswi kelas besar mengunjungi Museum Nasional Jakarta untuk belajar tentang berbagai koleksi bersejarah.',
-            'author_name' => 'Pak Budi Santoso',
-            'created_at' => '2025-11-15 08:45:00',
-            'featured_image' => '/images/activity_logo.png'
-        ]
-    ];
-}
 ?>
 
 <!-- Admin Navbar -->
@@ -104,7 +53,8 @@ if (empty($articles)) {
                         'excerpt' => $article['excerpt'] ?? substr(strip_tags($article['content']), 0, 150),
                         'author' => $article['author_name'],
                         'date' => $article['created_at'],
-                        'image' => $article['featured_image'] ?? ''
+                        'image' => $article['featured_image'] ?? '',
+                        'status' => $article['status'] ?? 'published'
                     ]); ?>
                 <?php endforeach; ?>
             <?php else: ?>

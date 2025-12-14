@@ -17,6 +17,7 @@ return [
     // Black Shades
     'black_neutral'      => '#111015',
     'black_soft'         => '#151419',
+    'black_soft_2'       => '#151419',
     'black_highlight'    => '#49484E',
     'black_soft_highlight' => '#2F2E34',
     
@@ -27,6 +28,7 @@ return [
     'white_shadow'       => '#6B6B6B',
     'white_dim'          => '#B3B3B3',
     'white_pure'         => '#FFFFFF',
+    'wa_bubble'          => '#E1FFDB',
     
     // Text Colors
     'text_dark'          => '#171717',
@@ -38,10 +40,12 @@ return [
     'color_neutral'      => '#888888',
     'border_light'       => '#E0E0E0',
     'border_soft'        => '#E1E1E1',
+    'card_bg_light'      => '#F4F4F4',
     
     // Status Colors
     'success'            => '#3EC441',
     'danger'             => '#C43E41',
+    'outline_red'        => '#CD565A',
     
     // Accent Colors
     'brown_dark'         => '#59360F',

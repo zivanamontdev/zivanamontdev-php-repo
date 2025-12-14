@@ -290,9 +290,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitButtonWrapper = document.getElementById('submit-button-wrapper-program-tahun-edit');
         
         if (allFilled) {
-            // Change to variant 12
+            // Change to variant 1 (primary)
             submitButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-edit-program-tahun-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-secondary text-white font-bold text-base hover:opacity-90 active:scale-95 cursor-pointer">
+                <button type="submit" id="submit-edit-program-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-6 rounded-xl bg-primary text-white font-bold text-base h-[52px] hover:opacity-90 active:scale-95 cursor-pointer">
                     Ubah Informasi Program
                 </button>
             `;
