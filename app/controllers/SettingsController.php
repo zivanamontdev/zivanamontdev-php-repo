@@ -722,7 +722,41 @@ class SettingsController extends Controller {
             $result = $this->emailSettingModel->updateConfig($data);
             
             if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Konfigurasi email berhasil disimpan']);
+                // Check if test email should be sent
+                $testEmail = $this->input('test_email');
+                $message = 'Konfigurasi email berhasil disimpan';
+                
+                if (!empty($testEmail) && filter_var($testEmail, FILTER_VALIDATE_EMAIL) && $isEnabled) {
+                    // Send test email automatically
+                    $subject = 'Test Email - ' . APP_NAME;
+                    $emailMessage = "
+                    <html>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6;'>
+                        <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
+                            <h2 style='color: #C92C2F;'>✅ Email SMTP Berhasil Dikonfigurasi!</h2>
+                            <p>Selamat! Sistem email SMTP Anda sudah berfungsi dengan baik.</p>
+                            <p><strong>Waktu pengiriman:</strong> " . date('Y-m-d H:i:s') . "</p>
+                            <p>Ini adalah email test otomatis yang dikirim setelah konfigurasi SMTP berhasil disimpan.</p>
+                            <hr style='border: 1px solid #eee; margin: 20px 0;'>
+                            <p style='color: #666; font-size: 12px;'>
+                                Email ini dikirim dari sistem " . APP_NAME . " menggunakan Gmail SMTP ({$username})
+                            </p>
+                        </div>
+                    </body>
+                    </html>
+                    ";
+                    
+                    require_once ROOT_PATH . '/app/helpers/email.php';
+                    $emailSent = send_email($testEmail, $subject, $emailMessage);
+                    
+                    if ($emailSent) {
+                        $message = 'Konfigurasi email berhasil disimpan dan test email telah dikirim ke ' . $testEmail;
+                    } else {
+                        $message = 'Konfigurasi email berhasil disimpan tetapi test email gagal dikirim';
+                    }
+                }
+                
+                echo json_encode(['success' => true, 'message' => $message]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Gagal menyimpan konfigurasi email']);
             }

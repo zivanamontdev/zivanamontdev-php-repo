@@ -223,20 +223,18 @@ ob_start();
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="test_email">Test Email (opsional)</label>
+                <label class="form-label" for="test_email">Test Email</label>
                 <input type="email" 
                        class="form-control" 
                        id="test_email" 
                        name="test_email" 
-                       placeholder="Masukkan email untuk test">
-                <span class="form-help">Kirim email test setelah menyimpan konfigurasi</span>
+                       placeholder="contoh: admin@example.com"
+                       value="">
+                <span class="form-help">💡 Jika diisi, test email akan otomatis dikirim setelah menyimpan konfigurasi</span>
             </div>
 
             <div style="display: flex; gap: 12px;">
-                <button type="submit" class="btn btn-primary">💾 Simpan & Test Koneksi</button>
-                <button type="button" id="sendTestEmail" class="btn btn-secondary" style="display: none;">
-                    📧 Kirim Test Email
-                </button>
+                <button type="submit" class="btn btn-primary">💾 Simpan & Kirim Test Email</button>
             </div>
         </form>
     </div>
@@ -248,14 +246,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendTestBtn = document.getElementById('sendTestEmail');
     
     form.addEventListener('submit', async function(e) {
+    
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
+        const testEmail = document.getElementById('test_email').value;
         
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '⏳ Menyimpan & Testing...';
+        submitBtn.innerHTML = testEmail ? '⏳ Menyimpan & Mengirim...' : '⏳ Menyimpan...';
         
         try {
             const response = await fetch('<?= url('/admin/settings/email/update') ?>', {
@@ -267,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (result.success) {
                 showToast('success', result.message);
-                sendTestBtn.style.display = 'inline-block';
             } else {
                 showToast('error', result.message);
             }
@@ -276,42 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
-        }
-    });
-    
-    sendTestBtn.addEventListener('click', async function() {
-        const testEmail = document.getElementById('test_email').value;
-        
-        if (!testEmail) {
-            showToast('error', 'Masukkan email untuk test terlebih dahulu');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('test_email', testEmail);
-        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
-        
-        sendTestBtn.disabled = true;
-        sendTestBtn.innerHTML = '📨 Mengirim...';
-        
-        try {
-            const response = await fetch('<?= url('/admin/settings/email/test') ?>', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                showToast('success', result.message);
-            } else {
-                showToast('error', result.message);
-            }
-        } catch (error) {
-            showToast('error', 'Terjadi kesalahan: ' + error.message);
-        } finally {
-            sendTestBtn.disabled = false;
-            sendTestBtn.innerHTML = '📧 Kirim Test Email';
         }
     });
     
@@ -328,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 10000;
             animation: slideIn 0.3s ease-out;
+            max-width: 500px;
         `;
         toast.textContent = message;
         document.body.appendChild(toast);
@@ -335,10 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             toast.style.animation = 'slideOut 0.3s ease-out';
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-});
-</script>
+        }, 5
 
 <style>
 @keyframes slideIn {
