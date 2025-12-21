@@ -14,6 +14,7 @@ define('CONFIG_PATH', ROOT_PATH . '/config');
 define('PUBLIC_PATH', ROOT_PATH . '/public');
 define('UPLOAD_PATH', PUBLIC_PATH . '/uploads');
 define('VIEW_PATH', APP_PATH . '/views');
+define('STORAGE_PATH', ROOT_PATH . '/storage');
 
 // Load configuration
 require_once CONFIG_PATH . '/config.php';
@@ -38,6 +39,7 @@ spl_autoload_register(function ($class) {
 
 // Load helpers
 require_once APP_PATH . '/helpers/functions.php';
+require_once APP_PATH . '/helpers/geoip.php';
 
 // Initialize router
 $router = new Router();
