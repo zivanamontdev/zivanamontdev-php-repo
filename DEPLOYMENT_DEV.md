@@ -11,6 +11,18 @@
 - **Username**: u189792424_zivana
 - **Password**: Zivana04112025$
 
+## ✨ Auto-Configuration Feature
+
+Aplikasi sekarang **automatically detects production environment** berdasarkan domain!
+
+Ketika aplikasi diakses melalui domain `sekolahzivanamontessori.sch.id`, sistem akan otomatis:
+- ✅ Menggunakan database production credentials
+- ✅ Set environment ke production
+- ✅ Disable debug mode
+- ✅ Load production settings
+
+**Tidak perlu setup .env manual!** Tapi tetap bisa menggunakan `.env` file jika ingin override settings.
+
 ## Deployment Steps
 
 ### 1. Push ke Git Repository
@@ -20,28 +32,38 @@ git commit -m "Update configuration for development deployment"
 git push origin development
 ```
 
-### 2. Setup di Hostinger
+### 2. Setup di Hostinger (via cPanel)
 
-#### A. Pull Repository di Hostinger
-1. Login ke SSH atau File Manager Hostinger
-2. Navigate ke folder deployment:
-   ```bash
-   cd /home/u189792424/domains/sekolahzivanamontessori.sch.id/public_html/dev
-   ```
-3. Pull latest changes:
-   ```bash
-   git pull origin development
-   ```
-   
-**Catatan**: Folder `vendor/` sekarang sudah included di repository, jadi tidak perlu install dependencies lagi.
+#### A. Pull Repository
+**Via Git Version Control (Recommended):**
+1. Login ke cPanel Hostinger
+2. Cari menu **Git Version Control**
+3. Locate repository di `public_html/dev`
+4. Klik **Manage**
+5. Klik **Pull or Deploy**
+6. Klik **Update from Remote**
+7. Done! ✅
 
-#### B. Setup Environment Configuration
-1. Copy `.env.production` menjadi `.env` di server:
-   ```bash
-   cp .env.production .env
-   ```
-   
-   Atau manual edit `.env` dengan konfigurasi:
+**Via File Manager (Alternative):**
+1. Login ke cPanel
+2. Buka **File Manager**
+3. Navigate ke `/home/u189792424/domains/sekolahzivanamontessori.sch.id/public_html/dev`
+4. Upload files yang diupdate dari local
+5. Replace files yang sudah ada
+
+#### B. Setup Environment Configuration (Optional)
+
+File `.env` bersifat **OPSIONAL** karena aplikasi sudah auto-detect production environment.
+
+Namun, jika Anda ingin menggunakan file `.env`:
+
+**Via File Manager:**
+1. Navigate ke folder `dev`
+2. Klik kanan file `.env.production`
+3. Pilih **Copy**
+4. Rename hasil copy menjadi `.env`
+
+**Isi file `.env` (jika dibuat manual):**
    ```env
    DB_HOST=localhost
    DB_PORT=3306
@@ -55,80 +77,73 @@ git push origin development
    APP_DEBUG=false
    ```
 
-#### C. Setup Permissions
-```bash
-# Set permissions untuk folder uploads dan cache
-chmod -R 755 public/uploads
-chmod -R 755 storage/cache
-chmod -R 755 storage/logs
+#### C. Setup Permissions (via File Manager)
 
-# Pastikan folder ini ada
-mkdir -p public/uploads
-mkdir -p storage/cache
-mkdir -p storage/logs
-```
+**Set folder permissions ke 755:**
+1. Klik kanan folder `public/uploads` → **Change Permissions** → **755**
+2. Klik kanan folder `storage` → **Change Permissions** → **755**
 
-#### D. Database Migration
-Jika perlu run migration:
+**Create folders jika belum ada:**
+- `public/uploads`
+- `storage/cache`
+- `storage/logs`
+
+#### D. Database Migration (if needed)
+Jika perlu run migration via cPanel Terminal atau PHP Cron:
 ```bash
 php scripts/migrate.php
 ```
 
 ### 3. Verifikasi Deployment
 1. Buka browser: https://dev.sekolahzivanamontessori.sch.id/
-2. Cek apakah website load dengan benar
+2. Website should load correctly with auto-configured production settings
 3. Test login admin
 4. Test form registrasi
-5. Cek error logs jika ada masalah:
-   ```bash
-   tail -f storage/logs/error.log
-   ```
+5. Check error logs via File Manager jika ada masalah: `storage/logs/error.log`
 
 ## Troubleshooting
 
 ### Error: Database Connection Failed
-**Solusi**: 
-1. Pastikan kredensial database benar di `.env`
-2. Cek apakah database sudah dibuat
-3. Test koneksi database manual:
-   ```bash
-   php scripts/check-db.php
-   ```
+**Solusi via cPanel:** 
+1. Pastikan database `u189792424_zivana_dev` sudah dibuat di **MySQL Databases**
+2. Pastikan user `u189792424_zivana` punya akses penuh ke database
+3. Import database structure via **phpMyAdmin**
+4. Aplikasi akan auto-detect credentials jika diakses via domain production
 
 ### Error: Permission Denied
-**Solusi**:
-```bash
-chmod -R 755 public/uploads
-chmod -R 755 storage
-```
+**Solusi via File Manager:**
+1. Klik kanan folder `public/uploads` → Change Permissions → **755**
+2. Klik kanan folder `storage` → Change Permissions → **755**
 
 ### Website Blank/White Screen
-**Solusi**:
-1. Enable error reporting sementara di `.env`:
-   ```env
-   APP_DEBUG=true
-   ```
-2. Cek error log:
-   ```bash
-   tail -f storage/logs/error.log
-   ```
-3. Cek PHP error log di cPanel
+**Solusi:**
+1. Check apakah ada file `.env` dengan config yang salah - **hapus saja** biar pakai auto-detection
+2. Check error log via File Manager: `storage/logs/error.log`
+3. Enable debug sementara: edit `config/config.php`, set `APP_DEBUG` ke `true`
+
+### Still Using Wrong Database (root@localhost)
+**Solusi:**
+1. **Hapus file `.env`** jika ada - biar aplikasi pakai auto-detection
+2. Atau pastikan file `.env` punya config yang benar (copy dari `.env.production`)
+3. Clear browser cache
+4. Refresh website
 
 ## Important Notes
 
-1. **Vendor Folder**: Folder `vendor/` sekarang sudah included di repository untuk memudahkan deployment.
+1. **Auto-Configuration**: Aplikasi otomatis detect production environment berdasarkan domain. File `.env` opsional.
 
-2. **Environment File**: File `.env` tidak di-push ke git untuk keamanan. Gunakan `.env.production` sebagai template.
+2. **Vendor Folder**: Folder `vendor/` sudah included di repository untuk memudahkan deployment.
 
-3. **Public Path**: Pastikan web server point ke folder `/public` sebagai document root, atau setup `.htaccess` dengan benar.
+3. **Environment File**: File `.env` tidak di-push ke git untuk keamanan. Gunakan `.env.production` sebagai template jika ingin membuat `.env` manual.
 
-4. **File Uploads**: Folder `public/uploads/` di-ignore di git. Pastikan folder ini ada dan writable di server.
+3. **Environment File**: File `.env` tidak di-push ke git untuk keamanan. Gunakan `.env.production` sebagai template jika ingin membuat `.env` manual.
 
-5. **Database**: Database development (`u189792424_zivana_dev`) terpisah dari production database.
+4. **Public Path**: Pastikan web server point ke folder `/public` sebagai document root, atau setup `.htaccess` dengan benar.
 
-## Automatic Deployment (Optional)
+5. **File Uploads**: Folder `public/uploads/` di-ignore di git. Pastikan folder ini ada dan writable di server.
 
-Untuk setup auto-deploy via Git hooks, hubungi support Hostinger atau setup webhook dari GitHub/GitLab ke server.
+6. **Database**: Database development (`u189792424_zivana_dev`) terpisah dari production database.
 
 ## Contact
+Jika ada masalah, cek dokumentasi atau hubungi developer.
 Jika ada masalah, cek dokumentasi atau hubungi developer.
