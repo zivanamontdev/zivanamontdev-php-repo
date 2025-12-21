@@ -95,6 +95,11 @@ $router->post('/admin/settings/highlight-programs/{id}/replace', [SettingsContro
 $router->post('/admin/settings/highlight-programs/{id}/remove', [SettingsController::class, 'removeHighlightProgram']);
 $router->post('/admin/settings/highlight-programs/update-order', [SettingsController::class, 'updateHighlightProgramOrder']);
 
+// Email Settings routes
+$router->get('/admin/settings/email', [SettingsController::class, 'emailSettings']);
+$router->post('/admin/settings/email/update', [SettingsController::class, 'updateEmailSettings']);
+$router->post('/admin/settings/email/test', [SettingsController::class, 'testEmail']);
+
 // Prakata routes
 $router->get('/admin/management/prakata/get', [ManagementController::class, 'getPrakata']);
 $router->post('/admin/management/prakata/update', [ManagementController::class, 'updatePrakata']);

@@ -14,6 +14,17 @@ ob_start();
 <!-- Admin Navbar -->
 <?php component('admin-navbar', ['title' => 'Pengaturan']); ?>
 
+<!-- Email Settings Link -->
+<div style="margin-bottom: 16px; text-align: right;">
+    <a href="<?= url('/admin/settings/email') ?>" 
+       style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: <?= colors('primary') ?>; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: opacity 0.2s;"
+       onmouseover="this.style.opacity='0.9'" 
+       onmouseout="this.style.opacity='1'">
+        <span>📧</span>
+        <span>Pengaturan Email</span>
+    </a>
+</div>
+
 <!-- Tabs -->
 <?php component('tabs', [
     'tabs' => [

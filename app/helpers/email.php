@@ -27,7 +27,37 @@ use PHPMailer\PHPMailer\Exception;
  * @return bool Success status
  */
 function send_email($to, $subject, $message) {
-    $emailConfig = require __DIR__ . '/../../config/email.php';
+    // Load email config from database first
+    try {
+        require_once ROOT_PATH . '/app/core/Database.php';
+        require_once ROOT_PATH . '/app/core/Model.php';
+        require_once ROOT_PATH . '/app/models/EmailSetting.php';
+        
+        $emailSettingModel = new EmailSetting();
+        $dbConfig = $emailSettingModel->getConfig();
+        
+        // Use database config if enabled and configured
+        if ($dbConfig && $dbConfig['is_enabled'] == 1 && !empty($dbConfig['smtp_username']) && !empty($dbConfig['smtp_password'])) {
+            $emailConfig = [
+                'smtp_host' => 'smtp.gmail.com',
+                'smtp_port' => 587,
+                'smtp_encryption' => 'tls',
+                'smtp_username' => $dbConfig['smtp_username'],
+                'smtp_password' => $dbConfig['smtp_password'],
+                'from_email' => $dbConfig['smtp_username'],
+                'from_name' => $dbConfig['from_name'] ?? APP_NAME,
+                'environment' => 'production',
+                'fallback_to_log' => false
+            ];
+        } else {
+            // Fallback to file config
+            $emailConfig = require __DIR__ . '/../../config/email.php';
+        }
+    } catch (Exception $e) {
+        error_log("Failed to load email config from DB: " . $e->getMessage());
+        // Fallback to file config
+        $emailConfig = require __DIR__ . '/../../config/email.php';
+    }
     
     // If local environment, log to file instead of sending
     if ($emailConfig['environment'] === 'local') {

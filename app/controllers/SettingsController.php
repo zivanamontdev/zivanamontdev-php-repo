@@ -11,6 +11,7 @@ class SettingsController extends Controller {
     private $faqModel;
     private $testimonialModel;
     private $highlightProgramModel;
+    private $emailSettingModel;
     
     public function __construct() {
         parent::__construct();
@@ -22,6 +23,7 @@ class SettingsController extends Controller {
         $this->faqModel = new Faq();
         $this->testimonialModel = new Testimonial();
         $this->highlightProgramModel = new HighlightProgram();
+        $this->emailSettingModel = new EmailSetting();
     }
     
     // Settings Index
@@ -669,5 +671,97 @@ class SettingsController extends Controller {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+    
+    // Email Settings
+    public function emailSettings() {
+        $emailConfig = $this->emailSettingModel->getConfig();
+        
+        $data = [
+            'currentPage' => 'settings',
+            'emailConfig' => $emailConfig
+        ];
+        
+        $this->view('admin/settings/email', $data);
+    }
+    
+    public function updateEmailSettings() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        try {
+            $username = $this->input('smtp_username');
+            $password = $this->input('smtp_password');
+            $isEnabled = $this->input('is_enabled') === '1' ? 1 : 0;
+            
+            // Validate
+            if ($isEnabled && (empty($username) || empty($password))) {
+                echo json_encode(['success' => false, 'message' => 'Email dan password wajib diisi jika email diaktifkan']);
+                return;
+            }
+            
+            // Test connection if enabled
+            if ($isEnabled) {
+                $testResult = $this->emailSettingModel->testConnection($username, $password);
+                if (!$testResult) {
+                    echo json_encode(['success' => false, 'message' => 'Koneksi SMTP gagal! Periksa email dan App Password Anda.']);
+                    return;
+                }
+            }
+            
+            // Save config
+            $data = [
+                'smtp_username' => $username,
+                'smtp_password' => $password,
+                'is_enabled' => $isEnabled
+            ];
+            
+            $result = $this->emailSettingModel->updateConfig($data);
+            
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Konfigurasi email berhasil disimpan']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal menyimpan konfigurasi email']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function testEmail() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        try {
+            $testEmail = $this->input('test_email');
+            
+            if (empty($testEmail) || !filter_var($testEmail, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Email tidak valid']);
+                return;
+            }
+            
+            // Send test email
+            $subject = "Test Email - " . APP_NAME;
+            $message = "<h2>Test Email Berhasil!</h2><p>Ini adalah email test dari " . APP_NAME . ".</p><p>Konfigurasi SMTP Anda berfungsi dengan baik.</p>";
+            
+            $result = send_email($testEmail, $subject, $message);
+            
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Email test berhasil dikirim! Silakan cek inbox Anda.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal mengirim email test']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }
+
 
