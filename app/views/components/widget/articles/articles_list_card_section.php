@@ -61,11 +61,12 @@ if (!function_exists('getArticleImageUrlList')) {
         <div class="flex gap-[24px]">
             <!-- Section 1: Image (1/8 width) -->
             <div class="w-1/8 flex-shrink-0" style="width: 12.5%;">
-                <div class="h-[224px] rounded-[24px] overflow-hidden">
+                <div class="h-[224px] rounded-[24px] overflow-hidden bg-gray-100 flex items-center justify-center">
                     <img 
                         src="<?= getArticleImageUrlList($article['featured_image']) ?>" 
                         alt="Artikel" 
                         class="w-full h-full object-cover object-center scale-125"
+                        onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<svg class=\"w-12 h-12 text-gray-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\"></path></svg>';"
                     >
                 </div>
             </div>
