@@ -102,7 +102,17 @@ function render_component(string $__component_name__, array $__component_data__ 
  * Generate URL
  */
 function url($path = '') {
-    return APP_URL . '/' . ltrim($path, '/');
+    $baseUrl = APP_URL;
+    
+    // Auto-detect port if localhost and port not in APP_URL
+    if (strpos($baseUrl, 'localhost') !== false && strpos($baseUrl, ':') === false) {
+        // Check if running on non-standard port
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+            $baseUrl = rtrim($baseUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+        }
+    }
+    
+    return $baseUrl . '/' . ltrim($path, '/');
 }
 
 /**
