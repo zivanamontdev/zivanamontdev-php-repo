@@ -161,12 +161,12 @@
                     
                     <!-- Email Field -->
                     <?php component('input', [
-                        'name' => 'username',
-                        'id' => 'username',
-                        'type' => 'text',
+                        'name' => 'email',
+                        'id' => 'email',
+                        'type' => 'email',
                         'label' => 'Email',
                         'placeholder' => 'Masukkan email admin',
-                        'value' => old('username'),
+                        'value' => old('email'),
                         'required' => true
                     ]); ?>
                     

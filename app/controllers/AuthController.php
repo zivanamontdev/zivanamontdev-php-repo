@@ -24,22 +24,39 @@ class AuthController extends Controller {
         
         csrf_verify();
         
-        $username = $this->input('username');
+        $email = $this->input('email');
         $password = $this->input('password');
         $remember = $this->input('remember');
         
-        if (empty($username) || empty($password)) {
-            flash('error', 'Username and password are required');
-            set_old(['username' => $username]);
+        if (empty($email) || empty($password)) {
+            flash('error', 'Email dan password harus diisi');
+            set_old(['email' => $email]);
             $this->redirect('/admin/login');
             return;
         }
         
-        $user = $this->userModel->authenticate($username, $password);
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('error', 'Format email tidak valid');
+            set_old(['email' => $email]);
+            $this->redirect('/admin/login');
+            return;
+        }
+        
+        // Authenticate with email
+        $user = $this->userModel->findByEmail($email);
         
         if (!$user) {
-            flash('error', 'Invalid username or password');
-            set_old(['username' => $username]);
+            flash('error', 'Email atau password salah');
+            set_old(['email' => $email]);
+            $this->redirect('/admin/login');
+            return;
+        }
+        
+        // Verify password
+        if (!password_verify($password, $user['password'])) {
+            flash('error', 'Email atau password salah');
+            set_old(['email' => $email]);
             $this->redirect('/admin/login');
             return;
         }
@@ -168,8 +185,11 @@ class AuthController extends Controller {
         $token = $_GET['token'] ?? null;
         
         if (!$token) {
-            flash('error', 'Token reset password tidak valid');
-            $this->redirect('/admin/forget-password');
+            // Show expired page
+            $this->view('admin/auth/reset-password', [
+                'token' => null,
+                'isExpired' => true
+            ]);
             return;
         }
         
@@ -179,13 +199,19 @@ class AuthController extends Controller {
         $tokenData = $passwordResetModel->findValidToken($token);
         
         if (!$tokenData) {
-            flash('error', 'Token reset password tidak valid atau sudah kadaluarsa');
-            $this->redirect('/admin/forget-password');
+            // Show expired page
+            $this->view('admin/auth/reset-password', [
+                'token' => $token,
+                'isExpired' => true
+            ]);
             return;
         }
         
         // Pass token to view
-        $this->view('admin/auth/reset-password', ['token' => $token]);
+        $this->view('admin/auth/reset-password', [
+            'token' => $token,
+            'isExpired' => false
+        ]);
     }
     
     public function resetPassword() {

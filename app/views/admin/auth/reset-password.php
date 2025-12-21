@@ -169,6 +169,21 @@
                     Reset Kata Sandi
                 </h1>
                 
+                <?php if (isset($isExpired) && $isExpired): ?>
+                    <!-- Expired Message -->
+                    <p class="font-normal text-[14px] leading-[24px] mb-[44px]" style="color: <?= colors('white_shadow') ?>;">
+                        Link reset kata sandi kadaluarsa atau tidak valid. Silakan untuk kembali ke halaman login.
+                    </p>
+                    
+                    <!-- Back to Login Button -->
+                    <a href="<?= url('/admin/login') ?>">
+                        <?php component('button', [
+                            'text' => 'Kembali ke Halaman Login',
+                            'variant' => '1',
+                            'class' => 'w-full'
+                        ]); ?>
+                    </a>
+                <?php else: ?>
                 <!-- Form -->
                 <form action="<?= url('/admin/reset-password') ?>" method="POST">
                     <?= csrf_field() ?>
@@ -243,6 +258,7 @@
                         'class' => 'w-full'
                     ]); ?>
                 </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>
