@@ -243,9 +243,6 @@ ob_start();
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('emailSettingsForm');
-    const sendTestBtn = document.getElementById('sendTestEmail');
-    
-    form.addEventListener('submit', async function(e) {
     
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -300,9 +297,10 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             toast.style.animation = 'slideOut 0.3s ease-out';
             setTimeout(() => toast.remove(), 300);
-        }, 5
-
-<style>
+        }, 5000);
+    }
+});
+</script>
 @keyframes slideIn {
     from {
         transform: translateX(100%);
