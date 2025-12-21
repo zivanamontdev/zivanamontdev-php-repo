@@ -4,10 +4,16 @@
  * Uses PHPMailer for sending emails via Gmail SMTP
  */
 
-// Load PHPMailer
-require_once __DIR__ . '/../../vendor/phpmailer/src/Exception.php';
-require_once __DIR__ . '/../../vendor/phpmailer/src/PHPMailer.php';
-require_once __DIR__ . '/../../vendor/phpmailer/src/SMTP.php';
+// Load PHPMailer - check if composer autoloader exists first
+$composerAutoload = __DIR__ . '/../../vendor/autoload.php';
+if (file_exists($composerAutoload)) {
+    require_once $composerAutoload;
+} else {
+    // Manual loading as fallback
+    require_once __DIR__ . '/../../vendor/phpmailer/src/Exception.php';
+    require_once __DIR__ . '/../../vendor/phpmailer/src/PHPMailer.php';
+    require_once __DIR__ . '/../../vendor/phpmailer/src/SMTP.php';
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
