@@ -1,5 +1,13 @@
 <?php 
 $pageTitle = 'Articles';
+
+// Get articles data from controller
+$articles = $articles ?? [];
+
+// Split articles: first 3 for grid, rest for list
+$gridArticles = array_slice($articles, 0, 3);
+$listArticles = array_slice($articles, 3);
+
 ob_start(); 
 ?>
 
@@ -22,16 +30,37 @@ ob_start();
     </div>
 </section>
 
-<!-- Section Grid Berita -->
-<?php component('widget/articles/articles_grid_section'); ?>
+<?php if (empty($articles)): ?>
+    <!-- No Articles Message -->
+    <section class="container mx-auto">
+        <div class="bg-white-neutral rounded-[24px] p-[40px] text-center">
+            <p class="font-normal text-[20px] leading-[150%] text-black-highlight">
+                Belum ada artikel yang dipublikasikan. Silakan tambah artikel melalui halaman admin.
+            </p>
+        </div>
+    </section>
+<?php else: ?>
+    <!-- Section Grid Berita -->
+    <?php if (!empty($gridArticles)): ?>
+        <?php component('widget/articles/articles_grid_section', ['articles' => $gridArticles]); ?>
+    <?php endif; ?>
 
-<!-- Section List Card Berita -->
-<?php component('widget/articles/articles_list_card_section'); ?>
+    <!-- Section List Card Berita -->
+    <?php if (!empty($listArticles)): ?>
+        <?php component('widget/articles/articles_list_card_section', ['articles' => $listArticles]); ?>
+    <?php endif; ?>
 
-<!-- Load More Button -->
-<div class="container mx-auto mt-[32px] flex justify-end">
-    <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => '#']); ?>
-</div>
+    <!-- Load More Button -->
+    <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
+    <div class="container mx-auto mt-[32px] flex justify-end">
+        <?php 
+        $nextPage = ($pagination['current_page'] ?? 1) + 1;
+        $href = $nextPage <= $pagination['last_page'] ? url('/articles?page=' . $nextPage) : '#';
+        component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
+        ?>
+    </div>
+    <?php endif; ?>
+<?php endif; ?>
 
 <?php component('footer', ['showCta' => true]); ?>
 

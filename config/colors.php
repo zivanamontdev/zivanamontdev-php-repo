@@ -41,6 +41,8 @@ return [
     'border_light'       => '#E0E0E0',
     'border_soft'        => '#E1E1E1',
     'card_bg_light'      => '#F4F4F4',
+    'border_gray'        => '#E6E6E6',
+    'bg_light_gray'      => '#FAFAFA',
     
     // Status Colors
     'success'            => '#3EC441',

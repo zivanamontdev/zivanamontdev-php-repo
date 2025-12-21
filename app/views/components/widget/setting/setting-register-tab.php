@@ -27,7 +27,7 @@
             'type' => 'tel',
             'placeholder' => '628123456789',
             'icon' => 'phone',
-            'value' => ''
+            'value' => $whatsappNumber ?? ''
         ]); ?>
         <p class="font-normal text-[12px] text-black-soft mt-[8px]">Format: 62xxx (Tanpa tanda + atau spasi)</p>
 
@@ -42,7 +42,7 @@
             name="whatsapp_template" 
             rows="10"
             class="w-full bg-white-neutral border border-[#E0E0E0] rounded-[12px] font-normal text-[16px] leading-[28px] text-black-soft placeholder:text-white-soft focus:outline-none focus:border-primary transition-colors px-[16px] py-[12px] resize-none"
-        >*PENDAFTARAN BARU - Zivana Montessori School*
+        ><?= $whatsappTemplate ?? '*PENDAFTARAN BARU - Zivana Montessori School*
 
 *Nama Anak:* {childName}
 *Nama Orang Tua:* {parentName}
@@ -50,7 +50,7 @@
 {address}
 {message}
 
-Terima kasih telah mendaftar di Zivana Montessori School!</textarea>
+Terima kasih telah mendaftar di Zivana Montessori School!' ?></textarea>
 
         <div class="mb-[24px]"></div>
 
@@ -60,12 +60,23 @@ Terima kasih telah mendaftar di Zivana Montessori School!</textarea>
         </label>
         <div class="w-full border border-border-light rounded-[12px] px-[16px] py-[12px]">
             <p class="font-normal text-[14px] text-black-soft mb-2">• {childName} - Nama anak</p>
+            <p class="font-normal text-[14px] text-black-soft mb-2">• {childAge} - Usia anak</p>
             <p class="font-normal text-[14px] text-black-soft mb-2">• {parentName} - Nama orang tua</p>
             <p class="font-normal text-[14px] text-black-soft mb-2">• {phone} - Nomor telepon</p>
             <p class="font-normal text-[14px] text-black-soft mb-2">• {address} - Alamat (opsional)</p>
             <p class="font-normal text-[14px] text-black-soft mb-2">• {message} - Pesan tambahan (opsional)</p>
             <p class="font-normal text-[14px] text-black-soft mt-4">Gunakan *teks* untuk bold di WhatsApp</p>
         </div>
+
+        <div class="mb-[24px]"></div>
+
+        <!-- Save Button -->
+        <?php component('button', [
+            'text' => 'Simpan Pengaturan',
+            'variant' => '1',
+            'type' => 'button',
+            'id' => 'save-settings-btn'
+        ]); ?>
     </div>
 </div>
 
@@ -174,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Replace placeholders with input values
         template = template.replace(/{childName}/g, previewInputs.childName.value || '{childName}');
+        template = template.replace(/{childAge}/g, previewInputs.childAge.value || '{childAge}');
         template = template.replace(/{parentName}/g, previewInputs.parentName.value || '{parentName}');
         template = template.replace(/{phone}/g, previewInputs.phone.value || '{phone}');
         
@@ -224,6 +236,57 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Open WhatsApp in new tab
         window.open(waUrl, '_blank');
+    });
+    
+    // Save settings button
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    saveSettingsBtn.addEventListener('click', function() {
+        const waNumber = whatsappNumber.value.trim();
+        const template = templateTextarea.value;
+        
+        // Validate
+        if (!waNumber) {
+            showToast('Mohon isi Nomor WhatsApp Sekolah', 'error');
+            return;
+        }
+        
+        if (!template) {
+            showToast('Mohon isi Template Pesan WhatsApp', 'error');
+            return;
+        }
+        
+        // Disable button during save
+        saveSettingsBtn.disabled = true;
+        saveSettingsBtn.textContent = 'Menyimpan...';
+        
+        // Send AJAX request
+        fetch('<?= url('/admin/settings/registration/save') ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'whatsapp_number': waNumber,
+                'whatsapp_template': template
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || 'Pengaturan berhasil disimpan', 'success');
+            } else {
+                showToast(data.message || 'Gagal menyimpan pengaturan', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Terjadi kesalahan saat menyimpan pengaturan', 'error');
+        })
+        .finally(() => {
+            // Re-enable button
+            saveSettingsBtn.disabled = false;
+            saveSettingsBtn.textContent = 'Simpan Pengaturan';
+        });
     });
     
     // Initialize result message on page load

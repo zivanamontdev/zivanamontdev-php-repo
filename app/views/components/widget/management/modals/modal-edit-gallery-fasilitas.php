@@ -343,65 +343,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Permanent delete
                 if (isFasilitasImage) {
                     // Delete fasilitas.image
-                    if (confirm('Apakah Anda yakin ingin menghapus gambar fasilitas ini?')) {
-                        // Store active tab before delete
-                        localStorage.setItem('activeManagementTabIndex', '2');
-                        
-                        const fasilitasId = document.getElementById('gallery-fasilitas-id-edit').value;
-                        
-                        // Send AJAX request to delete fasilitas.image
-                        fetch(`/admin/management/fasilitas/${fasilitasId}/delete-fasilitas-image`, {
-                            method: 'POST'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                modal.classList.add('hidden');
-                                resetEditGalleryFasilitasForm();
-                                showToast('Gambar fasilitas berhasil dihapus!', 'success', 3000);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                        });
-                    }
+                    openModalDeleteFasilitasImage(
+                        'Hapus Gambar Fasilitas',
+                        'Apakah Anda yakin ingin menghapus gambar fasilitas ini? Tindakan ini tidak dapat dibatalkan.',
+                        function() {
+                            // Store active tab before delete
+                            localStorage.setItem('activeManagementTabIndex', '2');
+                            
+                            const fasilitasId = document.getElementById('gallery-fasilitas-id-edit').value;
+                            
+                            // Send AJAX request to delete fasilitas.image
+                            fetch(`/admin/management/fasilitas/${fasilitasId}/delete-fasilitas-image`, {
+                                method: 'POST'
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    modal.classList.add('hidden');
+                                    resetEditGalleryFasilitasForm();
+                                    showToast('Gambar fasilitas berhasil dihapus!', 'success', 3000);
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);
+                                } else {
+                                    showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                            });
+                        }
+                    );
                 } else {
                     // Delete gallery image
-                    if (confirm('Apakah Anda yakin ingin menghapus foto ini dari galeri?')) {
-                        // Store active tab before delete to prevent glitch on reload
-                        localStorage.setItem('activeManagementTabIndex', '2');
-                        
-                        const galleryImageId = document.getElementById('gallery-image-id-fasilitas-edit').value;
-                        const fasilitasId = document.getElementById('gallery-fasilitas-id-edit').value;
-                        
-                        // Send AJAX request
-                        fetch(`/admin/management/fasilitas/${fasilitasId}/gallery/${galleryImageId}/delete`, {
-                            method: 'POST'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                modal.classList.add('hidden');
-                                resetEditGalleryFasilitasForm();
-                                showToast('Foto berhasil dihapus!', 'success', 3000);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                        });
-                    }
+                    openModalDeleteGalleryImage(
+                        'Hapus Foto Galeri',
+                        'Apakah Anda yakin ingin menghapus foto ini dari galeri? Tindakan ini tidak dapat dibatalkan.',
+                        function() {
+                            // Store active tab before delete to prevent glitch on reload
+                            localStorage.setItem('activeManagementTabIndex', '2');
+                            
+                            const galleryImageId = document.getElementById('gallery-image-id-fasilitas-edit').value;
+                            const fasilitasId = document.getElementById('gallery-fasilitas-id-edit').value;
+                            
+                            // Send AJAX request
+                            fetch(`/admin/management/fasilitas/${fasilitasId}/gallery/${galleryImageId}/delete`, {
+                                method: 'POST'
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    modal.classList.add('hidden');
+                                    resetEditGalleryFasilitasForm();
+                                    showToast('Foto berhasil dihapus!', 'success', 3000);
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);
+                                } else {
+                                    showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                            });
+                        }
+                    );
                 }
             }
         });

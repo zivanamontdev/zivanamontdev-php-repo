@@ -300,6 +300,15 @@ ob_start();
 <?php component('widget/management/modals/modal-gallery-fasilitas'); ?>
 <?php component('widget/management/modals/modal-edit-gallery-fasilitas'); ?>
 
+<!-- Delete Confirmation Modals -->
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-karyawan']); ?>
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-fasilitas']); ?>
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-fasilitas-image']); ?>
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-gallery-image']); ?>
+
+<!-- SortableJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <!-- Tab Switching Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -376,59 +385,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize drag and drop for Karyawan list
+    // Initialize drag and drop for Karyawan list using SortableJS
     const karyawanList = document.getElementById('karyawan-list');
     if (karyawanList) {
-        // Simple drag and drop implementation
-        let draggedElement = null;
-        
-        karyawanList.addEventListener('dragstart', function(e) {
-            if (e.target.closest('.drag-handle')) {
-                draggedElement = e.target.closest('[data-employee-id]');
-                draggedElement.style.opacity = '0.5';
-                e.dataTransfer.effectAllowed = 'move';
+        Sortable.create(karyawanList, {
+            animation: 150,
+            handle: '.drag-handle',
+            onEnd: function() {
+                // Auto save order on drag
+                updateKaryawanOrder();
             }
         });
-        
-        karyawanList.addEventListener('dragend', function(e) {
-            if (draggedElement) {
-                draggedElement.style.opacity = '1';
-                draggedElement = null;
-            }
+    }
+    
+    // Function to update karyawan order
+    function updateKaryawanOrder() {
+        const orders = {};
+        const items = karyawanList.querySelectorAll('[data-employee-id]');
+        items.forEach((item, index) => {
+            const employeeId = item.dataset.employeeId;
+            orders[employeeId] = index + 1;
         });
         
-        karyawanList.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            
-            const afterElement = getDragAfterElement(karyawanList, e.clientY);
-            if (afterElement == null) {
-                karyawanList.appendChild(draggedElement);
+        const formData = new FormData();
+        formData.append('orders', JSON.stringify(orders));
+        
+        fetch('/admin/management/karyawan/update-order', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Urutan karyawan berhasil diperbarui', 'success', 2000);
             } else {
-                karyawanList.insertBefore(draggedElement, afterElement);
+                showToast('Gagal memperbarui urutan', 'error', 3000);
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Terjadi kesalahan saat memperbarui urutan', 'error', 3000);
         });
-        
-        // Make tiles draggable
-        const tiles = karyawanList.querySelectorAll('[data-employee-id]');
-        tiles.forEach(tile => {
-            tile.setAttribute('draggable', 'true');
-        });
-        
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('[data-employee-id]:not(.opacity-50)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
     }
 });
 

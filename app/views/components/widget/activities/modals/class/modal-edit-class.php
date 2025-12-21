@@ -359,30 +359,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            if (confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
-                fetch(`/admin/activities/classes/${classId}/delete`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        modal.classList.add('hidden');
-                        resetForm();
-                        showToast('Kelas berhasil dihapus!', 'success', 3000);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+            // Call modal-delete-confirmation with proper parameters
+            if (typeof window.openModalDeleteClass === 'function') {
+                window.openModalDeleteClass(
+                    'Hapus Kelas',
+                    'Apakah Anda yakin ingin menghapus kelas ini? Tindakan ini tidak dapat dibatalkan.',
+                    function() {
+                        window.deleteClass(classId);
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                });
+                );
             }
         });
     }
+    
+    // Global delete function for confirmation modal
+    window.deleteClass = function(classId) {
+        fetch(`/admin/activities/classes/${classId}/delete`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.classList.add('hidden');
+                resetForm();
+                showToast('Kelas berhasil dihapus!', 'success', 3000);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+        });
+    };
     
     // Reset form
     function resetForm() {

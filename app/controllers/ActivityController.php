@@ -58,8 +58,17 @@ class ActivityController extends Controller {
             ];
         }, $programsTahun);
         
-        // Fetch programs harian from database (5 days)
-        $programsHarian = $db->query("SELECT * FROM programs_harian WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
+        // Fetch programs harian from database (5 days) - one record per day_name
+        $programsHarian = $db->query("
+            SELECT * FROM programs_harian 
+            WHERE id IN (
+                SELECT MIN(id) 
+                FROM programs_harian 
+                WHERE is_active = 1 
+                GROUP BY day_name
+            )
+            ORDER BY display_order ASC
+        ")->fetchAll();
         
         // Transform data for view with gallery images
         $programsHarianData = array_map(function($program) use ($db) {

@@ -1,5 +1,39 @@
 <?php 
 $pageTitle = 'Tentang Kami';
+
+// Get data from controller
+$kepalaSekolah = $kepalaSekolah ?? null;
+$karyawan = $karyawan ?? [];
+$fasilitas = $fasilitas ?? [];
+
+// Helper function to get employee photo URL
+if (!function_exists('getEmployeePhotoUrl')) {
+    function getEmployeePhotoUrl($photoPath) {
+        if (empty($photoPath)) {
+            return null; // Return null for empty photos to show placeholder
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($photoPath, 'uploads/') === 0) {
+            return url($photoPath);
+        }
+        return url('uploads/' . $photoPath);
+    }
+}
+
+// Helper function to get fasilitas cover image URL
+if (!function_exists('getFasilitasCoverImage')) {
+    function getFasilitasCoverImage($imagePath) {
+        if (empty($imagePath)) {
+            return null; // Return null for empty images to show placeholder
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
+
 ob_start(); 
 ?>
 
@@ -33,97 +67,31 @@ ob_start();
     <?php component('badge', ['text' => 'Kenalan dengan Kami']); ?>
     
     <div class="mt-[32px] grid grid-cols-4 gap-[24px]">
-        <!-- Row 1-2, Col 1-2: Large Card (2x2) -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Adilah Wina Fitria',
-            'teamRole' => 'Kepala Sekolah',
-            'teamLarge' => true
-        ]); ?>
+        <!-- Row 1-2, Col 1-2: Large Card (2x2) - Kepala Sekolah -->
+        <?php if ($kepalaSekolah): ?>
+            <?php component('widget/profile/profile_team', [
+                'teamImage' => getEmployeePhotoUrl($kepalaSekolah['photo'] ?? ''),
+                'teamName' => $kepalaSekolah['name'] ?? 'Belum ada data',
+                'teamRole' => 'Kepala Sekolah',
+                'teamLarge' => true
+            ]); ?>
+        <?php endif; ?>
         
-        <!-- Row 1, Col 3 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
+        <!-- Karyawan Cards -->
+        <?php 
+        // Limit to 11 karyawan (excluding kepala sekolah)
+        // Grid layout: after large card (2x2), we have 2 slots in row 1, 2 in row 2, and 4 in row 3, 4 in row 4 = 12 slots total
+        $maxKaryawan = 11;
+        $displayedKaryawan = array_slice($karyawan, 0, $maxKaryawan);
         
-        <!-- Row 1, Col 4 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 2, Col 3 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 2, Col 4 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 3, Col 1 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 3, Col 2 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 3, Col 3 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 3, Col 4 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 4, Col 1 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 4, Col 2 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 4, Col 3 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
-        
-        <!-- Row 4, Col 4 -->
-        <?php component('widget/profile/profile_team', [
-            'teamImage' => 'image_team.png',
-            'teamName' => 'Nama Anggota',
-            'teamRole' => 'Guru'
-        ]); ?>
+        foreach ($displayedKaryawan as $k): 
+        ?>
+            <?php component('widget/profile/profile_team', [
+                'teamImage' => getEmployeePhotoUrl($k['photo'] ?? ''),
+                'teamName' => $k['name'] ?? 'Nama Anggota',
+                'teamRole' => $k['role'] ?? 'Guru'
+            ]); ?>
+        <?php endforeach; ?>
     </div>
 </section>
 
@@ -132,30 +100,19 @@ ob_start();
     <?php component('badge', ['text' => 'Fasilitas Sekolah']); ?>
     
     <div class="mt-[16px] grid grid-cols-2 gap-[24px]">
-        <?php component('widget/profile/profile_fasilitas', [
-            'fasilitasTitle' => 'Ruang Kelas Montessori',
-            'fasilitasImage' => 'image_fasilitas_1.png'
-        ]); ?>
-        
-        <?php component('widget/profile/profile_fasilitas', [
-            'fasilitasTitle' => 'Area Bermain Outdoor',
-            'fasilitasImage' => 'image_fasilitas_2.png'
-        ]); ?>
-        
-        <?php component('widget/profile/profile_fasilitas', [
-            'fasilitasTitle' => 'Perpustakaan Mini',
-            'fasilitasImage' => 'image_fasilitas_3.png'
-        ]); ?>
-        
-        <?php component('widget/profile/profile_fasilitas', [
-            'fasilitasTitle' => 'Ruang Seni & Kreativitas',
-            'fasilitasImage' => 'image_fasilitas_4.png'
-        ]); ?>
-        
-        <?php component('widget/profile/profile_fasilitas', [
-            'fasilitasTitle' => 'Musholla',
-            'fasilitasImage' => 'image_fasilitas_5.png'
-        ]); ?>
+        <?php if (!empty($fasilitas)): ?>
+            <?php foreach ($fasilitas as $item): ?>
+                <?php component('widget/profile/profile_fasilitas', [
+                    'fasilitasTitle' => $item['name'],
+                    'fasilitasImage' => getFasilitasCoverImage($item['image']),
+                    'fasilitasId' => $item['id']
+                ]); ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-span-2 text-center text-gray-500 py-8">
+                Belum ada data fasilitas
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 

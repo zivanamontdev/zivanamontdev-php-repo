@@ -372,32 +372,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (deleteKaryawanBtn) {
         deleteKaryawanBtn.addEventListener('click', function() {
-            if (confirm('Apakah Anda yakin ingin menghapus karyawan ini?')) {
-                localStorage.setItem('activeManagementTabIndex', '1');
-                
-                const karyawanId = document.getElementById('karyawan-id-edit').value;
-                
-                fetch(`/admin/management/karyawan/${karyawanId}/delete`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        modal.classList.add('hidden');
-                        resetEditKaryawanForm();
-                        showToast('Karyawan berhasil dihapus!', 'success', 3000);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                });
-            }
+            openModalDeleteKaryawan(
+                'Hapus Karyawan',
+                'Apakah Anda yakin ingin menghapus karyawan ini? Tindakan ini tidak dapat dibatalkan.',
+                function() {
+                    localStorage.setItem('activeManagementTabIndex', '1');
+                    
+                    const karyawanId = document.getElementById('karyawan-id-edit').value;
+                    
+                    fetch(`/admin/management/karyawan/${karyawanId}/delete`, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            modal.classList.add('hidden');
+                            resetEditKaryawanForm();
+                            showToast('Karyawan berhasil dihapus!', 'success', 3000);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                    });
+                }
+            );
         });
     }
     

@@ -17,7 +17,7 @@ ob_start();
         
         <!-- Title -->
         <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-black-soft text-center">
-            Galeri Aktivitas Sensori
+            <?= !empty($programData) ? 'Galeri ' . e($programData['name']) : 'Galeri Aktivitas Sensori' ?>
         </h1>
     </div>
 </section>
@@ -30,36 +30,22 @@ ob_start();
     </div>
     
     <!-- Gallery Cards -->
-    <?php 
-    $galleryData = [
-        [
-            'image' => 'activities_images_1.png',
-            'description' => 'Anak-anak bermain dengan berbagai tekstur dan bahan sensorik untuk mengembangkan kemampuan motorik halus mereka.'
-        ],
-        [
-            'image' => 'activities_images_2.png',
-            'description' => 'Kegiatan eksplorasi warna dan bentuk menggunakan cat air dan playdough.'
-        ],
-        [
-            'image' => 'activities_images_3.png',
-            'description' => 'Bermain pasir kinetik untuk melatih koordinasi tangan dan kreativitas anak.'
-        ],
-        [
-            'image' => 'activities_images_4.png',
-            'description' => 'Aktivitas sensori dengan air dan berbagai alat untuk melatih konsentrasi dan fokus anak-anak dalam pembelajaran yang menyenangkan.'
-        ],
-        [
-            'image' => 'activities_images_5.png',
-            'description' => 'Kegiatan menyusun balok dan puzzle untuk mengembangkan kemampuan problem solving.'
-        ]
-    ];
-    component('widget/activities/activities_gallery_card', ['items' => $galleryData]); 
-    ?>
+    <?php if (!empty($galleryData)): ?>
+        <?php component('widget/activities/activities_gallery_card', ['items' => $galleryData]); ?>
+    <?php else: ?>
+        <div class="text-center py-[40px]">
+            <p class="text-black-soft text-[20px]">Belum ada galeri untuk program ini.</p>
+        </div>
+    <?php endif; ?>
     
     <!-- Tampilkan Lebih Banyak Button -->
+    <?php if (!empty($galleryData) && count($galleryData) > 6): ?>
     <div class="flex justify-center mt-[32px] mb-[88px]">
         <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'href' => '#']); ?>
     </div>
+    <?php else: ?>
+    <div class="mb-[88px]"></div>
+    <?php endif; ?>
 </section>
 
 <!-- Floating Vector Galeri -->

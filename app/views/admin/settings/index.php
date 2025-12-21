@@ -30,7 +30,7 @@ ob_start();
 <div class="mt-3">
     <!-- Tab 1: Pendaftaran -->
     <div id="tab-panel-0" class="tab-panel">
-        <?php require VIEW_PATH . '/components/widget/setting/setting-register-tab-v2.php'; ?>
+        <?php require VIEW_PATH . '/components/widget/setting/setting-register-tab.php'; ?>
     </div>
     
     <!-- Tab 2: Highlight Program -->
@@ -45,24 +45,17 @@ ob_start();
     
     <!-- Tab 4: Events -->
     <div id="tab-panel-3" class="tab-panel hidden">
-        <?php component('tab-content-card', [
-            'title' => 'Kalender Events',
-            'description' => 'Daftar event yang akan datang ditampilkan di halaman utama website',
-            'buttonText' => 'Tambah Event',
-            'buttonId' => 'btn-add-event'
-        ]); ?>
+        <?php component('widget/setting/event-tab'); ?>
     </div>
     
     <!-- Tab 5: FAQ -->
     <div id="tab-panel-4" class="tab-panel hidden">
-        <?php component('tab-content-card', [
-            'title' => 'Frequently Asked Questions',
-            'description' => 'Atur pertanyaan dan jawaban FAQ yang ditampilkan di website utama',
-            'buttonText' => 'Tambah FAQ',
-            'buttonId' => 'btn-add-faq'
-        ]); ?>
+        <?php component('widget/setting/faq-tab'); ?>
     </div>
 </div>
+
+<!-- SortableJS Library (Loaded once for all tabs) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <!-- Tab Switching Script -->
 <script>

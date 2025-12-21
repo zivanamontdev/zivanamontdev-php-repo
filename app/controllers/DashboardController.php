@@ -14,13 +14,37 @@ class DashboardController extends Controller {
     }
     
     public function index() {
+        // Get period from query param (default: month)
+        $period = $_GET['period'] ?? 'month';
+        
+        // Get analytics data
+        $popularPages = $this->analyticsModel->getPopularPages($period, 5);
+        $locationStats = $this->analyticsModel->getTopLocations($period, 5);
+        $hourlyData = $this->analyticsModel->getHourlyViews($period);
+        
+        // Get stats for cards
+        $totalViews = $this->analyticsModel->getTotalViews($period);
+        $uniqueVisitors = $this->analyticsModel->getUniqueVisitors($period);
+        $totalRegistrations = $this->registrationModel->count();
+        $recentRegistrations = $this->registrationModel->getRecent(5);
+        
+        // Calculate percentage changes (dummy for now - you can implement comparison logic)
+        $viewsChange = '+12%';
+        $visitorsChange = '+8%';
+        $registrationsChange = '+24%';
+        
         $data = [
-            'totalVisits' => $this->analyticsModel->getTotalVisits(30),
-            'visitsByDate' => $this->analyticsModel->getVisitsByDate(7),
-            'topPages' => $this->analyticsModel->getTopPages(5),
-            'deviceStats' => $this->analyticsModel->getDeviceStats(),
-            'recentRegistrations' => $this->registrationModel->getRecent(5),
-            'totalRegistrations' => $this->registrationModel->count(),
+            'popularPages' => $popularPages,
+            'locationStats' => $locationStats,
+            'hourlyData' => $hourlyData,
+            'totalViews' => $totalViews,
+            'uniqueVisitors' => $uniqueVisitors,
+            'totalRegistrations' => $totalRegistrations,
+            'viewsChange' => $viewsChange,
+            'visitorsChange' => $visitorsChange,
+            'registrationsChange' => $registrationsChange,
+            'recentRegistrations' => $recentRegistrations,
+            'currentPeriod' => $period
         ];
         
         $this->view('admin/dashboard/index', $data);

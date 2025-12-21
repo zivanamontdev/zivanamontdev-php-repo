@@ -18,4 +18,12 @@ class User extends Model {
     public function updateLastLogin($id) {
         return $this->update($id, ['last_login' => date('Y-m-d H:i:s')]);
     }
+    
+    public function findByEmail($email) {
+        return $this->whereOne('email = :email', ['email' => $email]);
+    }
+    
+    public function updatePassword($userId, $hashedPassword) {
+        return $this->update($userId, ['password' => $hashedPassword]);
+    }
 }

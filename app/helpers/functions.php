@@ -3,6 +3,9 @@
  * Helper Functions
  */
 
+// Load email helper
+require_once __DIR__ . '/email.php';
+
 /**
  * Get colors configuration
  */

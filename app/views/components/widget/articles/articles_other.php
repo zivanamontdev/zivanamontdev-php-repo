@@ -11,11 +11,21 @@
  * - currentId: ID of current article being viewed (to exclude from list)
  */
 
-// If no articles passed, load from dummy data
-if (empty($articles)) {
-    require_once VIEW_PATH . '/data/articles_data.php';
-    $currentId = $currentId ?? 1;
-    $articles = getOtherArticles($currentId, 2);
+// Get articles from passed parameter
+$articles = $__component_data__['articles'] ?? [];
+
+// Helper to get image URL
+if (!function_exists('getArticleImageUrlOther')) {
+    function getArticleImageUrlOther($imagePath) {
+        if (empty($imagePath)) {
+            return url('images/default-article.jpg');
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
 }
 ?>
 
@@ -40,7 +50,7 @@ if (empty($articles)) {
         <!-- Image -->
         <div class="w-[160px] flex-shrink-0 overflow-hidden rounded-l-[24px]">
             <img 
-                src="<?= url('images/' . $article['image']) ?>" 
+                src="<?= getArticleImageUrlOther($article['featured_image']) ?>" 
                 alt="<?= e($article['title']) ?>" 
                 class="w-full h-full object-cover object-center"
             >

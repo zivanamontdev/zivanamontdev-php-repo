@@ -5,16 +5,30 @@
  * Grid 4x4 untuk menampilkan tim/anggota
  * Card dengan gambar background, nama dan role di bagian bawah
  * 
- * @param string $teamImage - Gambar anggota
+ * @param string|null $teamImage - Gambar anggota (null untuk placeholder icon)
  * @param string $teamName - Nama anggota
  * @param string $teamRole - Role/jabatan anggota
  * @param bool $teamLarge - Apakah card besar (2x2) atau kecil (1x1)
  */
 
-$teamImage = $teamImage ?? 'image_team.png';
+$teamImage = $teamImage ?? '';
 $teamName = $teamName ?? 'Nama Anggota';
 $teamRole = $teamRole ?? 'Role';
 $teamLarge = $teamLarge ?? false;
+
+// Check if teamImage is null or empty (for placeholder)
+$showPlaceholder = empty($teamImage);
+
+// Check if teamImage is already a full URL
+$imageUrl = '';
+if (!$showPlaceholder) {
+    if (strpos($teamImage, 'http://') !== 0 && strpos($teamImage, 'https://') !== 0 && strpos($teamImage, '/') !== 0) {
+        // If not a URL, add images/ prefix
+        $imageUrl = url('images/' . $teamImage);
+    } else {
+        $imageUrl = $teamImage;
+    }
+}
 
 // Ukuran card
 $heightClass = $teamLarge ? 'h-[768px]' : 'h-[372px]';
@@ -22,12 +36,21 @@ $colSpan = $teamLarge ? 'col-span-2 row-span-2' : '';
 ?>
 
 <div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden">
-    <!-- Background Image with Grayscale -->
-    <img 
-        src="<?= url('images/' . $teamImage) ?>" 
-        alt="<?= e($teamName) ?>" 
-        class="absolute inset-0 w-full h-full object-cover object-center grayscale"
-    >
+    <?php if ($showPlaceholder): ?>
+        <!-- Placeholder with Icon -->
+        <div class="absolute inset-0 w-full h-full bg-gray-placeholder flex items-center justify-center">
+            <svg class="w-24 h-24 text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+        </div>
+    <?php else: ?>
+        <!-- Background Image with Grayscale -->
+        <img 
+            src="<?= $imageUrl ?>" 
+            alt="<?= e($teamName) ?>" 
+            class="absolute inset-0 w-full h-full object-cover object-center grayscale"
+        >
+    <?php endif; ?>
     
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>

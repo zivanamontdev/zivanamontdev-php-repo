@@ -47,11 +47,12 @@ $keunggulanItems = [
             >
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-[32px]">
-                <?php foreach ($keunggulanItems as $item): ?>
+                <?php foreach ($keunggulanItems as $index => $item): ?>
                     <?php component('widget/home/home_card_keunggulan', [
                         'image' => $item['image'],
                         'title' => $item['title'],
-                        'description' => $item['description']
+                        'description' => $item['description'],
+                        'bgColor' => ($index === 1) ? 'bg-[#FEDBA9]' : 'bg-white-neutral'
                     ]); ?>
                 <?php endforeach; ?>
             </div>
@@ -94,7 +95,7 @@ $keunggulanItems = [
         
         <!-- Program Grid -->
         <div class="mt-[32px]">
-            <?php component('widget/home/home_program'); ?>
+            <?php component('widget/home/home_program', ['highlightPrograms' => $highlightPrograms ?? []]); ?>
         </div>
     </div>
 </section>
@@ -105,7 +106,7 @@ $keunggulanItems = [
         <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa']); ?>
         
         <div class="mt-[32px]">
-            <?php component('widget/home/home_testimoni'); ?>
+            <?php component('widget/home/home_testimoni', ['testimonials' => $testimonials ?? []]); ?>
         </div>
     </div>
 </section>
@@ -116,35 +117,42 @@ $keunggulanItems = [
         <?php component('badge', ['text' => 'Kegiatan yang Akan Datang']); ?>
         
         <div class="mt-[32px] flex flex-col gap-[24px]">
-            <?php component('widget/home/home_kegiatan', [
-                'tanggal' => '20',
-                'bulan' => 'NOV',
-                'tahun' => '2025',
-                'nama_kegiatan' => 'Workshop Montessori untuk Orang Tua',
-                'jam' => '08:00 - 12:00',
-                'tempat' => 'Aula Zivana Montessori',
-                'status' => 'public'
-            ]); ?>
+            <?php 
+            // Get events from data (limit to 3 for homepage)
+            $displayEvents = array_slice($events ?? [], 0, 3);
             
-            <?php component('widget/home/home_kegiatan', [
-                'tanggal' => '25',
-                'bulan' => 'NOV',
-                'tahun' => '2025',
-                'nama_kegiatan' => 'Field Trip ke Kebun Binatang',
-                'jam' => '07:30 - 14:00',
-                'tempat' => 'Taman Safari Indonesia',
-                'status' => 'private'
-            ]); ?>
-            
-            <?php component('widget/home/home_kegiatan', [
-                'tanggal' => '05',
-                'bulan' => 'DES',
-                'tahun' => '2025',
-                'nama_kegiatan' => 'Pentas Seni Akhir Semester',
-                'jam' => '09:00 - 11:30',
-                'tempat' => 'Gedung Serbaguna Zivana',
-                'status' => 'public'
-            ]); ?>
+            if (empty($displayEvents)): 
+            ?>
+                <div class="text-center py-8 text-white-soft">
+                    <p>Belum ada kegiatan yang dijadwalkan</p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($displayEvents as $event): 
+                    // Parse date
+                    $dateObj = DateTime::createFromFormat('Y-m-d', $event['event_date']);
+                    $tanggal = $dateObj ? $dateObj->format('d') : '01';
+                    $bulan = $dateObj ? strtoupper($dateObj->format('M')) : 'JAN';
+                    $tahun = $dateObj ? $dateObj->format('Y') : '2025';
+                    
+                    // Format time
+                    $startTime = substr($event['start_time'], 0, 5);
+                    $endTime = substr($event['end_time'], 0, 5);
+                    $jam = $startTime . ' - ' . $endTime;
+                    
+                    // Status
+                    $status = !empty($event['is_public']) ? 'public' : 'private';
+                ?>
+                    <?php component('widget/home/home_kegiatan', [
+                        'tanggal' => $tanggal,
+                        'bulan' => $bulan,
+                        'tahun' => $tahun,
+                        'nama_kegiatan' => $event['name'],
+                        'jam' => $jam,
+                        'tempat' => $event['place'],
+                        'status' => $status
+                    ]); ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -156,28 +164,7 @@ $keunggulanItems = [
         
         <div class="mt-[32px]">
             <?php component('widget/home/home_faq', [
-                'faqs' => [
-                    [
-                        'question' => 'Apa itu metode Montessori?',
-                        'answer' => 'Metode Montessori adalah pendekatan pendidikan yang dikembangkan oleh Dr. Maria Montessori. Metode ini menekankan pembelajaran mandiri, eksplorasi, dan pengembangan kreativitas anak melalui lingkungan yang disiapkan khusus.'
-                    ],
-                    [
-                        'question' => 'Berapa usia minimal untuk mendaftar di Zivana Montessori?',
-                        'answer' => 'Kami menerima anak mulai usia 2 tahun untuk program Toddler dan usia 3-6 tahun untuk program Primary/Casa.'
-                    ],
-                    [
-                        'question' => 'Apakah guru-guru di Zivana Montessori bersertifikat?',
-                        'answer' => 'Ya, semua guru kami telah mengikuti pelatihan Montessori dan memiliki sertifikasi resmi dari lembaga pelatihan Montessori yang terakreditasi.'
-                    ],
-                    [
-                        'question' => 'Bagaimana cara mendaftar di Zivana Montessori?',
-                        'answer' => 'Anda dapat mendaftar dengan mengisi formulir pendaftaran online di website kami atau datang langsung ke sekolah untuk konsultasi dan tour fasilitas.'
-                    ],
-                    [
-                        'question' => 'Apakah tersedia program untuk anak berkebutuhan khusus?',
-                        'answer' => 'Kami menyediakan pendekatan inklusif dan dapat menyesuaikan program untuk anak dengan kebutuhan khusus. Silakan hubungi kami untuk konsultasi lebih lanjut mengenai kebutuhan spesifik anak Anda.'
-                    ],
-                ]
+                'faqs' => $faqs ?? []
             ]); ?>
         </div>
     </div>

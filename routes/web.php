@@ -18,6 +18,10 @@ $router->post('/registration', [HomeController::class, 'submitRegistration']);
 // Auth routes
 $router->get('/admin/login', [AuthController::class, 'showLogin']);
 $router->post('/admin/login', [AuthController::class, 'login']);
+$router->get('/admin/forget-password', [AuthController::class, 'showForgetPassword']);
+$router->post('/admin/forget-password', [AuthController::class, 'forgetPassword']);
+$router->get('/admin/reset-password', [AuthController::class, 'showResetPassword']);
+$router->post('/admin/reset-password', [AuthController::class, 'resetPassword']);
 $router->any('/admin/logout', [AuthController::class, 'logout']);
 
 // Admin dashboard
@@ -64,6 +68,33 @@ $router->post('/admin/settings/fields/update', [SettingsController::class, 'upda
 $router->post('/admin/settings/fields/delete', [SettingsController::class, 'deleteField']);
 $router->post('/admin/settings/fields/update-order', [SettingsController::class, 'updateFieldOrder']);
 
+// Event routes
+$router->get('/admin/settings/events/get', [SettingsController::class, 'getEvents']);
+$router->post('/admin/settings/events/create', [SettingsController::class, 'createEvent']);
+$router->post('/admin/settings/events/{id}/update', [SettingsController::class, 'updateEvent']);
+$router->post('/admin/settings/events/{id}/delete', [SettingsController::class, 'deleteEvent']);
+
+// FAQ routes
+$router->get('/admin/settings/faqs/get', [SettingsController::class, 'getFaqs']);
+$router->post('/admin/settings/faqs/create', [SettingsController::class, 'createFaq']);
+$router->post('/admin/settings/faqs/{id}/update', [SettingsController::class, 'updateFaq']);
+$router->post('/admin/settings/faqs/{id}/delete', [SettingsController::class, 'deleteFaq']);
+$router->post('/admin/settings/faqs/update-order', [SettingsController::class, 'updateFaqOrder']);
+
+// Testimonial routes
+$router->get('/admin/settings/testimonials/get', [SettingsController::class, 'getTestimonials']);
+$router->post('/admin/settings/testimonials/create', [SettingsController::class, 'createTestimonial']);
+$router->post('/admin/settings/testimonials/{id}/update', [SettingsController::class, 'updateTestimonial']);
+$router->post('/admin/settings/testimonials/{id}/delete', [SettingsController::class, 'deleteTestimonial']);
+$router->post('/admin/settings/testimonials/update-order', [SettingsController::class, 'updateTestimonialOrder']);
+
+// Highlight Program routes
+$router->get('/admin/settings/highlight-programs/get', [SettingsController::class, 'getHighlightPrograms']);
+$router->get('/admin/settings/highlight-programs/available', [SettingsController::class, 'getAvailablePrograms']);
+$router->post('/admin/settings/highlight-programs/{id}/replace', [SettingsController::class, 'replaceHighlightProgram']);
+$router->post('/admin/settings/highlight-programs/{id}/remove', [SettingsController::class, 'removeHighlightProgram']);
+$router->post('/admin/settings/highlight-programs/update-order', [SettingsController::class, 'updateHighlightProgramOrder']);
+
 // Prakata routes
 $router->get('/admin/management/prakata/get', [ManagementController::class, 'getPrakata']);
 $router->post('/admin/management/prakata/update', [ManagementController::class, 'updatePrakata']);
@@ -77,6 +108,7 @@ $router->get('/admin/management/karyawan/{id}/get', [ManagementController::class
 $router->post('/admin/management/karyawan/create', [ManagementController::class, 'createKaryawan']);
 $router->post('/admin/management/karyawan/{id}/update', [ManagementController::class, 'updateKaryawan']);
 $router->post('/admin/management/karyawan/{id}/delete', [ManagementController::class, 'deleteKaryawan']);
+$router->post('/admin/management/karyawan/update-order', [ManagementController::class, 'updateKaryawanOrder']);
 
 // Schedule routes
 $router->get('/admin/management/schedules', [ManagementController::class, 'schedules']);

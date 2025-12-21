@@ -55,4 +55,11 @@ class Karyawan extends Model {
         }
         return true;
     }
+    
+    /**
+     * Alias for updateSortOrder
+     */
+    public function updateOrder($orderData) {
+        return $this->updateSortOrder($orderData);
+    }
 }

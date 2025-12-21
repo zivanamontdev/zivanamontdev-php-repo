@@ -37,32 +37,7 @@ ob_start();
         <?php component('badge', ['text' => 'Kelas-kelas']); ?>
     </div>
     
-    <?php 
-    $kelasData = [
-        [
-            'image' => 'image_kelas_1.png',
-            'title' => 'Toddler Class',
-            'usia' => '1.5 - 3 tahun',
-            'durasi' => '2 Jam',
-            'jumlah_murid' => '15 anak/kelas'
-        ],
-        [
-            'image' => 'image_kelas_2.png',
-            'title' => 'Preschool Class',
-            'usia' => '3 - 4 tahun',
-            'durasi' => '3 Jam',
-            'jumlah_murid' => '18 anak/kelas'
-        ],
-        [
-            'image' => 'image_kelas_3.png',
-            'title' => 'Kindergarten Class',
-            'usia' => '4 - 6 tahun',
-            'durasi' => '4 Jam',
-            'jumlah_murid' => '20 anak/kelas'
-        ]
-    ];
-    component('widget/activities/activities_kelas', ['kelas' => $kelasData]); 
-    ?>
+    <?php component('widget/activities/activities_kelas', ['kelas' => $kelasData]); ?>
 </section>
 
 <!-- Program Tahun Ajaran Section -->
@@ -71,77 +46,146 @@ ob_start();
         <?php component('badge', ['text' => 'Program Tahun Ajaran']); ?>
     </div>
     
-    <?php 
-    $programData = [
-        [
-            'image' => 'activities_images_1.png',
-            'title' => 'Puncak Tema Semester 1',
-            'description' => 'Kegiatan penutup tema pembelajaran semester pertama dengan berbagai aktivitas menyenangkan.'
-        ],
-        [
-            'image' => 'activities_images_2.png',
-            'title' => 'Field Trip Edukatif',
-            'description' => 'Kunjungan belajar ke berbagai tempat menarik untuk memperluas wawasan anak.'
-        ],
-        [
-            'image' => 'activities_images_3.png',
-            'title' => 'Pentas Seni Tahunan',
-            'description' => 'Ajang kreativitas dan bakat anak-anak dalam seni musik, tari dan drama.'
-        ],
-        [
-            'image' => 'activities_images_4.png',
-            'title' => 'Cooking Class',
-            'description' => 'Kegiatan memasak bersama untuk melatih kemandirian dan kreativitas anak.'
-        ],
-        [
-            'image' => 'activities_images_5.png',
-            'title' => 'Graduation Ceremony',
-            'description' => 'Upacara kelulusan yang meriah untuk merayakan pencapaian anak-anak.'
-        ]
-    ];
-    component('widget/activities/activities_card', ['programs' => $programData, 'floatingVector' => 'vector_highlight_program_tahun.png']); 
-    ?>
-    
-    <!-- Tampilkan Lebih Banyak Button -->
-    <div class="flex justify-center mt-[32px] mb-[80px]">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'href' => '#']); ?>
+    <div class="relative">
+        <!-- Floating Vector -->
+        <img 
+            src="<?= url('images/vectors/vector_highlight_program_tahun.png') ?>" 
+            alt="" 
+            class="absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
+        >
+        
+        <div class="grid grid-cols-3 gap-[24px]" id="program-tahun-grid">
+            <?php foreach ($programsTahunData as $index => $program): ?>
+            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full program-tahun-item <?= $index >= 6 ? 'hidden' : '' ?>" data-index="<?= $index ?>">
+                <!-- Image -->
+                <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
+                    <img 
+                        src="<?= $program['image'] ?? url('images/placeholder.jpg') ?>" 
+                        alt="<?= $program['title'] ?? '' ?>" 
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+                    >
+                    <svg class="hidden absolute inset-0 w-16 h-16 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+                    <?= $program['title'] ?? '' ?>
+                </h3>
+                
+                <!-- Description -->
+                <p class="font-normal text-[20px] leading-[32px] text-black-soft flex-grow">
+                    <?= $program['description'] ?? '' ?>
+                </p>
+                
+                <!-- Button -->
+                <div class="mt-auto pt-[30px]">
+                    <?php component('button', ['text' => 'Lihat Galeri', 'variant' => '7', 'href' => url('/activities-gallery?program_id=' . $program['id'])]); ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
     </div>
+    
+    <!-- Tampilkan Lebih Banyak/Sedikit Button -->
+    <?php if (count($programsTahunData) > 6): ?>
+    <div class="flex justify-center mt-[32px] mb-[80px]">
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-tahun']); ?>
+    </div>
+    <?php else: ?>
+    <div class="mb-[80px]"></div>
+    <?php endif; ?>
+    
+    <script>
+    const totalProgramsTahun = <?= count($programsTahunData) ?>;
+    let currentVisibleCount = 6;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnToggle = document.getElementById('btn-toggle-tahun');
+        const allItems = document.querySelectorAll('.program-tahun-item');
+        
+        if (btnToggle) {
+            btnToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (currentVisibleCount < totalProgramsTahun) {
+                    // Show more
+                    const nextCount = Math.min(currentVisibleCount + 3, totalProgramsTahun);
+                    
+                    // Show items from currentVisibleCount to nextCount
+                    for (let i = currentVisibleCount; i < nextCount; i++) {
+                        allItems[i].classList.remove('hidden');
+                    }
+                    
+                    currentVisibleCount = nextCount;
+                    
+                    // Update button text if all shown
+                    if (currentVisibleCount >= totalProgramsTahun) {
+                        btnToggle.textContent = 'Tampilkan Lebih Sedikit';
+                    }
+                } else {
+                    // Show less - hide all except first 6
+                    for (let i = 6; i < totalProgramsTahun; i++) {
+                        allItems[i].classList.add('hidden');
+                    }
+                    
+                    currentVisibleCount = 6;
+                    btnToggle.textContent = 'Tampilkan Lebih Banyak';
+                }
+            });
+        }
+    });
+    </script>
     
     <!-- Program Harian Sekolah Badge -->
     <div class="flex justify-start mb-[32px]">
         <?php component('badge', ['text' => 'Program Harian Sekolah']); ?>
     </div>
     
-    <?php 
-    $programHarianData = [
-        [
-            'image' => 'activities_images_1.png',
-            'title' => 'Morning Circle Time',
-            'description' => 'Kegiatan pagi untuk menyambut hari dengan doa, lagu, dan berbagi cerita bersama.'
-        ],
-        [
-            'image' => 'activities_images_2.png',
-            'title' => 'Sensory Play',
-            'description' => 'Aktivitas bermain sensorik untuk mengembangkan kreativitas dan motorik halus anak.'
-        ],
-        [
-            'image' => 'activities_images_3.png',
-            'title' => 'Outdoor Activities',
-            'description' => 'Kegiatan luar ruangan untuk melatih motorik kasar dan eksplorasi alam.'
-        ],
-        [
-            'image' => 'activities_images_4.png',
-            'title' => 'Story Time',
-            'description' => 'Waktu bercerita untuk mengembangkan imajinasi dan kecintaan membaca.'
-        ],
-        [
-            'image' => 'activities_images_5.png',
-            'title' => 'Art & Craft',
-            'description' => 'Kegiatan seni dan kerajinan untuk mengekspresikan kreativitas anak.'
-        ]
-    ];
-    component('widget/activities/activities_card', ['programs' => $programHarianData, 'floatingVectorCenter' => 'vector_highlight_program_harian.png']); 
-    ?>
+    <div class="relative">
+        <!-- Floating Vector -->
+        <img 
+            src="<?= url('images/vectors/vector_highlight_program_harian.png') ?>" 
+            alt="" 
+            class="absolute left-1/2 -translate-x-1/2 -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
+        >
+        
+        <div class="grid grid-cols-3 gap-[24px]">
+            <?php foreach ($programsHarianData as $index => $program): ?>
+            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full">
+                <!-- Image -->
+                <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
+                    <img 
+                        src="<?= $program['image'] ?? url('images/placeholder.jpg') ?>" 
+                        alt="<?= $program['title'] ?? '' ?>" 
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+                    >
+                    <svg class="hidden absolute inset-0 w-16 h-16 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+                    <?= $program['title'] ?? '' ?>
+                </h3>
+                
+                <!-- Description -->
+                <p class="font-normal text-[20px] leading-[32px] text-black-soft flex-grow">
+                    <?= $program['description'] ?? '' ?>
+                </p>
+                
+                <!-- Button -->
+                <div class="mt-auto pt-[30px]">
+                    <?php component('button', ['text' => 'Lihat Galeri', 'variant' => '7', 'href' => url('/activities-gallery?program_id=' . $program['id'] . '&type=harian')]); ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </section>
 
 <!-- School Schedule Section -->

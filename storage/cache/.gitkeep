@@ -1,0 +1,5 @@
+-- Run this migration to create page_views table
+-- php scripts/run_migration.php 016_create_page_views_table.sql
+
+-- Or run manually:
+-- mysql -u your_user -p your_database < database/migrations/016_create_page_views_table.sql

@@ -477,6 +477,50 @@ class ManagementController extends Controller {
         exit;
     }
     
+    /**
+     * Update karyawan order
+     */
+    public function updateKaryawanOrder() {
+        if (!$this->isPost()) {
+            $this->redirect('/admin/management');
+            return;
+        }
+        
+        header('Content-Type: application/json');
+        
+        try {
+            $orders = json_decode($_POST['orders'], true);
+            
+            if (!$orders || !is_array($orders)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid order data'
+                ]);
+                exit;
+            }
+            
+            $result = $this->karyawanModel->updateOrder($orders);
+            
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Urutan karyawan berhasil diperbarui'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui urutan karyawan'
+                ]);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+    
     // ========== SCHEDULE METHODS ==========
     
     // Schedules

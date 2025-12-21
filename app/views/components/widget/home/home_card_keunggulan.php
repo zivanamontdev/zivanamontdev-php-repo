@@ -8,11 +8,13 @@
  * @param string $image - Nama file gambar (e.g., 'card1_telescope.png')
  * @param string $title - Judul keunggulan
  * @param string $description - Deskripsi keunggulan
+ * @param string $bgColor - Background color (optional, default: 'bg-white-neutral')
  */
 
 $image = $image ?? '';
 $title = $title ?? '';
 $description = $description ?? '';
+$bgColor = $bgColor ?? 'bg-white-neutral';
 
 // Include card component untuk mendapatkan variant class
 $variant = '2';
@@ -20,7 +22,7 @@ $class = '';
 include VIEW_PATH . '/components/card.php';
 ?>
 
-<div class="bg-white-neutral <?= $variantClass ?> <?= $class ?> flex flex-col h-full">
+<div class="<?= $bgColor ?> <?= $variantClass ?> <?= $class ?> flex flex-col h-full">
     <!-- Image -->
     <img 
         src="<?= url('/images/vectors/card_keunggulan/' . $image) ?>" 

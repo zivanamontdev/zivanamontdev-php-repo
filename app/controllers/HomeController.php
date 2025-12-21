@@ -12,6 +12,14 @@ class HomeController extends Controller {
     private $socialMediaModel;
     private $settingModel;
     private $registrationModel;
+    private $highlightProgramModel;
+    private $testimonialModel;
+    private $eventModel;
+    private $faqModel;
+    private $kepalaSekolahModel;
+    private $karyawanModel;
+    private $fasilitasModel;
+    private $registrationSettingModel;
     
     public function __construct() {
         parent::__construct();
@@ -23,6 +31,14 @@ class HomeController extends Controller {
         $this->socialMediaModel = new SocialMedia();
         $this->settingModel = new Setting();
         $this->registrationModel = new Registration();
+        $this->highlightProgramModel = new HighlightProgram();
+        $this->testimonialModel = new Testimonial();
+        $this->eventModel = new Event();
+        $this->faqModel = new Faq();
+        $this->kepalaSekolahModel = new KepalaSekolah();
+        $this->karyawanModel = new Karyawan();
+        $this->fasilitasModel = new Fasilitas();
+        $this->registrationSettingModel = new RegistrationSetting();
     }
     
     public function index() {
@@ -33,6 +49,10 @@ class HomeController extends Controller {
             'articles' => $this->articleModel->getFeatured(3),
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
+            'highlightPrograms' => $this->highlightProgramModel->getAll(),
+            'testimonials' => $this->testimonialModel->getAll(),
+            'events' => $this->eventModel->getAllEvents(),
+            'faqs' => $this->faqModel->getAll(),
         ];
         
         $this->view('home/index', $data);
@@ -41,11 +61,87 @@ class HomeController extends Controller {
     public function activities() {
         track_visit('/activities');
         
+        // Fetch classes from database
+        $db = Database::getInstance();
+        $classes = $db->query("SELECT * FROM classes WHERE is_active = 1 ORDER BY display_order ASC, created_at ASC")->fetchAll();
+        
+        // Transform data for view
+        $kelasData = array_map(function($class) {
+            return [
+                'image' => $class['image'],
+                'title' => $class['name'],
+                'usia' => $class['age_range'],
+                'durasi' => $class['duration'],
+                'jumlah_murid' => $class['max_students']
+            ];
+        }, $classes);
+        
+        // Fetch programs tahun ajaran from database
+        $programsTahun = $db->query("SELECT * FROM programs_tahun WHERE is_active = 1 ORDER BY display_order ASC, created_at ASC")->fetchAll();
+        
+        // Transform data for view
+        $programsTahunData = array_map(function($program) use ($db) {
+            // Fetch cover image (sampul)
+            $coverImage = null;
+            
+            // Check for gallery cover image first
+            $galleryImages = $db->query(
+                "SELECT * FROM program_gallery WHERE program_id = ? AND is_cover = 1 LIMIT 1", 
+                [$program['id']]
+            )->fetchAll();
+            
+            if (!empty($galleryImages)) {
+                $coverImage = $galleryImages[0]['image_path'];
+            } elseif (!empty($program['image'])) {
+                // Fallback to program image
+                $coverImage = $program['image'];
+            }
+            
+            return [
+                'id' => $program['id'],
+                'image' => $coverImage,
+                'title' => $program['name'],
+                'description' => $program['description']
+            ];
+        }, $programsTahun);
+        
+        // Fetch programs harian from database
+        $programsHarian = $db->query("SELECT * FROM programs_harian WHERE is_active = 1 ORDER BY display_order ASC, id ASC")->fetchAll();
+        
+        // Transform data for view
+        $programsHarianData = array_map(function($program) use ($db) {
+            // Fetch cover image (sampul)
+            $coverImage = null;
+            
+            // Check for gallery cover image first
+            $galleryImages = $db->query(
+                "SELECT * FROM program_harian_gallery WHERE program_harian_id = ? AND is_cover = 1 LIMIT 1", 
+                [$program['id']]
+            )->fetchAll();
+            
+            if (!empty($galleryImages)) {
+                $coverImage = $galleryImages[0]['image_path'];
+            } elseif (!empty($program['image'])) {
+                // Fallback to program image
+                $coverImage = $program['image'];
+            }
+            
+            return [
+                'id' => $program['id'],
+                'image' => $coverImage,
+                'title' => $program['program_name'],
+                'description' => $program['description']
+            ];
+        }, $programsHarian);
+        
         $data = [
             'programs' => $this->programModel->getAllWithImages(),
             'schedules' => $this->scheduleModel->getAllOrdered(),
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
+            'kelasData' => $kelasData,
+            'programsTahunData' => $programsTahunData,
+            'programsHarianData' => $programsHarianData,
         ];
         
         $this->view('home/activities', $data);
@@ -54,9 +150,120 @@ class HomeController extends Controller {
     public function activitiesGallery() {
         track_visit('/activities-gallery');
         
+        $programId = $this->input('program_id');
+        $type = $this->input('type') ?? 'tahun'; // Default to tahun
+        $db = Database::getInstance();
+        
+        // Default data
+        $programData = null;
+        $galleryData = [];
+        
+        if ($programId) {
+            // Determine which table to query based on type
+            if ($type === 'harian') {
+                // Fetch program harian details
+                $program = $db->query(
+                    "SELECT * FROM programs_harian WHERE id = ? AND is_active = 1", 
+                    [$programId]
+                )->fetch();
+                
+                if ($program) {
+                    $programData = [
+                        'id' => $program['id'],
+                        'name' => $program['program_name'],
+                        'description' => $program['description']
+                    ];
+                    
+                    // Fetch all gallery images for this program harian
+                    $gallery = $db->query(
+                        "SELECT * FROM program_harian_gallery WHERE program_harian_id = ? ORDER BY display_order ASC", 
+                        [$programId]
+                    )->fetchAll();
+                    
+                    // Transform gallery data
+                    $galleryData = array_map(function($item) {
+                        return [
+                            'image' => $item['image_path'],
+                            'description' => $item['description'] ?? ''
+                        ];
+                    }, $gallery);
+                    
+                    // If program has an image and it's not already in gallery, add it
+                    if (!empty($program['image'])) {
+                        // Check if program image is already in gallery as cover
+                        $hasCover = false;
+                        foreach ($gallery as $img) {
+                            if ($img['is_cover'] == 1) {
+                                $hasCover = true;
+                                break;
+                            }
+                        }
+                        
+                        // If no cover in gallery, use program image as first item
+                        if (!$hasCover) {
+                            array_unshift($galleryData, [
+                                'image' => $program['image'],
+                                'description' => $program['description'] ?? ''
+                            ]);
+                        }
+                    }
+                }
+            } else {
+                // Fetch program tahun details
+                $program = $db->query(
+                    "SELECT * FROM programs_tahun WHERE id = ? AND is_active = 1", 
+                    [$programId]
+                )->fetch();
+                
+                if ($program) {
+                    $programData = [
+                        'id' => $program['id'],
+                        'name' => $program['name'],
+                        'description' => $program['description']
+                    ];
+                    
+                    // Fetch all gallery images for this program
+                    $gallery = $db->query(
+                        "SELECT * FROM program_gallery WHERE program_id = ? ORDER BY display_order ASC", 
+                        [$programId]
+                    )->fetchAll();
+                    
+                    // Transform gallery data
+                    $galleryData = array_map(function($item) {
+                        return [
+                            'image' => $item['image_path'],
+                            'description' => $item['description'] ?? ''
+                        ];
+                    }, $gallery);
+                    
+                    // If program has an image and it's not already in gallery, add it
+                    if (!empty($program['image'])) {
+                        // Check if program image is already in gallery as cover
+                        $hasCover = false;
+                        foreach ($gallery as $img) {
+                            if ($img['is_cover'] == 1) {
+                                $hasCover = true;
+                                break;
+                            }
+                        }
+                        
+                        // If no cover in gallery, use program image as first item
+                        if (!$hasCover) {
+                            array_unshift($galleryData, [
+                                'image' => $program['image'],
+                                'description' => $program['description'] ?? ''
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        
         $data = [
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
+            'programData' => $programData,
+            'galleryData' => $galleryData,
         ];
         
         $this->view('home/activities-gallery', $data);
@@ -68,6 +275,9 @@ class HomeController extends Controller {
         $data = [
             'employees' => $this->employeeModel->getAllGrouped(),
             'awards' => $this->awardModel->getAllOrdered(),
+            'kepalaSekolah' => $this->kepalaSekolahModel->get(),
+            'karyawan' => $this->karyawanModel->getAllOrdered(),
+            'fasilitas' => $this->fasilitasModel->all('created_at DESC'),
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
         ];
@@ -78,7 +288,22 @@ class HomeController extends Controller {
     public function profileGallery() {
         track_visit('/profile-gallery');
         
+        $fasilitasId = $this->input('id', null);
+        
+        $fasilitas = null;
+        $galleryImages = [];
+        
+        if ($fasilitasId) {
+            $fasilitas = $this->fasilitasModel->getById($fasilitasId);
+            if ($fasilitas) {
+                $galleryImages = $this->fasilitasModel->getGalleryImages($fasilitasId);
+            }
+        }
+        
         $data = [
+            'fasilitas' => $fasilitas,
+            'galleryImages' => $galleryImages,
+            'allFasilitas' => $this->fasilitasModel->all('created_at DESC'),
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
         ];
@@ -133,16 +358,36 @@ class HomeController extends Controller {
     public function articleDetail() {
         track_visit('/article-detail');
         
-        // Static article data for demo purposes
-        $article = [
-            'title' => 'Parenting Ala Rasulullah',
-            'author_name' => 'Admin Zivana',
-            'published_at' => '2025-11-19',
-            'content' => ''
-        ];
+        $id = $this->input('id', null);
+        
+        if (!$id) {
+            http_response_code(404);
+            $this->view('errors/404');
+            return;
+        }
+        
+        $article = $this->articleModel->find($id);
+        
+        if (!$article || $article['status'] !== 'published') {
+            http_response_code(404);
+            $this->view('errors/404');
+            return;
+        }
+        
+        // Increment views
+        $this->articleModel->incrementViews($article['id']);
+        
+        // Get other articles (excluding current article)
+        $otherArticles = $this->articleModel->where(
+            'status = :status AND published_at <= NOW() AND id != :id', 
+            ['status' => 'published', 'id' => $article['id']], 
+            'published_at DESC', 
+            2
+        );
         
         $data = [
             'article' => $article,
+            'otherArticles' => $otherArticles,
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
         ];
@@ -203,14 +448,23 @@ class HomeController extends Controller {
         
         $this->registrationModel->create($registrationData);
         
-        // Build WhatsApp message
-        $whatsappNumber = $this->settingModel->get('whatsapp_number', '6281234567890');
-        $message = "Halo, saya ingin mendaftarkan anak saya di Zivana Montessori School\n\n";
-        $message .= "Nama Orang Tua: {$data['parent_name']}\n";
-        $message .= "Nama Anak: {$data['child_name']}\n";
-        $message .= "Usia Anak: {$data['child_age']}\n";
-        $message .= "Alamat: {$data['address']}\n";
-        $message .= "Nomor WhatsApp: {$data['whatsapp']}\n";
+        // Get WhatsApp settings from registration_settings table
+        $whatsappNumber = $this->registrationSettingModel->get('whatsapp_number') ?? '6281234567890';
+        $template = $this->registrationSettingModel->get('whatsapp_template') ?? "*PENDAFTARAN BARU - Zivana Montessori School*\n\n*Nama Anak:* {childName}\n*Nama Orang Tua:* {parentName}\n*Nomor Telepon:* {phone}\n{address}\n{message}\n\nTerima kasih telah mendaftar di Zivana Montessori School!";
+        
+        // Build WhatsApp message using template
+        $message = str_replace(
+            ['{childName}', '{childAge}', '{parentName}', '{phone}', '{address}', '{message}'],
+            [
+                $data['child_name'],
+                $data['child_age'],
+                $data['parent_name'],
+                $data['whatsapp'],
+                $data['address'] ? '*Alamat:* ' . $data['address'] : '',
+                '' // No additional message for now
+            ],
+            $template
+        );
         
         $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . urlencode($message);
         

@@ -15,6 +15,7 @@ $description = $description ?? '';
 $buttonText = $buttonText ?? '';
 $buttonHref = $buttonHref ?? '#';
 $buttonId = $buttonId ?? '';
+$buttonIcon = $buttonIcon ?? 'right';
 $slot = $slot ?? '';
 ?>
 
@@ -34,7 +35,8 @@ $slot = $slot ?? '';
                 'text' => $buttonText,
                 'variant' => '8',
                 'href' => $buttonHref,
-                'id' => $buttonId
+                'id' => $buttonId,
+                'icon' => $buttonIcon
             ]); ?>
         </div>
         <?php endif; ?>

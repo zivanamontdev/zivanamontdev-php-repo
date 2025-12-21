@@ -352,34 +352,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (deleteFasilitasBtn) {
         deleteFasilitasBtn.addEventListener('click', function() {
-            if (confirm('Apakah Anda yakin ingin menghapus fasilitas ini? Semua galeri foto akan ikut terhapus.')) {
-                // Store active tab before delete to prevent glitch on reload
-                localStorage.setItem('activeManagementTabIndex', '2');
-                
-                const fasilitasId = document.getElementById('fasilitas-id-edit').value;
-                
-                // Send AJAX request
-                fetch(`/admin/management/fasilitas/${fasilitasId}/delete`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        modal.classList.add('hidden');
-                        resetEditFasilitasForm();
-                        showToast('Fasilitas berhasil dihapus!', 'success', 3000);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                });
-            }
+            openModalDeleteFasilitas(
+                'Hapus Fasilitas',
+                'Apakah Anda yakin ingin menghapus fasilitas ini? Semua galeri foto akan ikut terhapus. Tindakan ini tidak dapat dibatalkan.',
+                function() {
+                    // Store active tab before delete to prevent glitch on reload
+                    localStorage.setItem('activeManagementTabIndex', '2');
+                    
+                    const fasilitasId = document.getElementById('fasilitas-id-edit').value;
+                    
+                    // Send AJAX request
+                    fetch(`/admin/management/fasilitas/${fasilitasId}/delete`, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            modal.classList.add('hidden');
+                            resetEditFasilitasForm();
+                            showToast('Fasilitas berhasil dihapus!', 'success', 3000);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                    });
+                }
+            );
         });
     }
     

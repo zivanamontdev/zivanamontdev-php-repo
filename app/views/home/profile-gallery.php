@@ -1,5 +1,24 @@
 <?php 
-$pageTitle = 'Galeri Ruangan Kelas';
+// Get data from controller
+$fasilitas = $fasilitas ?? null;
+$galleryImages = $galleryImages ?? [];
+$allFasilitas = $allFasilitas ?? [];
+
+// Helper function to get gallery image URL
+if (!function_exists('getGalleryImageUrl')) {
+    function getGalleryImageUrl($imagePath) {
+        if (empty($imagePath)) {
+            return url('images/default-gallery.jpg');
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
+
+$pageTitle = $fasilitas ? 'Galeri ' . $fasilitas['name'] : 'Galeri Fasilitas';
 ob_start(); 
 ?>
 
@@ -17,7 +36,7 @@ ob_start();
         
         <!-- Title -->
         <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-black-soft text-center">
-            Galeri Ruangan Kelas
+            <?= $fasilitas ? e($fasilitas['name']) : 'Galeri Fasilitas' ?>
         </h1>
     </div>
 </section>
@@ -29,35 +48,26 @@ ob_start();
         <?php component('button', ['text' => 'Kembali ke Profil Sekolah', 'variant' => '4', 'href' => url('/profile')]); ?>
     </div>
     
+    <?php if (!empty($galleryImages)): ?>
     <!-- Gallery Cards Grid -->
     <div class="grid grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
-        <?php 
-        $galleryData = [
-            ['image' => 'image_fasilitas_1.png', 'title' => 'Ruang Kelas Montessori'],
-            ['image' => 'image_fasilitas_2.png', 'title' => 'Area Bermain Outdoor'],
-            ['image' => 'image_fasilitas_3.png', 'title' => 'Perpustakaan Mini'],
-            ['image' => 'image_fasilitas_4.png', 'title' => 'Ruang Seni & Kreativitas'],
-            ['image' => 'image_fasilitas_5.png', 'title' => 'Musholla'],
-        ];
-        
-        foreach ($galleryData as $item): 
-        ?>
+        <?php foreach ($galleryImages as $item): ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-            @click="showModal = true; currentImage = '<?= url('images/' . $item['image']) ?>'; currentTitle = '<?= addslashes($item['title']) ?>'"
+            @click="showModal = true; currentImage = '<?= getGalleryImageUrl($item['image_path']) ?>'; currentTitle = '<?= addslashes($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>'"
         >
             <!-- Image -->
             <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
                 <img 
-                    src="<?= url('images/' . $item['image']) ?>" 
-                    alt="<?= e($item['title']) ?>" 
+                    src="<?= getGalleryImageUrl($item['image_path']) ?>" 
+                    alt="<?= e($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>" 
                     class="w-full h-full object-cover object-center"
                 >
             </div>
             
             <!-- Title -->
             <h3 class="font-normal text-[20px] leading-[100%] text-black-soft">
-                <?= e($item['title']) ?>
+                <?= e($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>
             </h3>
         </div>
         <?php endforeach; ?>
@@ -105,11 +115,29 @@ ob_start();
             </div>
         </div>
     </div>
+    <?php else: ?>
+    <!-- Empty State -->
+    <div class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">
+            Belum ada foto galeri
+        </h3>
+        <p class="text-gray-500">
+            Galeri untuk fasilitas ini belum tersedia
+        </p>
+    </div>
+    <?php endif; ?>
     
-    <!-- Tampilkan Lebih Banyak Button -->
+    <!-- Tampilkan Lebih Banyak Button - Hidden for now -->
+    <?php if (false && !empty($galleryImages)): ?>
     <div class="flex justify-center mt-[32px] mb-[88px]">
         <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'href' => '#']); ?>
     </div>
+    <?php endif; ?>
 </section>
 
 <!-- Floating Vector Galeri -->

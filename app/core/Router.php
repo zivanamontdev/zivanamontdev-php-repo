@@ -57,6 +57,11 @@ class Router {
             if (preg_match($pattern, $requestUri, $matches)) {
                 array_shift($matches); // Remove full match
                 
+                // Track page view for GET requests only (exclude admin, api, assets)
+                if ($requestMethod === 'GET' && !$this->shouldSkipTracking($requestUri)) {
+                    $this->trackPageView($requestUri);
+                }
+                
                 $callback = $route['callback'];
                 
                 if (is_array($callback)) {
@@ -75,6 +80,52 @@ class Router {
         } else {
             http_response_code(404);
             echo "404 - Page Not Found";
+        }
+    }
+    
+    /**
+     * Check if tracking should be skipped for this URL
+     */
+    private function shouldSkipTracking($uri) {
+        $skipPatterns = [
+            '/admin',           // Skip admin pages
+            '/api',             // Skip API calls
+            '/assets',          // Skip assets
+            '/uploads',         // Skip uploads
+            '/images',          // Skip images
+            '.css',             // Skip CSS files
+            '.js',              // Skip JS files
+            '.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', // Skip images
+        ];
+        
+        foreach ($skipPatterns as $pattern) {
+            if (strpos($uri, $pattern) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Track page view
+     */
+    private function trackPageView($pageUrl) {
+        try {
+            // Get client info
+            $ipAddress = GeoIP::getClientIP();
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            
+            // Get location (this will use cache if available)
+            $location = GeoIP::getLocation($ipAddress);
+            
+            // Track asynchronously to avoid blocking
+            $analyticsModel = new Analytics();
+            $analyticsModel->trackPageView($pageUrl, $ipAddress, $userAgent, $location);
+            
+        } catch (Exception $e) {
+            // Silent fail - don't break the app if tracking fails
+            error_log("Page tracking error: " . $e->getMessage());
         }
     }
     

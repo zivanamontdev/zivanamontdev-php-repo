@@ -116,31 +116,31 @@ ob_start();
 
 <!-- Stats Cards -->
 <?php
-// Dummy data untuk stats cards
+// Use real data from controller or fallback to dummy
 $statsCards = [
     [
         'title' => 'Total Pengunjung',
-        'value' => 63,
-        'change' => 5,
-        'label' => 'dari bulan lalu'
+        'value' => $totalViews ?? 0,
+        'change' => $viewsChange ?? '+0%',
+        'label' => 'dari periode sebelumnya'
     ],
     [
         'title' => 'Pengunjung Unik',
-        'value' => 42,
-        'change' => 12,
-        'label' => 'dari bulan lalu'
+        'value' => $uniqueVisitors ?? 0,
+        'change' => $visitorsChange ?? '+0%',
+        'label' => 'dari periode sebelumnya'
     ],
     [
         'title' => 'Total Pendaftar',
-        'value' => 12,
-        'change' => 1,
-        'label' => 'dari bulan lalu'
+        'value' => $totalRegistrations ?? 0,
+        'change' => $registrationsChange ?? '+0%',
+        'label' => 'dari periode sebelumnya'
     ],
     [
         'title' => 'Total Pembaca Artikel',
-        'value' => 4,
-        'change' => -5,
-        'label' => 'dari bulan lalu'
+        'value' => 0, // To be implemented
+        'change' => '+0%',
+        'label' => 'dari periode sebelumnya'
     ]
 ];
 ?>
@@ -153,7 +153,12 @@ $statsCards = [
         <p class="text-[24px] font-bold leading-[21px] text-secondary mb-[8px]"><?= number_format($card['value']) ?></p>
         <!-- Keterangan -->
         <p class="text-[12px] font-normal leading-[21px] text-white-soft">
-            <span class="<?= $card['change'] >= 0 ? 'text-[#3EC441]' : 'text-[#C43E41]' ?>"><?= $card['change'] >= 0 ? '+' : '' ?><?= $card['change'] ?></span> <?= e($card['label']) ?>
+            <?php 
+            $change = $card['change'];
+            // Extract numeric value
+            $isPositive = strpos($change, '+') !== false;
+            ?>
+            <span class="<?= $isPositive ? 'text-[#3EC441]' : 'text-[#C43E41]' ?>"><?= e($change) ?></span> <?= e($card['label']) ?>
         </p>
     </div>
     <?php endforeach; ?>
@@ -161,23 +166,22 @@ $statsCards = [
 
 <!-- Halaman Terpopuler & Lokasi Section -->
 <?php
-// Dummy data untuk Halaman Terpopuler (sudah diurutkan dari tertinggi)
-$popularPages = [
-    ['page' => '/home', 'views' => 245],
-    ['page' => '/articles', 'views' => 189],
-    ['page' => '/registration', 'views' => 156],
-    ['page' => '/profile', 'views' => 98],
-    ['page' => '/activities', 'views' => 72],
-];
-
-// Dummy data untuk Lokasi (sudah diurutkan dari tertinggi)
-$locationStats = [
-    ['location' => 'Makassar', 'views' => 312],
-    ['location' => 'Jakarta', 'views' => 187],
-    ['location' => 'Surabaya', 'views' => 124],
-    ['location' => 'Bandung', 'views' => 89],
-    ['location' => 'Medan', 'views' => 56],
+// Use real data from controller or fallback to dummy
+if (empty($popularPages)) {
+    $popularPages = [
+        ['page' => '/home', 'views' => 0],
+        ['page' => '/articles', 'views' => 0],
+        ['page' => '/registration', 'views' => 0],
+        ['page' => '/profile', 'views' => 0],
+        ['page' => '/activities', 'views' => 0],
     ];
+}
+
+if (empty($locationStats)) {
+    $locationStats = [
+        ['location' => 'Belum ada data', 'views' => 0],
+    ];
+}
 ?>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Halaman Terpopuler -->
@@ -242,21 +246,23 @@ $locationStats = [
 
 <!-- Pengunjung Per Rentang Jam Section -->
 <?php
-// Dummy data untuk chart - 12 rentang jam
-$hourlyData = [
-    ['hour' => '00-02', 'views' => 12],
-    ['hour' => '02-04', 'views' => 8],
-    ['hour' => '04-06', 'views' => 5],
-    ['hour' => '06-08', 'views' => 24],
-    ['hour' => '08-10', 'views' => 56],
-    ['hour' => '10-12', 'views' => 72],
-    ['hour' => '12-14', 'views' => 64],
-    ['hour' => '14-16', 'views' => 48],
-    ['hour' => '16-18', 'views' => 52],
-    ['hour' => '18-20', 'views' => 40],
-    ['hour' => '20-22', 'views' => 28],
-    ['hour' => '22-24', 'views' => 16],
-];
+// Use real data from controller or fallback to dummy
+if (empty($hourlyData)) {
+    $hourlyData = [
+        ['hour' => '00-02', 'views' => 0],
+        ['hour' => '02-04', 'views' => 0],
+        ['hour' => '04-06', 'views' => 0],
+        ['hour' => '06-08', 'views' => 0],
+        ['hour' => '08-10', 'views' => 0],
+        ['hour' => '10-12', 'views' => 0],
+        ['hour' => '12-14', 'views' => 0],
+        ['hour' => '14-16', 'views' => 0],
+        ['hour' => '16-18', 'views' => 0],
+        ['hour' => '18-20', 'views' => 0],
+        ['hour' => '20-22', 'views' => 0],
+        ['hour' => '22-24', 'views' => 0],
+    ];
+}
 
 // Y-axis values (dari atas ke bawah)
 $yAxisValues = [80, 64, 48, 32, 16, 0];
@@ -277,6 +283,7 @@ $yAxisValues = [80, 64, 48, 32, 16, 0];
     <!-- Chart Container -->
     <?php
     $maxHourlyViews = !empty($hourlyData) ? max(array_column($hourlyData, 'views')) : 0;
+    $hasData = $maxHourlyViews > 0; // Check if there's any actual data
     $chartHeight = 156; // Total height for chart area in px (based on Y-axis range)
     ?>
     <div class="flex items-end">
@@ -290,8 +297,9 @@ $yAxisValues = [80, 64, 48, 32, 16, 0];
         <!-- Chart Area -->
         <div class="flex-1 flex items-end justify-between px-[9px]">
             <?php foreach ($hourlyData as $index => $data): 
-                $isHighest = $data['views'] === $maxHourlyViews;
-                $barHeight = ($data['views'] / 80) * $chartHeight; // Calculate bar height based on max Y value (80)
+                // Only highlight if there's actual data and this is the highest value
+                $isHighest = $hasData && ($data['views'] === $maxHourlyViews) && ($data['views'] > 0);
+                $barHeight = $hasData ? (($data['views'] / 80) * $chartHeight) : 4; // Calculate bar height based on max Y value (80)
                 $barHeight = max($barHeight, 4); // Minimum height
             ?>
             <div class="flex-1 flex flex-col items-center">

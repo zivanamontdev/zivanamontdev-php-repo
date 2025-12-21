@@ -15,7 +15,7 @@ $description = $description ?? 'Apakah Anda yakin ingin menghapus item ini? Tind
 ?>
 
 <!-- Modal Backdrop -->
-<div id="<?= e($modalId) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+<div id="<?= e($modalId) ?>" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50">
     <!-- Modal Container -->
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-[329px] px-[24px] py-[20px]">
         <!-- Header: Title and Close Button -->

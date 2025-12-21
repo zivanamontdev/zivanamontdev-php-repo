@@ -5,13 +5,47 @@
  * Grid layout untuk menampilkan artikel/berita di halaman articles
  * Section 1: Card vertikal (image atas, konten bawah)
  * Section 2 & 3: Card horizontal (image kiri, konten kanan)
+ * 
+ * @param array $articles - Array of articles to display (expects at least 3 articles)
  */
 
-// Load dummy data
-require VIEW_PATH . '/data/articles_data.php';
+// Get articles from passed parameter
+$gridArticles = $__component_data__['articles'] ?? [];
 
-// Get first 3 articles for grid
-$gridArticles = array_slice($dummyArticles, 0, 3);
+// If no articles provided, return empty
+if (empty($gridArticles)) {
+    return;
+}
+
+// Take only first 3 articles
+$gridArticles = array_slice($gridArticles, 0, 3);
+
+// Helper function to format date in Indonesian
+if (!function_exists('formatIndonesianDate')) {
+    function formatIndonesianDate($dateString) {
+        $timestamp = strtotime($dateString);
+        $bulan = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        return date('d', $timestamp) . ' ' . $bulan[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp);
+    }
+}
+
+// Helper to get image URL
+if (!function_exists('getArticleImageUrl')) {
+    function getArticleImageUrl($imagePath) {
+        if (empty($imagePath)) {
+            return url('images/default-article.jpg');
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
 ?>
 
 <style>
@@ -31,7 +65,7 @@ $gridArticles = array_slice($dummyArticles, 0, 3);
                 <!-- Image -->
                 <div class="h-[240px] w-full overflow-hidden rounded-t-[24px]">
                     <img 
-                        src="<?= url('images/' . $gridArticles[0]['image']) ?>" 
+                        src="<?= getArticleImageUrl($gridArticles[0]['featured_image']) ?>" 
                         alt="Artikel" 
                         class="w-full h-full object-cover object-center"
                     >
@@ -42,21 +76,21 @@ $gridArticles = array_slice($dummyArticles, 0, 3);
                     <!-- Title & Date Row -->
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-[20px] leading-[32px] text-black-soft truncate">
-                            <?= $gridArticles[0]['title'] ?>
+                            <?= e($gridArticles[0]['title']) ?>
                         </h3>
                         <span class="font-normal text-[16px] leading-[28px] text-white-soft text-right flex-shrink-0">
-                            <?= $gridArticles[0]['date'] ?>
+                            <?= formatIndonesianDate($gridArticles[0]['published_at']) ?>
                         </span>
                     </div>
                     
                     <!-- Author -->
                     <span class="font-normal text-[16px] leading-[28px] text-white-soft mt-[4px] mb-[16px]">
-                        <?= $gridArticles[0]['author'] ?>
+                        <?= e($gridArticles[0]['author_name']) ?>
                     </span>
                     
                     <!-- Description -->
                     <p class="font-normal text-[16px] leading-[28px] text-black-soft h-[112px] overflow-hidden mb-[16px] line-clamp-4 flex-grow">
-                        <?= $gridArticles[0]['description'] ?>
+                        <?= e($gridArticles[0]['excerpt']) ?>
                     </p>
                     
                     <!-- Read More Link -->
@@ -70,12 +104,13 @@ $gridArticles = array_slice($dummyArticles, 0, 3);
         <!-- Section 2 & 3: Two Cards Stacked Vertically -->
         <div class="flex-1 flex flex-col gap-[24px]">
             <?php for ($i = 1; $i <= 2; $i++): ?>
-            <!-- Section <?= $i + 1 ?>: <?= $gridArticles[$i]['title'] ?> -->
-            <div class="flex-1 bg-white-neutral rounded-[24px] flex overflow-hidden">
+            <?php if (isset($gridArticles[$i])): ?>
+            <!-- Section <?= $i + 1 ?>: <?= e($gridArticles[$i]['title']) ?> -->
+            <div class="h-[266px] bg-white-neutral rounded-[24px] flex overflow-hidden">
                 <!-- Image -->
-                <div class="w-[240px] flex-shrink-0 overflow-hidden rounded-l-[24px] mr-[40px]">
+                <div class="w-[240px] h-full flex-shrink-0 overflow-hidden rounded-l-[24px] mr-[40px]">
                     <img 
-                        src="<?= url('images/' . $gridArticles[$i]['image']) ?>" 
+                        src="<?= getArticleImageUrl($gridArticles[$i]['featured_image']) ?>" 
                         alt="Artikel" 
                         class="w-full h-full object-cover object-center"
                     >
@@ -85,22 +120,22 @@ $gridArticles = array_slice($dummyArticles, 0, 3);
                 <div class="p-[24px] pl-0 flex flex-col flex-1">
                     <!-- Title -->
                     <h3 class="font-bold text-[20px] leading-[32px] text-black-soft">
-                        <?= $gridArticles[$i]['title'] ?>
+                        <?= e($gridArticles[$i]['title']) ?>
                     </h3>
                     
                     <!-- Author & Date Row -->
                     <div class="flex justify-between items-center mt-[4px] mb-[8px]">
                         <span class="font-normal text-[16px] leading-[28px] text-white-soft">
-                            <?= $gridArticles[$i]['author'] ?>
+                            <?= e($gridArticles[$i]['author_name']) ?>
                         </span>
                         <span class="font-normal text-[16px] leading-[28px] text-white-soft text-right flex-shrink-0">
-                            <?= $gridArticles[$i]['date'] ?>
+                            <?= formatIndonesianDate($gridArticles[$i]['published_at']) ?>
                         </span>
                     </div>
                     
                     <!-- Description -->
                     <p class="font-normal text-[16px] leading-[28px] text-black-soft mb-[8px] line-clamp-3 description-clamp max-h-[84px]">
-                        <?= $gridArticles[$i]['description'] ?>
+                        <?= e($gridArticles[$i]['excerpt']) ?>
                     </p>
                     
                     <!-- Read More Link -->
@@ -109,6 +144,7 @@ $gridArticles = array_slice($dummyArticles, 0, 3);
                     </a>
                 </div>
             </div>
+            <?php endif; ?>
             <?php endfor; ?>
         </div>
     </div>

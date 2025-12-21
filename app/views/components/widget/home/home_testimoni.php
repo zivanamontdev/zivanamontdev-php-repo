@@ -3,7 +3,39 @@
  * Home Testimoni Widget
  * 
  * Testimonial section with 3 cards layout
+ * 
+ * @param array $testimonials - Array of testimonials from database
  */
+
+$testimonials = $testimonials ?? [];
+
+// Prepare testimonial data with defaults
+$testi1 = $testimonials[0] ?? [
+    'parent_name' => 'Rani',
+    'child_name' => 'Aira',
+    'highlight_text' => 'Anak jadi lebih mandiri, percaya diri. Guru sabar dan selalu update perkembangan anak.',
+    'testimonial_text' => 'Sejak masuk Zivana Montessori, Aira jadi jauh lebih mandiri. Dia sekarang bisa beresin barang sendiri dan lebih percaya diri kalau diminta coba hal baru. Gurunya sabar banget dan selalu kasih update perkembangan anak.',
+    'image' => null
+];
+$testi2 = $testimonials[1] ?? [
+    'parent_name' => 'Andi',
+    'child_name' => 'Bima',
+    'highlight_text' => '',
+    'testimonial_text' => 'Pendekatannya yang tidak memaksa anak. Bima belajar sambil bermain, tapi hasilnya kelihatan banget. Dia jadi lebih fokus dan punya banyak kosa kata baru yang dia dapat dari aktivitas harian.',
+    'image' => null
+];
+$testi3 = $testimonials[2] ?? [
+    'parent_name' => 'Selvi',
+    'child_name' => 'Mika',
+    'highlight_text' => '',
+    'testimonial_text' => 'Lingkungannya aman, bersih, dan nyaman. Anak saya betah banget di sekolah. Setiap pulang, Mika selalu cerita kegiatan seru yang dia lakukan. Kami merasa sekolah ini benar-benar peduli sama tiap anak satu per satu.',
+    'image' => null
+];
+
+// Get image URLs
+$imageUrl1 = !empty($testi1['image']) ? url('/uploads/testimonials/' . $testi1['image']) : url('/images/image_testi.jpg');
+$imageUrl2 = !empty($testi2['image']) ? url('/uploads/testimonials/' . $testi2['image']) : url('/images/image_testi.jpg');
+$imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['image']) : url('/images/image_testi.jpg');
 ?>
 
 <div class="flex gap-[24px]">
@@ -19,27 +51,28 @@
         <!-- Title -->
         <div class="h-[194px] mb-[24px] relative z-10">
             <h3 class="font-bold text-[32px] leading-[140%] text-black-soft">
-                Anak jadi lebih mandiri, percaya diri. Guru sabar dan selalu update perkembangan anak.
+                <?= !empty($testi1['highlight_text']) ? e($testi1['highlight_text']) : e($testi1['testimonial_text']) ?>
             </h3>
         </div>
         
         <!-- Testimonial Text -->
         <div class="bg-white-secondary rounded-tl-[24px] rounded-tr-[24px] rounded-br-[24px] rounded-bl-[8px] p-[12px] mb-[24px]">
             <p class="font-normal text-[20px] leading-[160%] text-black-neutral">
-                Sejak masuk Zivana Montessori, Aira jadi jauh lebih mandiri. Dia sekarang bisa beresin barang sendiri dan lebih percaya diri kalau diminta coba hal baru. Gurunya sabar banget dan selalu kasih update perkembangan anak.
+                <?= e($testi1['testimonial_text']) ?>
             </p>
         </div>
         
         <!-- Profile -->
         <div class="flex items-center mt-auto">
             <img 
-                src="<?= url('/images/image_testi.jpg') ?>" 
-                alt="Rani" 
+                src="<?= $imageUrl1 ?>" 
+                alt="<?= e($testi1['parent_name']) ?>" 
                 class="w-[44px] h-[44px] rounded-full object-cover mr-[20px]"
+                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22%3E%3Ccircle cx=%2222%22 cy=%2222%22 r=%2222%22 fill=%22%23E0E0E0%22/%3E%3Cpath d=%22M22,10 a5,5 0 1,0 0,10 a5,5 0 1,0 0,-10 M22,25 a10,8 0 0,0 -10,8 h20 a10,8 0 0,0 -10,-8%22 fill=%22%23999%22/%3E%3C/svg%3E';"
             >
             <div>
-                <p class="font-bold text-[16px] text-black-neutral mb-[4px]">Rani</p>
-                <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari Aira</p>
+                <p class="font-bold text-[16px] text-black-neutral mb-[4px]"><?= e($testi1['parent_name']) ?></p>
+                <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari <?= e($testi1['child_name']) ?></p>
             </div>
         </div>
     </div>
@@ -58,20 +91,21 @@
             <!-- Testimonial Text -->
             <div class="bg-[#F5B746] rounded-tl-[24px] rounded-tr-[24px] rounded-br-[24px] rounded-bl-[8px] p-[12px] mb-[16px] relative z-10">
                 <p class="font-normal text-[16px] leading-[170%] text-black-soft">
-                    Pendekatannya yang tidak memaksa anak. Bima belajar sambil bermain, tapi hasilnya kelihatan banget. Dia jadi lebih fokus dan punya banyak kosa kata baru yang dia dapat dari aktivitas harian.
+                    <?= e($testi2['testimonial_text']) ?>
                 </p>
             </div>
             
             <!-- Profile -->
             <div class="flex items-center mt-auto relative z-10">
                 <img 
-                    src="<?= url('/images/image_testi.jpg') ?>" 
-                    alt="Andi" 
+                    src="<?= $imageUrl2 ?>" 
+                    alt="<?= e($testi2['parent_name']) ?>" 
                     class="w-[44px] h-[44px] rounded-full object-cover mr-[20px]"
+                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22%3E%3Ccircle cx=%2222%22 cy=%2222%22 r=%2222%22 fill=%22%23E0E0E0%22/%3E%3Cpath d=%22M22,10 a5,5 0 1,0 0,10 a5,5 0 1,0 0,-10 M22,25 a10,8 0 0,0 -10,8 h20 a10,8 0 0,0 -10,-8%22 fill=%22%23999%22/%3E%3C/svg%3E';"
                 >
                 <div>
-                    <p class="font-bold text-[16px] text-black-neutral mb-[4px]">Andi</p>
-                    <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari Bima</p>
+                    <p class="font-bold text-[16px] text-black-neutral mb-[4px]"><?= e($testi2['parent_name']) ?></p>
+                    <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari <?= e($testi2['child_name']) ?></p>
                 </div>
             </div>
         </div>
@@ -88,20 +122,21 @@
             <!-- Testimonial Text -->
             <div class="bg-white-secondary rounded-tl-[24px] rounded-tr-[24px] rounded-br-[24px] rounded-bl-[8px] p-[12px] mb-[16px] relative z-10">
                 <p class="font-normal text-[16px] leading-[170%] text-black-soft">
-                    Lingkungannya aman, bersih, dan nyaman. Anak saya betah banget di sekolah. Setiap pulang, Mika selalu cerita kegiatan seru yang dia lakukan. Kami merasa sekolah ini benar-benar peduli sama tiap anak satu per satu.
+                    <?= e($testi3['testimonial_text']) ?>
                 </p>
             </div>
             
             <!-- Profile -->
             <div class="flex items-center mt-auto relative z-10">
                 <img 
-                    src="<?= url('/images/image_testi.jpg') ?>" 
-                    alt="Selvi" 
+                    src="<?= $imageUrl3 ?>" 
+                    alt="<?= e($testi3['parent_name']) ?>" 
                     class="w-[44px] h-[44px] rounded-full object-cover mr-[20px]"
+                    onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22%3E%3Ccircle cx=%2222%22 cy=%2222%22 r=%2222%22 fill=%22%23E0E0E0%22/%3E%3Cpath d=%22M22,10 a5,5 0 1,0 0,10 a5,5 0 1,0 0,-10 M22,25 a10,8 0 0,0 -10,8 h20 a10,8 0 0,0 -10,-8%22 fill=%22%23999%22/%3E%3C/svg%3E';"
                 >
                 <div>
-                    <p class="font-bold text-[16px] text-black-neutral mb-[4px]">Selvi</p>
-                    <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari Mika</p>
+                    <p class="font-bold text-[16px] text-black-neutral mb-[4px]"><?= e($testi3['parent_name']) ?></p>
+                    <p class="font-normal text-[16px] text-black-neutral">Orang Tua dari <?= e($testi3['child_name']) ?></p>
                 </div>
             </div>
         </div>

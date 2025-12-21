@@ -6,13 +6,44 @@
  * Layout horizontal dengan perbandingan 1:7 (grid 8)
  * Section 1: Gambar (tinggi 224px, radius 24px)
  * Section 2: Card konten (white_neutral, padding 24px, radius 24px)
+ * 
+ * @param array $articles - Array of articles to display
  */
 
-// Load dummy data
-require VIEW_PATH . '/data/articles_data.php';
+// Get articles from passed parameter
+$listArticles = $__component_data__['articles'] ?? [];
 
-// Get articles starting from index 3 (skip first 3 which are in grid)
-$listArticles = array_slice($dummyArticles, 3);
+// If no articles provided, return empty
+if (empty($listArticles)) {
+    return;
+}
+
+// Helper function to format date in Indonesian
+if (!function_exists('formatIndonesianDateList')) {
+    function formatIndonesianDateList($dateString) {
+        $timestamp = strtotime($dateString);
+        $bulan = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        return date('d', $timestamp) . ' ' . $bulan[(int)date('n', $timestamp)] . ' ' . date('Y', $timestamp);
+    }
+}
+
+// Helper to get image URL
+if (!function_exists('getArticleImageUrlList')) {
+    function getArticleImageUrlList($imagePath) {
+        if (empty($imagePath)) {
+            return url('images/default-article.jpg');
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
 ?>
 
 <style>
@@ -32,7 +63,7 @@ $listArticles = array_slice($dummyArticles, 3);
             <div class="w-1/8 flex-shrink-0" style="width: 12.5%;">
                 <div class="h-[224px] rounded-[24px] overflow-hidden">
                     <img 
-                        src="<?= url('images/' . $article['image']) ?>" 
+                        src="<?= getArticleImageUrlList($article['featured_image']) ?>" 
                         alt="Artikel" 
                         class="w-full h-full object-cover object-center scale-125"
                     >
@@ -44,22 +75,22 @@ $listArticles = array_slice($dummyArticles, 3);
                 <div class="bg-white-neutral rounded-[24px] p-[24px] h-[224px] flex flex-col">
                     <!-- Title -->
                     <h3 class="font-bold text-[20px] leading-[32px] text-black-soft">
-                        <?= $article['title'] ?>
+                        <?= e($article['title']) ?>
                     </h3>
                     
                     <!-- Author & Date Row -->
                     <div class="flex justify-between items-center mt-[4px]">
                         <span class="font-normal text-[16px] leading-[28px] text-white-soft">
-                            <?= $article['author'] ?>
+                            <?= e($article['author_name']) ?>
                         </span>
                         <span class="font-normal text-[16px] leading-[28px] text-white-soft text-right flex-shrink-0">
-                            <?= $article['date'] ?>
+                            <?= formatIndonesianDateList($article['published_at']) ?>
                         </span>
                     </div>
                     
                     <!-- Description -->
                     <p class="font-normal text-[16px] leading-[28px] text-black-soft line-clamp-3 description-clamp max-h-[84px] flex-grow mt-auto mb-auto">
-                        <?= $article['description'] ?>
+                        <?= e($article['excerpt']) ?>
                     </p>
                     
                     <!-- Read More Link -->
