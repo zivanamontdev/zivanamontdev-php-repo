@@ -12,13 +12,16 @@ return [
     'smtp_encryption' => 'tls', // tls or ssl
     
     // Gmail Credentials (isi setelah setup App Password)
-    'smtp_username' => '', // Email Gmail lengkap: example@gmail.com
-    'smtp_password' => '', // App Password 16 karakter dari Gmail
+    'smtp_username' => $_ENV['SMTP_USERNAME'] ?? '', // Email Gmail lengkap: example@gmail.com
+    'smtp_password' => $_ENV['SMTP_PASSWORD'] ?? '', // App Password 16 karakter dari Gmail
     
     // Sender Info
-    'from_email' => '', // Email pengirim (sama dengan smtp_username)
+    'from_email' => $_ENV['SMTP_USERNAME'] ?? '', // Email pengirim (sama dengan smtp_username)
     'from_name' => APP_NAME,
     
-    // Environment (auto-detect)
-    'environment' => $_SERVER['SERVER_NAME'] === 'localhost' ? 'local' : 'production',
+    // Environment detection
+    'environment' => defined('APP_ENV') ? APP_ENV : 'local',
+    
+    // Fallback to file logging if SMTP not configured
+    'fallback_to_log' => true,
 ];

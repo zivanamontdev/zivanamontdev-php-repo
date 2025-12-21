@@ -34,9 +34,28 @@ function send_email($to, $subject, $message) {
         return log_email_to_file($to, $subject, $message);
     }
     
+    // Check if SMTP credentials are configured
+    $smtpConfigured = !empty($emailConfig['smtp_username']) && !empty($emailConfig['smtp_password']);
+    
+    // If SMTP not configured and fallback enabled, use file logging
+    if (!$smtpConfigured && ($emailConfig['fallback_to_log'] ?? false)) {
+        error_log("SMTP not configured, falling back to file logging");
+        return log_email_to_file($to, $subject, $message);
+    }
+    
+    // If SMTP not configured and no fallback, return false
+    if (!$smtpConfigured) {
+        error_log("Email sending failed: SMTP credentials not configured");
+        return false;
+    }
+    
     // Production: Send via Gmail SMTP
     try {
         $mail = new PHPMailer(true);
+        
+        // Enable debug output for troubleshooting (only in logs)
+        // $mail->SMTPDebug = 2; // Uncomment for debugging
+        // $mail->Debugoutput = function($str) { error_log("SMTP: " . $str); };
         
         // Server settings
         $mail->isSMTP();
@@ -59,11 +78,20 @@ function send_email($to, $subject, $message) {
         
         // Send
         $mail->send();
+        error_log("Email sent successfully to: " . $to);
         return true;
         
     } catch (Exception $e) {
-        // Log error
-        error_log("Email sending failed: {$mail->ErrorInfo}");
+        // Log error with more details
+        error_log("Email sending failed to {$to}: " . $mail->ErrorInfo);
+        error_log("Exception: " . $e->getMessage());
+        
+        // Fallback to file logging if enabled
+        if ($emailConfig['fallback_to_log'] ?? false) {
+            error_log("Falling back to file logging");
+            return log_email_to_file($to, $subject, $message);
+        }
+        
         return false;
     }
 }

@@ -73,6 +73,20 @@ Aplikasi akan otomatis:
 2. Atau hapus file `.env` - biar pakai auto-detection
 3. Clear cache: Hapus semua file di `storage/cache/`
 
+## 📧 Email Configuration (Optional)
+
+Email reset password akan **otomatis di-log ke file** jika SMTP tidak dikonfigurasi.
+
+**Cek email log:**
+- File: `storage/logs/emails.log`
+- Lihat reset password link di log file
+
+**Setup SMTP (Optional):**
+- Lihat panduan lengkap di [EMAIL_SETUP.md](EMAIL_SETUP.md)
+- Tambahkan `SMTP_USERNAME` dan `SMTP_PASSWORD` ke `.env`
+
+## 🔧 Jika Ada Masalah
+
 ## 🔧 Jika Ada Masalah
 
 ### Cek Error Log
