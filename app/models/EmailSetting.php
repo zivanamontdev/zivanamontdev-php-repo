@@ -20,9 +20,19 @@ class EmailSetting extends Model {
     public function updateConfig($data) {
         $config = $this->getConfig();
         
+        // Add updated_at timestamp
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        
         if ($config) {
-            // Update existing
-            return $this->update(1, $data);
+            // Update existing - always return true if no SQL error
+            try {
+                $this->update(1, $data);
+                // Even if rowCount is 0 (no change), it's successful
+                return true;
+            } catch (Exception $e) {
+                error_log("Email config update failed: " . $e->getMessage());
+                return false;
+            }
         } else {
             // Create new with id = 1
             $data['id'] = 1;
