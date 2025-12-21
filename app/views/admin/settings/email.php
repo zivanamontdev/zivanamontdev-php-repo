@@ -301,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<style>
 @keyframes slideIn {
     from {
         transform: translateX(100%);
