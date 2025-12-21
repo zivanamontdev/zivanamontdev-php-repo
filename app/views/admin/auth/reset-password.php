@@ -171,7 +171,7 @@
                 
                 <?php if (isset($isExpired) && $isExpired): ?>
                     <!-- Expired Message -->
-                    <p class="font-normal text-[14px] leading-[24px] mb-[44px]" style="color: <?= colors('white_shadow') ?>;">
+                    <p class="font-normal text-[14px] leading-[24px] mb-[44px] text-center" style="color: <?= colors('white_shadow') ?>;">
                         Link reset kata sandi kadaluarsa atau tidak valid. Silakan untuk kembali ke halaman login.
                     </p>
                     
