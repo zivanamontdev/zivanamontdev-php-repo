@@ -128,16 +128,10 @@ class AuthController extends Controller {
         $token = generate_reset_token();
         $expiry = time() + 3600; // 1 hour from now
         
-        // Store token in session (for local testing)
-        // In production, store in database
-        if (!isset($_SESSION['reset_tokens'])) {
-            $_SESSION['reset_tokens'] = [];
-        }
-        $_SESSION['reset_tokens'][$token] = [
-            'email' => $email,
-            'user_id' => $user['id'],
-            'expires' => $expiry
-        ];
+        // Store token in database
+        require_once __DIR__ . '/../models/PasswordReset.php';
+        $passwordResetModel = new PasswordReset();
+        $passwordResetModel->createToken($email, $user['id'], $token, $expiry);
         
         // Send reset email
         try {
@@ -179,19 +173,13 @@ class AuthController extends Controller {
             return;
         }
         
-        // Validate token
-        if (!isset($_SESSION['reset_tokens'][$token])) {
+        // Validate token from database
+        require_once __DIR__ . '/../models/PasswordReset.php';
+        $passwordResetModel = new PasswordReset();
+        $tokenData = $passwordResetModel->findValidToken($token);
+        
+        if (!$tokenData) {
             flash('error', 'Token reset password tidak valid atau sudah kadaluarsa');
-            $this->redirect('/admin/forget-password');
-            return;
-        }
-        
-        $tokenData = $_SESSION['reset_tokens'][$token];
-        
-        // Check if token expired
-        if (time() > $tokenData['expires']) {
-            unset($_SESSION['reset_tokens'][$token]);
-            flash('error', 'Token reset password sudah kadaluarsa. Silakan request ulang');
             $this->redirect('/admin/forget-password');
             return;
         }
@@ -218,19 +206,13 @@ class AuthController extends Controller {
             return;
         }
         
-        // Validate token
-        if (!isset($_SESSION['reset_tokens'][$token])) {
+        // Validate token from database
+        require_once __DIR__ . '/../models/PasswordReset.php';
+        $passwordResetModel = new PasswordReset();
+        $tokenData = $passwordResetModel->findValidToken($token);
+        
+        if (!$tokenData) {
             flash('error', 'Token reset password tidak valid atau sudah kadaluarsa');
-            $this->redirect('/admin/forget-password');
-            return;
-        }
-        
-        $tokenData = $_SESSION['reset_tokens'][$token];
-        
-        // Check if token expired
-        if (time() > $tokenData['expires']) {
-            unset($_SESSION['reset_tokens'][$token]);
-            flash('error', 'Token reset password sudah kadaluarsa. Silakan request ulang');
             $this->redirect('/admin/forget-password');
             return;
         }
@@ -258,8 +240,8 @@ class AuthController extends Controller {
         $updated = $this->userModel->updatePassword($tokenData['user_id'], $hashedPassword);
         
         if ($updated) {
-            // Remove token from session
-            unset($_SESSION['reset_tokens'][$token]);
+            // Mark token as used
+            $passwordResetModel->markAsUsed($token);
             
             flash('success', 'Kata sandi berhasil direset. Silakan login dengan kata sandi baru Anda');
             $this->redirect('/admin/login');
