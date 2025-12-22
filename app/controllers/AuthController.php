@@ -76,7 +76,18 @@ class AuthController extends Controller {
         
         // Set remember me cookie if checked
         if ($remember) {
-            setcookie('remember_user', $user['id'], time() + (86400 * 30), '/');
+            // Generate secure random token
+            $token = bin2hex(random_bytes(32));
+            $hashedToken = hash('sha256', $token);
+            $expiresAt = time() + (86400 * 30); // 30 days
+            
+            // Save to database
+            require_once __DIR__ . '/../models/RememberToken.php';
+            $rememberTokenModel = new RememberToken();
+            $rememberTokenModel->createToken($user['id'], $hashedToken, $expiresAt);
+            
+            // Set cookie with plain token (will be hashed when validating)
+            setcookie('remember_token', $token, $expiresAt, '/', '', false, true); // httpOnly = true for security
         }
         
         clear_old();
@@ -88,14 +99,22 @@ class AuthController extends Controller {
         // Set flash message BEFORE destroying session data
         flash('success', 'Anda telah berhasil keluar');
         
+        // Delete remember token from database if exists
+        if (isset($_COOKIE['remember_token'])) {
+            $token = $_COOKIE['remember_token'];
+            $hashedToken = hash('sha256', $token);
+            
+            require_once __DIR__ . '/../models/RememberToken.php';
+            $rememberTokenModel = new RememberToken();
+            $rememberTokenModel->deleteToken($hashedToken);
+            
+            // Clear cookie
+            setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+        }
+        
         // Destroy session
         unset($_SESSION['user_id']);
         unset($_SESSION['user_data']);
-        
-        // Clear remember cookie
-        if (isset($_COOKIE['remember_user'])) {
-            setcookie('remember_user', '', time() - 3600, '/');
-        }
         
         $this->redirect('/admin/login');
     }

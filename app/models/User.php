@@ -23,6 +23,10 @@ class User extends Model {
         return $this->whereOne('email = :email', ['email' => $email]);
     }
     
+    public function findById($id) {
+        return $this->find($id);
+    }
+    
     public function updatePassword($userId, $hashedPassword) {
         return $this->update($userId, ['password' => $hashedPassword]);
     }
