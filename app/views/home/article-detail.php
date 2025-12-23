@@ -38,12 +38,12 @@ ob_start();
 ?>
 
 <!-- Back Button -->
-<div class="container mx-auto mt-[52px] mb-[32px]">
+<div class="container mx-auto px-5 mt-[52px] mb-[32px]">
     <?php component('button', ['text' => 'Kembali ke Artikel', 'variant' => '4', 'href' => url('/articles')]); ?>
 </div>
 
 <!-- Featured Image -->
-<section class="container mx-auto mb-[32px]">
+<section class="container mx-auto px-5 mb-[32px]">
     <div class="w-full h-[432px] rounded-[16px] overflow-hidden">
         <img 
             src="<?= getArticleFeaturedImage($article['featured_image']) ?>" 
@@ -54,7 +54,7 @@ ob_start();
 </section>
 
 <!-- Article Content Card -->
-<section class="container mx-auto mb-[32px]">
+<section class="container mx-auto px-5 mb-[32px]">
     <div class="bg-white-neutral rounded-[24px] p-[32px]">
         <!-- Title -->
         <h1 class="font-bold text-[32px] leading-[100%] text-black-soft mb-[8px]">
@@ -88,7 +88,7 @@ ob_start();
 
 <!-- Other Articles Section -->
 <?php if (!empty($otherArticles)): ?>
-<section class="container mx-auto mt-[32px]">
+<section class="container mx-auto px-5 mt-[32px]">
     <?php component('badge', ['text' => 'Baca Artikel Lainnya']); ?>
     
     <div class="mt-[16px]">

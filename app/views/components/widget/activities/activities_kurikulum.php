@@ -33,18 +33,18 @@ $kurikulumItems = [
 ];
 ?>
 
-<div class="flex gap-[24px]">
+<div class="flex flex-col lg:flex-row gap-[24px]">
     <!-- Section 1: Kurikulum Cards -->
     <div class="flex-1 flex flex-col gap-[20px]">
         <?php foreach ($kurikulumItems as $item): ?>
-        <div class="h-[107px] py-[15px] px-[24px] rounded-[20px] bg-white-neutral flex items-center">
+        <div class="h-auto lg:h-[107px] px-[12px] py-[16px] lg:px-[24px] lg:py-[15px] rounded-[20px] bg-white-neutral flex items-center">
             <img 
                 src="<?= url('images/' . $item['image']) ?>" 
                 alt="<?= $item['title'] ?>" 
-                class="object-contain mr-[16px]"
-                style="width: <?= $item['width'] ?>px; height: <?= $item['height'] ?>px;"
+                class="object-contain mr-[16px] w-[32px] h-[32px] lg:w-auto lg:h-auto"
+                style="max-width: <?= $item['width'] ?>px; max-height: <?= $item['height'] ?>px;"
             >
-            <span class="font-bold text-[20px] leading-[100%] text-black-soft">
+            <span class="font-bold text-[14px] lg:text-[20px] leading-[100%] text-black-soft">
                 <?= $item['title'] ?>
             </span>
         </div>
@@ -52,7 +52,7 @@ $kurikulumItems = [
     </div>
     
     <!-- Section 2: Penjelasan Kurikulum -->
-    <div class="flex-1 h-[486px] bg-white-neutral rounded-[20px] p-[24px] relative overflow-hidden">
+    <div class="flex-1 h-auto lg:h-[486px] bg-white-neutral rounded-[20px] p-[24px] relative overflow-hidden">
         <!-- Vector Kurikulum - Top Right -->
         <img 
             src="<?= url('images/vectors/vector_kurikulum.png') ?>" 
@@ -61,15 +61,15 @@ $kurikulumItems = [
         >
         
         <div class="relative z-10">
-            <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+            <h3 class="font-bold text-[20px] lg:text-[24px] leading-[38px] text-black-soft mb-[16px]">
                 Penjelasan Kurikulum
             </h3>
             
-            <p class="font-normal text-[20px] leading-[38px] text-black-soft mb-[16px]">
+            <p class="font-normal text-[14px] lg:text-[20px] leading-[24px] lg:leading-[38px] text-black-soft mb-[16px]">
                 Sekolah Zivana Montessori mengintegrasikan Kurikulum Nasional sebagai dasar pembelajaran, diperkaya dengan Kurikulum Iman dan Adab untuk membentuk karakter dan akhlak sejak dini. Proses literasi Al-Qur'an menggunakan Metode Ummi yang sistematis dan mudah dipahami anak.
             </p>
             
-            <p class="font-normal text-[20px] leading-[38px] text-black-soft">
+            <p class="font-normal text-[14px] lg:text-[20px] leading-[24px] lg:leading-[38px] text-black-soft">
                 Semua itu dipadukan dengan Kurikulum Zivana Montessori (Montessori Islamic) yang menekankan kemandirian, eksplorasi, dan pembelajaran holistik sesuai prinsip Montessori. Kombinasi ini memastikan anak tumbuh cerdas, berkarakter, dan percaya diri.
             </p>
         </div>

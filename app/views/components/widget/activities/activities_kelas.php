@@ -18,7 +18,7 @@ $kelas = $kelas ?? [];
         class="absolute -left-[54px] -top-[57px] w-[68px] h-[74px] z-10 pointer-events-none"
     >
     
-    <div class="grid grid-cols-3 gap-[24px]">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-[24px]">
     <?php foreach ($kelas as $item): ?>
     <div class="bg-white-neutral p-[16px] rounded-[20px]">
         <!-- Image -->
@@ -35,16 +35,16 @@ $kelas = $kelas ?? [];
         </div>
         
         <!-- Title -->
-        <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+        <h3 class="font-bold text-[20px] lg:text-[24px] leading-[32px] lg:leading-[38px] text-black-soft mb-[16px]">
             <?= $item['title'] ?? '' ?>
         </h3>
         
         <!-- Usia Card -->
-        <div class="bg-white-secondary rounded-[12px] h-[80px] pt-[8px] pr-[12px] pb-[8px] pl-[12px] mb-[16px]">
-            <h4 class="font-bold text-[16px] leading-[28px] text-black-soft mb-[8px]">
+        <div class="bg-white-secondary rounded-[12px] h-[80px] px-[12px] py-[8px] mb-[16px] flex flex-col justify-center">
+            <h4 class="font-bold text-[12px] lg:text-[16px] leading-[20px] lg:leading-[28px] text-black-soft mb-[4px]">
                 Usia
             </h4>
-            <p class="font-normal text-[16px] leading-[28px] text-black-soft">
+            <p class="font-normal text-[14px] lg:text-[16px] leading-[24px] lg:leading-[28px] text-black-soft">
                 <?= $item['usia'] ?? '' ?>
             </p>
         </div>
@@ -52,21 +52,21 @@ $kelas = $kelas ?? [];
         <!-- Durasi & Jumlah Murid Cards -->
         <div class="flex gap-[16px]">
             <!-- Durasi Belajar -->
-            <div class="flex-1 bg-white-secondary rounded-[12px] h-[80px] pt-[8px] pr-[12px] pb-[8px] pl-[12px]">
-                <h4 class="font-bold text-[16px] leading-[28px] text-black-soft mb-[8px]">
+            <div class="flex-1 bg-white-secondary rounded-[12px] h-[80px] px-[12px] py-[8px] flex flex-col justify-center">
+                <h4 class="font-bold text-[12px] lg:text-[16px] leading-[20px] lg:leading-[28px] text-black-soft mb-[4px]">
                     Durasi Belajar
                 </h4>
-                <p class="font-normal text-[16px] leading-[28px] text-black-soft">
+                <p class="font-normal text-[14px] lg:text-[16px] leading-[24px] lg:leading-[28px] text-black-soft">
                     <?= $item['durasi'] ?? '' ?>
                 </p>
             </div>
             
             <!-- Jumlah Murid -->
-            <div class="flex-1 bg-white-secondary rounded-[12px] h-[80px] pt-[8px] pr-[12px] pb-[8px] pl-[12px]">
-                <h4 class="font-bold text-[16px] leading-[28px] text-black-soft mb-[8px]">
+            <div class="flex-1 bg-white-secondary rounded-[12px] h-[80px] px-[12px] py-[8px] flex flex-col justify-center">
+                <h4 class="font-bold text-[12px] lg:text-[16px] leading-[20px] lg:leading-[28px] text-black-soft mb-[4px]">
                     Jumlah Murid
                 </h4>
-                <p class="font-normal text-[16px] leading-[28px] text-black-soft">
+                <p class="font-normal text-[14px] lg:text-[16px] leading-[24px] lg:leading-[28px] text-black-soft">
                     <?= $item['jumlah_murid'] ?? '' ?>
                 </p>
             </div>

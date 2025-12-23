@@ -4,26 +4,10 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<section class="container mx-auto mt-[52px]">
-    <div class="bg-primary rounded-[32px] h-[132px] p-[40px] relative overflow-hidden flex items-center justify-center">
-        <!-- Background mask with gradient opacity -->
-        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
-            <img 
-                src="<?= url('/images/mask_group.png') ?>" 
-                alt="" 
-                class="w-full h-full object-cover"
-            >
-        </div>
-        
-        <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-white-neutral text-center">
-            Aktivitas dan Pembelajaran Sekolah
-        </h1>
-    </div>
-</section>
+<?php component('page_hero', ['title' => 'Aktivitas dan Pembelajaran Sekolah', 'variant' => 'primary']); ?>
 
 <!-- Kurikulum Sekolah Section -->
-<section class="container mx-auto mt-[80px]">
+<section class="container mx-auto px-5 mt-[80px]">
     <div class="flex justify-center mb-[32px]">
         <?php component('badge', ['text' => 'Kurikulum Sekolah']); ?>
     </div>
@@ -32,7 +16,7 @@ ob_start();
 </section>
 
 <!-- Kelas-kelas Section -->
-<section class="container mx-auto mt-[80px]">
+<section class="container mx-auto px-5 mt-[80px]">
     <div class="flex justify-center mb-[32px]">
         <?php component('badge', ['text' => 'Kelas-kelas']); ?>
     </div>
@@ -41,7 +25,7 @@ ob_start();
 </section>
 
 <!-- Program Tahun Ajaran Section -->
-<section class="container mx-auto mt-[80px]">
+<section class="container mx-auto px-5 mt-[80px]">
     <div class="flex justify-center mb-[24px]">
         <?php component('badge', ['text' => 'Program Tahun Ajaran']); ?>
     </div>
@@ -54,7 +38,7 @@ ob_start();
             class="absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
         >
         
-        <div class="grid grid-cols-3 gap-[24px]" id="program-tahun-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" id="program-tahun-grid">
             <?php foreach ($programsTahunData as $index => $program): ?>
             <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full program-tahun-item <?= $index >= 6 ? 'hidden' : '' ?>" data-index="<?= $index ?>">
                 <!-- Image -->
@@ -71,12 +55,12 @@ ob_start();
                 </div>
                 
                 <!-- Title -->
-                <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+                <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-black-soft mb-[16px]">
                     <?= $program['title'] ?? '' ?>
                 </h3>
                 
                 <!-- Description -->
-                <p class="font-normal text-[20px] leading-[32px] text-black-soft flex-grow">
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft flex-grow">
                     <?= $program['description'] ?? '' ?>
                 </p>
                 
@@ -140,7 +124,7 @@ ob_start();
     </script>
     
     <!-- Program Harian Sekolah Badge -->
-    <div class="flex justify-start mb-[32px]">
+    <div class="flex justify-center mb-[32px]">
         <?php component('badge', ['text' => 'Program Harian Sekolah']); ?>
     </div>
     
@@ -152,7 +136,7 @@ ob_start();
             class="absolute left-1/2 -translate-x-1/2 -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
         >
         
-        <div class="grid grid-cols-3 gap-[24px]">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
             <?php foreach ($programsHarianData as $index => $program): ?>
             <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full">
                 <!-- Image -->
@@ -169,12 +153,12 @@ ob_start();
                 </div>
                 
                 <!-- Title -->
-                <h3 class="font-bold text-[24px] leading-[38px] text-black-soft mb-[16px]">
+                <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-black-soft mb-[16px]">
                     <?= $program['title'] ?? '' ?>
                 </h3>
                 
                 <!-- Description -->
-                <p class="font-normal text-[20px] leading-[32px] text-black-soft flex-grow">
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft flex-grow">
                     <?= $program['description'] ?? '' ?>
                 </p>
                 

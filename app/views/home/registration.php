@@ -4,7 +4,7 @@ ob_start();
 ?>
 
 <!-- Hero Section -->
-<section class="container mx-auto mt-[52px] mb-[80px]">
+<section class="container mx-auto px-5 mt-[52px] mb-[80px]">
     <div class="bg-primary rounded-[24px] p-[24px] h-[214px] relative overflow-hidden flex items-center">
         <!-- Vector Star 4 -->
         <img 
@@ -21,7 +21,7 @@ ob_start();
 </section>
 
 <!-- Form Section -->
-<section class="container mx-auto mb-[88px] relative">
+<section class="container mx-auto px-5 mb-[88px] relative">
     <!-- Vector Registration - Outside container to reach screen edge -->
     <img 
         src="<?= url('images/vectors/vector_registration.png') ?>" 

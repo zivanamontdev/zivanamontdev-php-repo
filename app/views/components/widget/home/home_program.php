@@ -26,9 +26,9 @@ $imageUrl3 = !empty($program3['image']) ?
     url('/images/program 2.jpg');
 ?>
 
-<div class="flex gap-[24px] h-[524px]">
+<div class="flex flex-col lg:flex-row gap-[24px] h-auto lg:h-[524px]">
     <!-- Left Card - Program 1 -->
-    <div class="flex-1 relative rounded-[32px] overflow-hidden">
+    <div class="w-full lg:flex-1 relative rounded-[24px] md:rounded-[32px] overflow-hidden h-[524px] lg:h-auto">
         <!-- Background Image -->
         <img 
             src="<?= $imageUrl1 ?>" 
@@ -41,8 +41,8 @@ $imageUrl3 = !empty($program3['image']) ?
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
         
         <!-- Content -->
-        <div class="relative h-full flex flex-col justify-end p-[20px]">
-            <h3 class="font-bold text-[24px] leading-[32px] tracking-[0%] text-white-neutral mb-[16px]">
+        <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px]">
+            <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
                 <?= e($program1['name']) ?>
             </h3>
             <p class="font-normal text-[20px] leading-[32px] tracking-[0%] text-white-neutral">
@@ -52,9 +52,9 @@ $imageUrl3 = !empty($program3['image']) ?
     </div>
     
     <!-- Right Section -->
-    <div class="flex-1 flex flex-col gap-[24px]">
+    <div class="w-full lg:flex-1 flex flex-col gap-[24px]">
         <!-- Top Card - Program 2 -->
-        <div class="relative rounded-[20px] overflow-hidden h-[250px]">
+        <div class="relative rounded-[20px] overflow-hidden h-[262px]">
             <!-- Vector Program 2 (floating on right side) -->
             <img 
                 src="<?= url('/images/vectors/vector_program2.png') ?>" 
@@ -74,20 +74,20 @@ $imageUrl3 = !empty($program3['image']) ?
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
             
             <!-- Content -->
-            <div class="relative h-full flex flex-col justify-end p-[20px]">
-                <h3 class="font-bold text-[24px] leading-[32px] tracking-[0%] text-white-neutral mb-[16px]">
+            <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px] z-30">
+                <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
                     <?= e($program2['name']) ?>
                 </h3>
-                <p class="font-normal text-[20px] leading-[32px] tracking-[0%] text-white-neutral">
+                <p class="font-normal text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
                     <?= e($program2['description']) ?>
                 </p>
             </div>
         </div>
         
         <!-- Bottom Section - 2 columns -->
-        <div class="flex-1 flex gap-[24px]">
+        <div class="flex-1 flex flex-col md:flex-row gap-[24px]">
             <!-- Left - Program 3 -->
-            <div class="flex-1 relative rounded-[20px] overflow-hidden">
+            <div class="md:flex-1 relative rounded-[20px] overflow-hidden h-[174px] md:h-auto">
                 <!-- Background Image -->
                 <img 
                     src="<?= $imageUrl3 ?>" 
@@ -100,16 +100,16 @@ $imageUrl3 = !empty($program3['image']) ?
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
                 
                 <!-- Content -->
-                <div class="relative h-full flex flex-col justify-end p-[20px]">
-                    <h3 class="font-bold text-[24px] leading-[32px] tracking-[0%] text-white-neutral">
+                <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px]">
+                    <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
                         <?= e($program3['name']) ?>
                     </h3>
                 </div>
             </div>
             
             <!-- Right - Text & Button -->
-            <div class="flex-1 flex flex-col justify-center items-start text-left">
-                <p class="font-bold text-[28px] leading-[140%] tracking-[0%] text-black-soft mb-[26px]">
+            <div class="w-full md:flex-1 flex flex-col justify-center items-center">
+                <p class="font-bold text-[20px] md:text-[28px] leading-[140%] tracking-[0%] text-black-soft mb-[20px] md:mb-[26px] text-center">
                     Serta banyak program sekolah bermanfaat lainnya!
                 </p>
                 <?php component('button', [

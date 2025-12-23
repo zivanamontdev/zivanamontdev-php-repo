@@ -11,7 +11,7 @@ $socialMedia = $socialMedia ?? [];
 
 // Navigation menu items
 $menuItems = [
-    ['label' => 'Aktifitas', 'url' => url('/activities')],
+    ['label' => 'Aktivitas', 'url' => url('/activities')],
     ['label' => 'Artikel', 'url' => url('/articles')],
     ['label' => 'Tentang Kami', 'url' => url('/profile')],
 ];
@@ -32,19 +32,27 @@ function isArticlesPage($path) {
 
 <!-- Navigation -->
 <nav class="bg-white-neutral fixed w-full top-0 z-50">
-    <div class="container mx-auto">
+    <div class="lg:container mx-auto px-5">
         <div class="flex justify-between items-center py-4">
-            <!-- Logo -->
-            <a href="<?= url('/') ?>" class="flex-shrink-0">
+            <!-- Mobile Left Section: Menu Icon + Logo -->
+            <div class="flex md:hidden items-center gap-3">
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="text-black-highlight hover:text-primary">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                
+                <!-- Logo Mobile -->
+                <a href="<?= url('/') ?>" class="flex-shrink-0">
+                    <img src="<?= url('/images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="65" height="24" class="h-[24px] w-[65px] object-contain">
+                </a>
+            </div>
+            
+            <!-- Desktop Logo -->
+            <a href="<?= url('/') ?>" class="hidden md:block flex-shrink-0">
                 <img src="<?= url('/images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="164" height="60" class="h-[60px] w-[164px] object-contain">
             </a>
-            
-            <!-- Mobile menu button -->
-            <button id="mobile-menu-button" class="md:hidden text-black-highlight hover:text-primary">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
             
             <div class="hidden md:flex items-center justify-center flex-1 px-8">
                 <div class="flex items-center gap-[16px]">
@@ -66,7 +74,16 @@ function isArticlesPage($path) {
                 </div>
             </div>
             
-            <!-- Register Button - Using Variant 2 -->
+            <!-- Register Button Mobile - Using Variant 2 -->
+            <div class="md:hidden flex-shrink-0">
+                <?php component('button', [
+                    'text' => 'Daftar',
+                    'variant' => '2',
+                    'href' => url('/registration')
+                ]); ?>
+            </div>
+            
+            <!-- Register Button Desktop - Using Variant 2 -->
             <div class="hidden md:block flex-shrink-0">
                 <?php component('button', [
                     'text' => 'Daftar ke Sekolah',
@@ -113,5 +130,12 @@ function isArticlesPage($path) {
     // Mobile menu toggle
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+    
+    // Close mobile menu when clicking on menu items
+    document.querySelectorAll('#mobile-menu a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        });
     });
 </script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,16 +53,16 @@
             opacity: 0.5;
         }
 
-        /* Reset visited link colors for buttons */
-        a.btn-component:visited {
-            color: inherit;
+        /* Remove browser default link styling only */
+        a.btn-component {
+            text-decoration: none;
         }
     </style>    <?php if (isset($customStyles)): ?>
         <?= $customStyles ?>
     <?php endif; ?>
 </head>
 
-<body class="bg-white-secondary">
+<body class="bg-white-secondary overflow-x-hidden">
     <?php if (strpos($_SERVER['REQUEST_URI'], '/admin') === 0): ?>
         <?php
         // Tentukan currentPage dari URL

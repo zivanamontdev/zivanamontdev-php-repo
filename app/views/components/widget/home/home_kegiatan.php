@@ -22,9 +22,9 @@ $tempat = $tempat ?? 'Tempat Kegiatan';
 $status = $status ?? 'private';
 ?>
 
-<div class="grid grid-cols-12 gap-[24px]">
+<div class="flex flex-col md:grid md:grid-cols-12 gap-[24px]">
     <!-- Section 1 - Date -->
-    <div class="col-span-2 h-[214px] bg-primary rounded-[24px] p-[24px] relative overflow-hidden flex items-center justify-center">
+    <div class="md:col-span-2 h-[118px] bg-primary rounded-[24px] p-[24px] relative overflow-hidden flex items-center justify-center">
         <!-- Vector Star 4 -->
         <img 
             src="<?= url('/images/vectors/vector_star4.png') ?>" 
@@ -43,36 +43,33 @@ $status = $status ?? 'private';
     </div>
     
     <!-- Section 2 - Details -->
-    <div class="col-span-10 bg-white-neutral rounded-[24px] p-[24px]">
-        <!-- Nama Kegiatan & Status -->
-        <div class="flex items-center justify-between mb-[16px]">
-            <h3 class="font-bold text-[24px] leading-[38px] text-black-soft">
-                <?= e($nama_kegiatan) ?>
-            </h3>
-            <?php if ($status === 'public'): ?>
-                <span class="bg-primary px-[8px] rounded-[4px] font-normal text-[14px] leading-[24px] text-white-neutral">
-                    Terbuka untuk Umum
-                </span>
-            <?php endif; ?>
+    <div class="md:col-span-10 bg-white-neutral rounded-[24px] p-[24px] flex flex-col items-center text-center">
+        <!-- Nama Kegiatan -->
+        <h3 class="font-bold text-[24px] leading-[38px] text-black-soft">
+            <?= e($nama_kegiatan) ?>
+        </h3>
+        
+        <!-- Status Badge (if public) -->
+        <?php if ($status === 'public'): ?>
+            <span class="mt-[16px] bg-primary px-[8px] rounded-[4px] font-normal text-[14px] leading-[24px] text-white-neutral">
+                Terbuka untuk Umum
+            </span>
+        <?php endif; ?>
+        
+        <!-- Jam -->
+        <div class="mt-[16px]">
+            <p class="font-normal text-[20px] leading-[32px] text-black-soft">Jam</p>
+            <p class="font-bold text-[20px] leading-[32px] text-black-soft mt-[2px]"><?= e($jam) ?></p>
         </div>
         
-        <!-- Jam & Tempat -->
-        <div class="flex mb-[16px]">
-            <!-- Jam -->
-            <div class="flex-1">
-                <p class="font-normal text-[20px] leading-[32px] text-black-soft">Jam</p>
-                <p class="font-bold text-[20px] leading-[32px] text-black-soft"><?= e($jam) ?></p>
-            </div>
-            
-            <!-- Tempat -->
-            <div class="flex-1">
-                <p class="font-normal text-[20px] leading-[32px] text-black-soft">Tempat</p>
-                <p class="font-bold text-[20px] leading-[32px] text-black-soft"><?= e($tempat) ?></p>
-            </div>
+        <!-- Tempat -->
+        <div class="mt-[16px]">
+            <p class="font-normal text-[20px] leading-[32px] text-black-soft">Tempat</p>
+            <p class="font-bold text-[20px] leading-[32px] text-black-soft mt-[2px]"><?= e($tempat) ?></p>
         </div>
         
         <!-- Button Text -->
-        <a href="#" class="font-normal text-[20px] leading-[32px] text-primary hover:underline">
+        <a href="#" class="mt-[16px] font-normal text-[20px] leading-[32px] text-primary hover:underline">
             Lihat Informasi Kegiatan
         </a>
     </div>

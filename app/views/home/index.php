@@ -34,8 +34,10 @@ $keunggulanItems = [
 
 <!-- Keunggulan Sekolah Section -->
 <section class="mt-[120px]">
-    <div class="container mx-auto">
-        <?php component('badge', ['text' => 'Keunggulan Sekolah']); ?>
+    <div class="w-full lg:container mx-auto px-5">
+        <div class="flex justify-center md:justify-start">
+            <?php component('badge', ['text' => 'Keunggulan Sekolah']); ?>
+        </div>
         
         <!-- Cards Grid -->
         <div class="relative">
@@ -69,7 +71,7 @@ $keunggulanItems = [
         class="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[143px] h-[143px] pointer-events-none z-10"
     >
     
-    <div class="container mx-auto relative">
+    <div class="w-full lg:container mx-auto px-5 relative">
         <?php component('widget/home/home_about'); ?>
         
         <!-- Vector Pita (floating at bottom right of container) -->
@@ -87,11 +89,13 @@ $keunggulanItems = [
     <img 
         src="<?= url('/images/vectors/vector_program.png') ?>" 
         alt="" 
-        class="absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-10"
+        class="absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-0"
     >
     
-    <div class="container mx-auto relative">
-        <?php component('badge', ['text' => 'Program Sekolah']); ?>
+    <div class="w-full lg:container mx-auto px-5 relative">
+        <div class="flex justify-center md:justify-start relative z-10">
+            <?php component('badge', ['text' => 'Program Sekolah']); ?>
+        </div>
         
         <!-- Program Grid -->
         <div class="mt-[32px]">
@@ -102,8 +106,10 @@ $keunggulanItems = [
 
 <!-- Testimoni Orang Tua Siswa Section -->
 <section class="mt-[120px]">
-    <div class="container mx-auto">
-        <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa']); ?>
+    <div class="w-full lg:container mx-auto px-5">
+        <div class="flex justify-center md:justify-start">
+            <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa']); ?>
+        </div>
         
         <div class="mt-[32px]">
             <?php component('widget/home/home_testimoni', ['testimonials' => $testimonials ?? []]); ?>
@@ -113,8 +119,10 @@ $keunggulanItems = [
 
 <!-- Kegiatan Section -->
 <section class="mt-[120px]">
-    <div class="container mx-auto">
-        <?php component('badge', ['text' => 'Kegiatan yang Akan Datang']); ?>
+    <div class="w-full lg:container mx-auto px-5">
+        <div class="flex justify-center md:justify-start">
+            <?php component('badge', ['text' => 'Kegiatan yang Akan Datang']); ?>
+        </div>
         
         <div class="mt-[32px] flex flex-col gap-[24px]">
             <?php 
@@ -159,8 +167,10 @@ $keunggulanItems = [
 
 <!-- FAQ Section -->
 <section class="mt-[120px] relative z-10">
-    <div class="container mx-auto">
-        <?php component('badge', ['text' => 'Frequently Ask Questions (FAQs)']); ?>
+    <div class="w-full lg:container mx-auto px-5">
+        <div class="flex justify-center md:justify-start">
+            <?php component('badge', ['text' => 'Frequently Ask Questions (FAQs)', 'class' => 'text-[14px] md:text-[16px] px-[16px] md:px-[20px] tracking-tighter md:tracking-normal']); ?>
+        </div>
         
         <div class="mt-[32px]">
             <?php component('widget/home/home_faq', [
@@ -175,7 +185,7 @@ $keunggulanItems = [
     'ctaTitle' => 'Daftar Sekarang',
     'ctaDescription' => 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami<br>di Zivana Montessori School',
     'ctaButtonText' => 'Daftar ke Sekolah',
-    'ctaButtonHref' => '#'
+    'ctaButtonHref' => url('/registration')
 ]); ?>
 
 <?php 

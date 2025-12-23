@@ -38,9 +38,9 @@ $imageUrl2 = !empty($testi2['image']) ? url('/uploads/testimonials/' . $testi2['
 $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['image']) : url('/images/image_testi.jpg');
 ?>
 
-<div class="flex gap-[24px]">
+<div class="flex flex-col lg:flex-row gap-[24px]">
     <!-- Card 1 - Left (Full height) -->
-    <div class="flex-1 h-[488px] bg-white-neutral rounded-[24px] p-[24px] relative flex flex-col overflow-hidden">
+    <div class="w-full lg:flex-1 h-auto min-h-[400px] lg:h-[488px] bg-white-neutral rounded-[24px] p-[20px] md:p-[24px] relative flex flex-col overflow-hidden">
         <!-- Vector Star -->
         <img 
             src="<?= url('/images/vectors/vector_star1.png') ?>" 
@@ -49,21 +49,21 @@ $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['
         >
         
         <!-- Title -->
-        <div class="h-[194px] mb-[24px] relative z-10">
-            <h3 class="font-bold text-[32px] leading-[140%] text-black-soft">
+        <div class="h-auto lg:h-[194px] mb-[16px] md:mb-[24px] relative z-10">
+            <h3 class="font-bold text-[24px] md:text-[32px] leading-[140%] text-black-soft">
                 <?= !empty($testi1['highlight_text']) ? e($testi1['highlight_text']) : e($testi1['testimonial_text']) ?>
             </h3>
         </div>
         
         <!-- Testimonial Text -->
-        <div class="bg-white-secondary rounded-tl-[24px] rounded-tr-[24px] rounded-br-[24px] rounded-bl-[8px] p-[12px] mb-[24px]">
-            <p class="font-normal text-[20px] leading-[160%] text-black-neutral">
+        <div class="bg-white-secondary rounded-tl-[24px] rounded-tr-[24px] rounded-br-[24px] rounded-bl-[8px] p-[12px] mb-[16px] md:mb-[24px] relative z-10">
+            <p class="font-normal text-[16px] md:text-[20px] leading-[160%] text-black-neutral">
                 <?= e($testi1['testimonial_text']) ?>
             </p>
         </div>
         
         <!-- Profile -->
-        <div class="flex items-center mt-auto">
+        <div class="flex items-center mt-auto relative z-10">
             <img 
                 src="<?= $imageUrl1 ?>" 
                 alt="<?= e($testi1['parent_name']) ?>" 
@@ -78,7 +78,7 @@ $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['
     </div>
     
     <!-- Right Section - 2 cards stacked vertically -->
-    <div class="flex-1 flex flex-col gap-[24px]">
+    <div class="w-full lg:flex-1 flex flex-col gap-[24px]">
         <!-- Card 2 - Top -->
         <div class="flex-1 bg-secondary rounded-[24px] p-[24px] relative overflow-hidden flex flex-col">
             <!-- Vector Star 2 -->

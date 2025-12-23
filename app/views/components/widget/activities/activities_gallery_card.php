@@ -11,7 +11,7 @@
 $items = $items ?? [];
 ?>
 
-<div class="grid grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
     <?php foreach ($items as $index => $item): ?>
     <div 
         class="bg-white-neutral p-[16px] rounded-[20px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
@@ -31,7 +31,7 @@ $items = $items ?? [];
         </div>
         
         <!-- Description (max 2 lines with ellipsis) -->
-        <p class="font-normal text-[20px] leading-[32px] text-black-soft line-clamp-2">
+        <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[32px] text-black-soft line-clamp-2">
             <?= $item['description'] ?? '' ?>
         </p>
     </div>
@@ -58,7 +58,7 @@ $items = $items ?? [];
         <div class="relative z-10 max-w-[1116px] w-full mx-4">
             <!-- Header: Preview Foto & Close Button -->
             <div class="flex justify-between items-center mb-[12px]">
-                <h3 class="font-bold text-[20px] leading-[32px] text-white-neutral">Preview Foto</h3>
+                <h3 class="font-bold text-[14px] leading-[24px] md:text-[20px] md:leading-[32px] text-white-neutral">Preview Foto</h3>
                 <button @click="showModal = false" class="text-white-neutral hover:opacity-80 transition-opacity">
                     <svg class="w-[24px] h-[24px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -67,16 +67,20 @@ $items = $items ?? [];
             </div>
             
             <!-- Image -->
-            <div class="w-full h-[626px] rounded-[12px] overflow-hidden mb-[36px]">
+            <div class="w-full h-[158px] md:h-[626px] rounded-[12px] overflow-hidden mb-[36px] bg-gray-placeholder relative">
                 <img 
                     :src="currentImage" 
                     alt="" 
                     class="w-full h-full object-cover"
+                    @error="$event.target.style.display='none'; $event.target.nextElementSibling.classList.remove('hidden');"
                 >
+                <svg class="hidden absolute inset-0 w-16 h-16 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
             </div>
             
             <!-- Description -->
-            <p class="font-normal text-[24px] leading-[32px] text-white-neutral text-center" x-text="currentDescription"></p>
+            <p class="font-normal text-[16px] leading-[28px] md:text-[24px] md:leading-[32px] text-white-neutral text-center" x-text="currentDescription"></p>
         </div>
     </div>
 </div>

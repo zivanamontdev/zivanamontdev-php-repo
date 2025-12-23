@@ -7,9 +7,9 @@
  */
 ?>
 
-<div class="flex flex-col lg:flex-row gap-[50px] items-center">
+<div class="flex flex-col lg:flex-row gap-[24px] md:gap-[50px] items-stretch">
     <!-- Image with gradient overlay -->
-    <div class="flex-1 relative rounded-[52px] overflow-hidden h-[464px]">
+    <div class="w-full lg:flex-1 relative rounded-[24px] md:rounded-[52px] overflow-hidden h-[300px] md:h-[464px]">
         <!-- Background Image -->
         <img 
             src="<?= url('/images/home_about.png') ?>" 
@@ -22,19 +22,19 @@
     </div>
     
     <!-- Content -->
-    <div class="flex-1 flex flex-col justify-center">
+    <div class="w-full lg:flex-1 flex flex-col justify-center">
         <!-- Title -->
-        <h2 class="font-bold text-[32px] leading-[140%] tracking-normal text-black-soft">
+        <h2 class="font-bold text-[24px] md:text-[32px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
             Sekolah Inklusi dengan anak reguler dan anak berkebutuhan khusus belajar dalam satu kelas.
         </h2>
         
         <!-- Description -->
-        <p class="mt-[24px] font-normal text-[24px] leading-[140%] tracking-normal text-black-soft">
+        <p class="mt-[16px] md:mt-[24px] font-normal text-[16px] md:text-[24px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
             Menggunakan metode montessori dan kurikulum nasional berbasis Islam
         </p>
         
         <!-- Button -->
-        <div class="mt-[42px]">
+        <div class="mt-[42px] flex justify-center md:justify-start relative z-20">
             <?php component('button', [
                 'text' => 'Lihat cerita tentang kami',
                 'variant' => '1',

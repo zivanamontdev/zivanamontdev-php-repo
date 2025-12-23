@@ -38,23 +38,9 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<section class="container mx-auto mt-[52px] mb-[80px]">
-    <div class="bg-primary rounded-[32px] h-[132px] p-[40px] relative overflow-hidden flex items-center justify-center">
-        <!-- Background mask with gradient opacity -->
-        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
-            <img 
-                src="<?= url('/images/mask_group.png') ?>" 
-                alt="" 
-                class="w-full h-full object-cover"
-            >
-        </div>
-        
-        <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-white-neutral text-center">
-            Profil dan Informasi Tentang Kami
-        </h1>
-    </div>
-</section>
+<div class="mb-[80px]">
+    <?php component('page_hero', ['title' => 'Profil dan Informasi Tentang Kami', 'variant' => 'primary']); ?>
+</div>
 
 <!-- Section 1: Sejarah Singkat -->
 <?php component('widget/profile/profile_section'); ?>
@@ -63,7 +49,7 @@ ob_start();
 <?php component('widget/profile/profile_visimisi'); ?>
 
 <!-- Section 3: Team -->
-<section class="container mx-auto mt-[80px]">
+<section class="container mx-auto px-5 mt-[80px]">
     <?php component('badge', ['text' => 'Kenalan dengan Kami']); ?>
     
     <div class="mt-[32px] grid grid-cols-4 gap-[24px]">
@@ -96,7 +82,7 @@ ob_start();
 </section>
 
 <!-- Section 4: Fasilitas Sekolah -->
-<section class="container mx-auto mt-[84px]">
+<section class="container mx-auto px-5 mt-[84px]">
     <?php component('badge', ['text' => 'Fasilitas Sekolah']); ?>
     
     <div class="mt-[16px] grid grid-cols-2 gap-[24px]">

@@ -23,26 +23,15 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<section class="container mx-auto mt-[52px] mb-[40px]">
-    <div class="bg-secondary rounded-[32px] h-[132px] p-[40px] relative overflow-hidden flex items-center justify-center">
-        <!-- Background mask with gradient opacity -->
-        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
-            <img 
-                src="<?= url('/images/mask_group.png') ?>" 
-                alt="" 
-                class="w-full h-full object-cover"
-            >
-        </div>
-        
-        <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-black-soft text-center">
-            <?= $fasilitas ? e($fasilitas['name']) : 'Galeri Fasilitas' ?>
-        </h1>
-    </div>
-</section>
+<div class="mb-[40px]">
+    <?php 
+    $heroTitle = $fasilitas ? $fasilitas['name'] : 'Galeri Fasilitas';
+    component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 
+    ?>
+</div>
 
 <!-- Back Button & Gallery Content -->
-<section class="container mx-auto">
+<section class="container mx-auto px-5">
     <!-- Back Button -->
     <div class="mb-[32px]">
         <?php component('button', ['text' => 'Kembali ke Profil Sekolah', 'variant' => '4', 'href' => url('/profile')]); ?>

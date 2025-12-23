@@ -4,30 +4,20 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<section class="container mx-auto mt-[52px] mb-[40px]">
-    <div class="bg-secondary rounded-[32px] h-[132px] p-[40px] relative overflow-hidden flex items-center justify-center">
-        <!-- Background mask with gradient opacity -->
-        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
-            <img 
-                src="<?= url('/images/mask_group.png') ?>" 
-                alt="" 
-                class="w-full h-full object-cover"
-            >
-        </div>
-        
-        <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[40px] leading-[100%] text-black-soft text-center">
-            <?= !empty($programData) ? 'Galeri ' . e($programData['name']) : 'Galeri Aktivitas Sensori' ?>
-        </h1>
+<?php 
+$heroTitle = !empty($programData) ? 'Galeri ' . $programData['name'] : 'Galeri Aktivitas Sensori';
+component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 
+?>
+
+<!-- Back Button -->
+<section class="container mx-auto px-5 mt-[32px]">
+    <div class="flex justify-center md:justify-start mb-[32px]">
+        <?php component('button', ['text' => 'Kembali ke Aktivitas Sekolah', 'variant' => '4', 'href' => url('/activities'), 'customPadding' => 'py-2 px-4']); ?>
     </div>
 </section>
 
-<!-- Back Button & Gallery Content -->
-<section class="container mx-auto">
-    <!-- Back Button -->
-    <div class="mb-[32px]">
-        <?php component('button', ['text' => 'Kembali ke Aktifitas Sekolah', 'variant' => '4', 'href' => url('/activities')]); ?>
-    </div>
+<!-- Gallery Content -->
+<section class="container mx-auto px-5">
     
     <!-- Gallery Cards -->
     <?php if (!empty($galleryData)): ?>
@@ -41,7 +31,7 @@ ob_start();
     <!-- Tampilkan Lebih Banyak Button -->
     <?php if (!empty($galleryData) && count($galleryData) > 6): ?>
     <div class="flex justify-center mt-[32px] mb-[88px]">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'href' => '#']); ?>
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button']); ?>
     </div>
     <?php else: ?>
     <div class="mb-[88px]"></div>
@@ -53,7 +43,7 @@ ob_start();
     <img 
         src="<?= url('images/vectors/vector_galeri.png') ?>" 
         alt="" 
-        class="absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
+        class="hidden md:block absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
     >
 </div>
 

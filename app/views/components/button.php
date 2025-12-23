@@ -22,7 +22,7 @@ $variants = [
         'padding' => 'py-[12px] px-6',       // 12px top/bottom, 24px left/right
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-primary',                // #C92C2F
-        'text' => 'text-white',              // #FFFFFF
+        'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-base',     // 700, 16px
         'height' => 'h-[52px]',              // 52px fixed height
         'hover' => 'hover:opacity-90 active:scale-95',
@@ -89,7 +89,6 @@ $variants = [
         'text' => '!text-primary',            // #C92C2F (forced with !)
         'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
         'icon' => 'chevron_right',
-        'border' => 'border border-border-light', // 1px border with border_light
         'fullWidth' => true,
         'hover' => 'hover:bg-white-secondary',
     ],
@@ -146,7 +145,7 @@ $variants = [
         'padding' => 'py-3 px-6',            // 12px top/bottom, 24px left/right
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-secondary',              // #F39C12
-        'text' => 'text-white',              // #FFFFFF
+        'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-base',     // 700, 16px
         'hover' => 'hover:opacity-90 active:scale-95',
     ],
@@ -182,7 +181,7 @@ $variants = [
         'padding' => 'p-3',                  // 8px all around
         'radius' => 'rounded-xl',            // 12px
         'bg' => 'bg-primary',                // #C92C2F
-        'text' => 'text-white',              // #FFFFFF
+        'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-[12px]',   // 700, 12px
         'hover' => 'hover:opacity-90 active:scale-95',
     ],
