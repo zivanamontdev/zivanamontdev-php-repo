@@ -42,9 +42,19 @@ if (!function_exists('getArticleImageUrlOther')) {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    .other-articles-scroll {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .other-articles-scroll::-webkit-scrollbar {
+        display: none;
+    }
 </style>
 
-<div class="flex gap-[24px]">
+<div class="other-articles-scroll flex gap-[24px]">
     <?php foreach ($articles as $article): ?>
     <div class="w-[450px] flex-shrink-0 bg-white-neutral rounded-[24px] flex overflow-hidden">
         <!-- Image -->

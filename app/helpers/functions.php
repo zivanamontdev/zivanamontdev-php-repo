@@ -148,23 +148,28 @@ function csrf_token() {
 
 /**
  * CSRF Field
+ * Legacy function - now uses new Security helper
  */
 function csrf_field() {
-    return '<input type="hidden" name="' . CSRF_TOKEN_NAME . '" value="' . csrf_token() . '">';
+    // Load Security helper if not already loaded
+    if (!function_exists('getCsrfToken')) {
+        require_once __DIR__ . '/Security.php';
+    }
+    
+    return '<input type="hidden" name="csrf_token" value="' . getCsrfToken() . '">';
 }
 
 /**
  * Verify CSRF Token
+ * Legacy function - now uses new Security helper
  */
 function csrf_verify() {
-    $token = $_POST[CSRF_TOKEN_NAME] ?? '';
-    $sessionToken = $_SESSION[CSRF_TOKEN_NAME] ?? '';
-    
-    if (!hash_equals($sessionToken, $token)) {
-        http_response_code(403);
-        die('CSRF token mismatch');
+    // Load Security helper if not already loaded
+    if (!function_exists('verifyCsrfToken')) {
+        require_once __DIR__ . '/Security.php';
     }
     
+    verifyCsrfToken(false);
     return true;
 }
 

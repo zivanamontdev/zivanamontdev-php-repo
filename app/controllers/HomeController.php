@@ -342,12 +342,17 @@ class HomeController extends Controller {
         // Increment views
         $this->articleModel->incrementViews($article['id']);
         
-        // Get related articles
-        $relatedArticles = $this->articleModel->getPublished(3);
+        // Get other articles (excluding current article)
+        $otherArticles = $this->articleModel->where(
+            'status = :status AND published_at <= NOW() AND id != :id', 
+            ['status' => 'published', 'id' => $article['id']], 
+            'published_at DESC', 
+            4
+        );
         
         $data = [
             'article' => $article,
-            'relatedArticles' => $relatedArticles,
+            'otherArticles' => $otherArticles,
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
         ];
@@ -382,7 +387,7 @@ class HomeController extends Controller {
             'status = :status AND published_at <= NOW() AND id != :id', 
             ['status' => 'published', 'id' => $article['id']], 
             'published_at DESC', 
-            2
+            4
         );
         
         $data = [
