@@ -33,13 +33,13 @@ ob_start();
 <!-- Back Button & Gallery Content -->
 <section class="container mx-auto px-5">
     <!-- Back Button -->
-    <div class="mb-[32px]">
+    <div class="flex justify-center md:justify-start mb-[32px]">
         <?php component('button', ['text' => 'Kembali ke Profil Sekolah', 'variant' => '4', 'href' => url('/profile')]); ?>
     </div>
     
     <?php if (!empty($galleryImages)): ?>
     <!-- Gallery Cards Grid -->
-    <div class="grid grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
         <?php foreach ($galleryImages as $item): ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
@@ -55,7 +55,7 @@ ob_start();
             </div>
             
             <!-- Title -->
-            <h3 class="font-normal text-[20px] leading-[100%] text-black-soft">
+            <h3 class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[100%] text-black-soft">
                 <?= e($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>
             </h3>
         </div>
@@ -82,7 +82,7 @@ ob_start();
             <div class="relative z-10 max-w-[1116px] w-full mx-4">
                 <!-- Header: Preview Foto & Close Button -->
                 <div class="flex justify-between items-center mb-[12px]">
-                    <h3 class="font-bold text-[20px] leading-[32px] text-white-neutral">Preview Foto</h3>
+                    <h3 class="font-bold text-[14px] leading-[24px] md:text-[20px] md:leading-[32px] text-white-neutral">Preview Foto</h3>
                     <button @click="showModal = false" class="text-white-neutral hover:opacity-80 transition-opacity">
                         <svg class="w-[24px] h-[24px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -91,7 +91,7 @@ ob_start();
                 </div>
                 
                 <!-- Image -->
-                <div class="w-full h-[626px] rounded-[12px] overflow-hidden mb-[36px]">
+                <div class="w-full h-[158px] md:h-[626px] rounded-[12px] overflow-hidden mb-[36px]">
                     <img 
                         :src="currentImage" 
                         alt="" 
@@ -100,7 +100,7 @@ ob_start();
                 </div>
                 
                 <!-- Title -->
-                <p class="font-normal text-[24px] leading-[32px] text-white-neutral text-center" x-text="currentTitle"></p>
+                <p class="font-normal text-[16px] leading-[28px] md:text-[24px] md:leading-[32px] text-white-neutral text-center" x-text="currentTitle"></p>
             </div>
         </div>
     </div>
@@ -134,7 +134,7 @@ ob_start();
     <img 
         src="<?= url('images/vectors/vector_galeri.png') ?>" 
         alt="" 
-        class="absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
+        class="hidden md:block absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
     >
 </div>
 

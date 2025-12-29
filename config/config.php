@@ -75,6 +75,20 @@ define('SESSION_LIFETIME', $envVars['SESSION_LIFETIME'] ?? 7200);
 define('MAX_UPLOAD_SIZE', $envVars['MAX_UPLOAD_SIZE'] ?? 5242880); // 5MB
 define('ALLOWED_IMAGE_TYPES', explode(',', $envVars['ALLOWED_IMAGE_TYPES'] ?? 'jpg,jpeg,png,gif,webp'));
 
+// Cloudflare R2 Configuration
+define('R2_ENABLED', filter_var($envVars['R2_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN));
+define('R2_ACCESS_KEY_ID', $envVars['R2_ACCESS_KEY_ID'] ?? '');
+define('R2_SECRET_ACCESS_KEY', $envVars['R2_SECRET_ACCESS_KEY'] ?? '');
+define('R2_ACCOUNT_ID', $envVars['R2_ACCOUNT_ID'] ?? '');
+define('R2_ENDPOINT', $envVars['R2_ENDPOINT'] ?? '');
+
+// Public Bucket (untuk assets website yang bisa diakses publik)
+define('R2_PUBLIC_BUCKET', $envVars['R2_PUBLIC_BUCKET'] ?? 'zivana-public');
+define('R2_PUBLIC_URL', $envVars['R2_PUBLIC_URL'] ?? '');
+
+// Private Bucket (untuk file internal/dokumen private)
+define('R2_PRIVATE_BUCKET', $envVars['R2_PRIVATE_BUCKET'] ?? 'zivana-private');
+
 // Security
 define('CSRF_TOKEN_NAME', $envVars['CSRF_TOKEN_NAME'] ?? 'csrf_token');
 

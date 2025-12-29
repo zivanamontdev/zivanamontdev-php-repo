@@ -50,7 +50,7 @@ ob_start();
                     <!-- Image -->
                     <div class="w-[62px] h-[62px] rounded-lg bg-gray-placeholder mr-[12px] flex-shrink-0 relative overflow-hidden">
                         <img 
-                            src="<?= e($kelas['image']) ?>" 
+                            src="<?= image_url($kelas['image']) ?>" 
                             alt="<?= e($kelas['title']) ?>" 
                             class="w-full h-full object-cover"
                             onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -158,7 +158,7 @@ ob_start();
                         <?php if (!empty($program['cover_image'])): ?>
                             <div class="relative w-[80px] h-[80px] flex-shrink-0">
                                 <img 
-                                    src="<?= e($program['cover_image']) ?>" 
+                                    src="<?= image_url($program['cover_image']) ?>" 
                                     alt="Sampul <?= e($program['name']) ?>" 
                                     class="w-full h-full rounded-xl object-cover"
                                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
@@ -177,7 +177,7 @@ ob_start();
                                  data-description=""
                                  data-is-cover="0">
                                 <img 
-                                    src="<?= e($program['image']) ?>" 
+                                    src="<?= image_url($program['image']) ?>" 
                                     alt="<?= e($program['name']) ?>" 
                                     class="w-full h-full rounded-xl object-cover"
                                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
@@ -196,7 +196,7 @@ ob_start();
                                          data-image-path="<?= e($galleryImage['image_path']) ?>"
                                          data-is-cover="<?= $galleryImage['is_cover'] ?>">
                                         <img 
-                                            src="<?= e($galleryImage['image_path']) ?>" 
+                                            src="<?= image_url($galleryImage['image_path']) ?>" 
                                             alt="<?= e($galleryImage['description']) ?>" 
                                             class="w-full h-full rounded-xl object-cover"
                                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
@@ -284,7 +284,7 @@ ob_start();
                                                      data-description="<?= e($galleryImg['description']) ?>"
                                                      data-is-cover="1">
                                                     <img 
-                                                        src="<?= e($galleryImg['image_path']) ?>" 
+                                                        src="<?= image_url($galleryImg['image_path']) ?>" 
                                                         alt="Sampul" 
                                                         class="w-full h-full object-cover"
                                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -310,7 +310,7 @@ ob_start();
                                          data-description=""
                                          data-is-cover="0">
                                         <img 
-                                            src="<?= e($programHarian['image']) ?>" 
+                                            src="<?= image_url($programHarian['image']) ?>" 
                                             alt="Program Image" 
                                             class="w-full h-full object-cover"
                                             onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -335,7 +335,7 @@ ob_start();
                                  data-description=""
                                  data-is-cover="0">
                                 <img 
-                                    src="<?= e($programHarian['image']) ?>" 
+                                    src="<?= image_url($programHarian['image']) ?>" 
                                     alt="Program Image" 
                                     class="w-full h-full object-cover"
                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -357,7 +357,7 @@ ob_start();
                                          data-description="<?= e($galleryImg['description']) ?>"
                                          data-is-cover="0">
                                         <img 
-                                            src="<?= e($galleryImg['image_path']) ?>" 
+                                            src="<?= image_url($galleryImg['image_path']) ?>" 
                                             alt="Gallery" 
                                             class="w-full h-full object-cover"
                                             onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"

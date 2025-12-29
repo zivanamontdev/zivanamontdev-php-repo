@@ -1,4 +1,6 @@
 <?php
+require_once APP_PATH . '/helpers/UploadManager.php';
+
 class ActivityController extends Controller {
     
     public function index() {
@@ -113,6 +115,11 @@ class ActivityController extends Controller {
     
     public function storeClass() {
         try {
+            // Debug: Log request
+            error_log('=== storeClass() called ===');
+            error_log('POST data: ' . print_r($_POST, true));
+            error_log('FILES data: ' . print_r($_FILES, true));
+            
             // Validate input
             $name = $_POST['name'] ?? '';
             $age_range = trim($_POST['age_range'] ?? '');
@@ -128,40 +135,41 @@ class ActivityController extends Controller {
             $duration = $duration . ' jam';
             $max_students = $max_students . ' anak/kelas';
             
-            // Debug: Log $_FILES
-            error_log('FILES: ' . print_r($_FILES, true));
-            
-            // Handle image upload
+            // Handle image upload using UploadManager
             $imagePath = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
+                error_log('Image file detected, starting upload process...');
                 
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+                // Validate file type
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    error_log('File type validation failed: ' . $validation['message']);
+                    throw new Exception($validation['message']);
                 }
+                error_log('File type validation passed');
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024; // 5MB
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size too large. Maximum 5MB allowed');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    error_log('File size validation failed: ' . $sizeValidation['message']);
+                    throw new Exception($sizeValidation['message']);
+                }
+                error_log('File size validation passed');
+                
+                // Upload file
+                error_log('Calling UploadManager::upload() for folder: classes');
+                $uploadResult = UploadManager::upload($_FILES['image'], 'classes');
+                error_log('Upload result: ' . print_r($uploadResult, true));
+                
+                if (!$uploadResult['success']) {
+                    error_log('Upload failed: ' . $uploadResult['message']);
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $uploadDir = __DIR__ . '/../../public/uploads/classes/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-                
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'class_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/classes/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
+                error_log('Upload successful, path: ' . $imagePath);
+            } else {
+                error_log('No image file detected or upload error: ' . ($_FILES['image']['error'] ?? 'N/A'));
             }
             
             // Get max display order
@@ -170,15 +178,29 @@ class ActivityController extends Controller {
             $displayOrder = ($maxOrder['max_order'] ?? 0) + 1;
             
             // Insert into database
+            error_log('Inserting into database with image path: ' . ($imagePath ?? 'NULL'));
             $sql = "INSERT INTO classes (name, age_range, duration, max_students, image, display_order) 
                     VALUES (?, ?, ?, ?, ?, ?)";
             $db->query($sql, [$name, $age_range, $duration, $max_students, $imagePath, $displayOrder]);
             
+            // Get inserted ID
+            $insertedId = $db->getConnection()->lastInsertId();
+            error_log('Class inserted successfully with ID: ' . $insertedId);
+            
             // Return JSON response
             header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'message' => 'Class added successfully']);
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Class added successfully', 
+                'id' => $insertedId,
+                'image_path' => $imagePath,
+                'image_url' => $imagePath ? UploadManager::getUrl($imagePath) : null
+            ]);
             
         } catch (Exception $e) {
+            error_log('Exception in storeClass(): ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            
             http_response_code(400);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menambah kelas. Silakan coba lagi.')]);
@@ -212,41 +234,27 @@ class ActivityController extends Controller {
             
             $imagePath = $existingClass['image'];
             
-            // Handle image upload
+            // Handle image upload using UploadManager
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024; // 5MB
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size too large. Maximum 5MB allowed');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                // Delete old image
-                if ($imagePath && file_exists(__DIR__ . '/../../public' . $imagePath)) {
-                    unlink(__DIR__ . '/../../public' . $imagePath);
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'classes', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $uploadDir = __DIR__ . '/../../public/uploads/classes/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-                
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'class_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/classes/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // Update database
@@ -275,9 +283,9 @@ class ActivityController extends Controller {
                 throw new Exception('Class not found');
             }
             
-            // Delete image file
-            if ($existingClass['image'] && file_exists(__DIR__ . '/../../public' . $existingClass['image'])) {
-                unlink(__DIR__ . '/../../public' . $existingClass['image']);
+            // Delete image file using UploadManager
+            if ($existingClass['image']) {
+                UploadManager::delete($existingClass['image']);
             }
             
             // Soft delete (set is_active to 0) or hard delete
@@ -307,38 +315,28 @@ class ActivityController extends Controller {
                 throw new Exception('All fields are required');
             }
             
-            // Handle image upload
+            // Handle image upload using UploadManager
             $imagePath = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024;
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size exceeds 5MB limit.');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                // Create upload directory if it doesn't exist
-                $uploadDir = __DIR__ . '/../../public/uploads/programs-tahun/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Upload file
+                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun');
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'program_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/programs-tahun/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // Insert into database
@@ -347,9 +345,12 @@ class ActivityController extends Controller {
                     VALUES (?, ?, ?, 1, 0, NOW(), NOW())";
             $db->query($sql, [$name, $description, $imagePath]);
             
+            // Get inserted ID
+            $insertedId = $db->getConnection()->lastInsertId();
+            
             // Return JSON response
             header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'message' => 'Program created successfully']);
+            echo json_encode(['success' => true, 'message' => 'Program created successfully', 'id' => $insertedId]);
             
         } catch (Exception $e) {
             http_response_code(400);
@@ -378,41 +379,27 @@ class ActivityController extends Controller {
             
             // Handle image upload
             $imagePath = $existingProgram['image']; // Keep existing image by default
+            // Handle image upload using UploadManager
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024;
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size exceeds 5MB limit.');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                // Delete old image
-                if ($existingProgram['image'] && file_exists(__DIR__ . '/../../public' . $existingProgram['image'])) {
-                    unlink(__DIR__ . '/../../public' . $existingProgram['image']);
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                // Create upload directory if it doesn't exist
-                $uploadDir = __DIR__ . '/../../public/uploads/programs-tahun/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-                
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'program_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/programs-tahun/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // Update database
@@ -441,9 +428,9 @@ class ActivityController extends Controller {
                 throw new Exception('Program not found');
             }
             
-            // Delete image file
-            if ($existingProgram['image'] && file_exists(__DIR__ . '/../../public' . $existingProgram['image'])) {
-                unlink(__DIR__ . '/../../public' . $existingProgram['image']);
+            // Delete image file using UploadManager
+            if ($existingProgram['image']) {
+                UploadManager::delete($existingProgram['image']);
             }
             
             // Soft delete (set is_active to 0)
@@ -478,40 +465,31 @@ class ActivityController extends Controller {
                 throw new Exception('Description is required');
             }
             
-            // Handle image upload
+            // Handle image upload using UploadManager
             $imagePath = null;
             if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
                 throw new Exception('Image is required');
             }
             
             // Validate file type
-            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            $fileType = $_FILES['image']['type'];
-            
-            if (!in_array($fileType, $allowedTypes)) {
-                throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+            $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+            if (!$validation['success']) {
+                throw new Exception($validation['message']);
             }
             
             // Validate file size (max 5MB)
-            $maxSize = 5 * 1024 * 1024; // 5MB
-            if ($_FILES['image']['size'] > $maxSize) {
-                throw new Exception('File size too large. Maximum 5MB allowed');
+            $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+            if (!$sizeValidation['success']) {
+                throw new Exception($sizeValidation['message']);
             }
             
-            $uploadDir = __DIR__ . '/../../public/uploads/program-gallery/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+            // Upload file
+            $uploadResult = UploadManager::upload($_FILES['image'], 'program_gallery');
+            if (!$uploadResult['success']) {
+                throw new Exception($uploadResult['message']);
             }
             
-            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $filename = 'gallery_' . $programId . '_' . time() . '_' . uniqid() . '.' . $extension;
-            $targetPath = $uploadDir . $filename;
-            
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                throw new Exception('Failed to upload image');
-            }
-            
-            $imagePath = '/uploads/program-gallery/' . $filename;
+            $imagePath = $uploadResult['path'];
             
             // If this is set as cover, unset all other covers for this program
             if ($isCover) {
@@ -569,43 +547,28 @@ class ActivityController extends Controller {
                 throw new Exception('Description is required');
             }
             
-            // Handle image upload if new image is provided
+            // Handle image upload if new image is provided using UploadManager
             $imagePath = $existingImage['image_path'];
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
-                // Validate file size (5MB)
-                if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
-                    throw new Exception('File size exceeds 5MB');
+                // Validate file size (max 5MB)
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                // Create upload directory if not exists
-                $uploadDir = __DIR__ . '/../../public/uploads/program-gallery';
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'program_gallery', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                // Generate unique filename
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'gallery_' . $programId . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . '/' . $filename;
-                
-                // Upload file
-                if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    throw new Exception('Failed to upload image');
-                }
-                
-                // Delete old image file
-                $oldImagePath = __DIR__ . '/../../public' . $existingImage['image_path'];
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-                
-                $imagePath = '/uploads/program-gallery/' . $filename;
+                $imagePath = $uploadResult['path'];
             }
             
             // If this is set as cover, unset all other covers for this program
@@ -650,36 +613,22 @@ class ActivityController extends Controller {
                 throw new Exception('Program not found');
             }
             
-            // Handle new image upload (optional)
+            // Handle new image upload (optional) using UploadManager
             $imagePath = $existingProgram['image'];
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                // Delete old image if exists
-                if ($existingProgram['image']) {
-                    $oldImagePath = __DIR__ . '/../../public' . $existingProgram['image'];
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
+                // Validate file size (max 5MB)
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                // Validate file size (5MB)
-                if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
-                    throw new Exception('File size exceeds 5MB limit');
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                // Handle image upload
-                $uploadDir = __DIR__ . '/../../public/uploads/programs_tahun/';
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                
-                $fileName = time() . '_' . basename($_FILES['image']['name']);
-                $targetPath = $uploadDir . $fileName;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/programs_tahun/' . $fileName;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // Handle is_cover checkbox
@@ -724,12 +673,9 @@ class ActivityController extends Controller {
                 throw new Exception('Program not found');
             }
             
-            // Delete image file if exists
+            // Delete image file if exists using UploadManager
             if ($existingProgram['image']) {
-                $imagePath = __DIR__ . '/../../public' . $existingProgram['image'];
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
+                UploadManager::delete($existingProgram['image']);
             }
             
             // Set image to NULL in database
@@ -766,10 +712,9 @@ class ActivityController extends Controller {
                 throw new Exception('Gallery image not found');
             }
             
-            // Delete image file
-            $imagePath = __DIR__ . '/../../public' . $existingImage['image_path'];
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
+            // Delete image file using UploadManager
+            if ($existingImage['image_path']) {
+                UploadManager::delete($existingImage['image_path']);
             }
             
             // Delete from database
@@ -805,46 +750,32 @@ class ActivityController extends Controller {
                 throw new Exception('Program name and description are required');
             }
             
-            // Handle image upload (optional)
+            // Handle image upload (optional) using UploadManager
             $imagePath = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024; // 5MB
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size too large. Maximum 5MB allowed');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                $uploadDir = __DIR__ . '/../../public/uploads/programs_harian/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Get old image for deletion
+                $existingProgram = $db->query("SELECT image FROM programs_harian WHERE id = ?", [$id])->fetch();
+                $oldImagePath = $existingProgram['image'] ?? null;
+                
+                // Upload file using UploadManager (auto deletes old file)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_harian', $oldImagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'program_harian_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    $imagePath = '/uploads/programs_harian/' . $filename;
-                    
-                    // Delete old image if exists
-                    $existingProgram = $db->query("SELECT image FROM programs_harian WHERE id = ?", [$id])->fetch();
-                    if ($existingProgram && !empty($existingProgram['image'])) {
-                        $oldImagePath = __DIR__ . '/../../public' . $existingProgram['image'];
-                        if (file_exists($oldImagePath)) {
-                            unlink($oldImagePath);
-                        }
-                    }
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // Update database
@@ -890,35 +821,23 @@ class ActivityController extends Controller {
                 throw new Exception('Description is required');
             }
             
-            // Validate file type
-            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            $fileType = $_FILES['image']['type'];
-            
-            if (!in_array($fileType, $allowedTypes)) {
-                throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+            // Validate and upload using UploadManager
+            $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+            if (!$validation['success']) {
+                throw new Exception($validation['message']);
             }
             
-            // Validate file size (max 5MB)
-            $maxSize = 5 * 1024 * 1024; // 5MB
-            if ($_FILES['image']['size'] > $maxSize) {
-                throw new Exception('File size too large. Maximum 5MB allowed');
+            $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+            if (!$sizeValidation['success']) {
+                throw new Exception($sizeValidation['message']);
             }
             
-            // Upload image
-            $uploadDir = __DIR__ . '/../../public/uploads/program_harian_gallery/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+            $uploadResult = UploadManager::upload($_FILES['image'], 'program_harian_gallery');
+            if (!$uploadResult['success']) {
+                throw new Exception($uploadResult['message']);
             }
             
-            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $filename = 'gallery_harian_' . time() . '_' . uniqid() . '.' . $extension;
-            $targetPath = $uploadDir . $filename;
-            
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                throw new Exception('Failed to upload image');
-            }
-            
-            $imagePath = '/uploads/program_harian_gallery/' . $filename;
+            $imagePath = $uploadResult['path'];
             
             // If set as cover, unset all other covers for this program
             if ($setAsCover) {
@@ -974,43 +893,28 @@ class ActivityController extends Controller {
                 throw new Exception('Gallery image not found');
             }
             
-            // Handle image upload (optional)
+            // Handle image upload (optional) using UploadManager
             $imagePath = $existingImage['image_path'];
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024; // 5MB
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size too large. Maximum 5MB allowed');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                $uploadDir = __DIR__ . '/../../public/uploads/program_harian_gallery/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'program_harian_gallery', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'gallery_harian_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    // Delete old image
-                    $oldImagePath = __DIR__ . '/../../public' . $imagePath;
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                    
-                    $imagePath = '/uploads/program_harian_gallery/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // If set as cover, unset all other covers for this program
@@ -1053,45 +957,28 @@ class ActivityController extends Controller {
                 throw new Exception('Program not found');
             }
             
-            // Handle image upload (optional - can update just description/cover status)
+            // Handle image upload (optional - can update just description/cover status) using UploadManager
             $imagePath = $existingProgram['image'];
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
-                $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $_FILES['image']['type'];
-                
-                if (!in_array($fileType, $allowedTypes)) {
-                    throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed');
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                if (!$validation['success']) {
+                    throw new Exception($validation['message']);
                 }
                 
                 // Validate file size (max 5MB)
-                $maxSize = 5 * 1024 * 1024; // 5MB
-                if ($_FILES['image']['size'] > $maxSize) {
-                    throw new Exception('File size too large. Maximum 5MB allowed');
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
+                if (!$sizeValidation['success']) {
+                    throw new Exception($sizeValidation['message']);
                 }
                 
-                $uploadDir = __DIR__ . '/../../public/uploads/programs_harian/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_harian', $imagePath);
+                if (!$uploadResult['success']) {
+                    throw new Exception($uploadResult['message']);
                 }
                 
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = 'program_harian_' . time() . '_' . uniqid() . '.' . $extension;
-                $targetPath = $uploadDir . $filename;
-                
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                    // Delete old image
-                    if (!empty($imagePath)) {
-                        $oldImagePath = __DIR__ . '/../../public' . $imagePath;
-                        if (file_exists($oldImagePath)) {
-                            unlink($oldImagePath);
-                        }
-                    }
-                    
-                    $imagePath = '/uploads/programs_harian/' . $filename;
-                } else {
-                    throw new Exception('Failed to upload image');
-                }
+                $imagePath = $uploadResult['path'];
             }
             
             // If set as cover, unset all gallery covers for this program
@@ -1133,11 +1020,8 @@ class ActivityController extends Controller {
                 throw new Exception('No image to delete');
             }
             
-            // Delete image file
-            $imagePath = __DIR__ . '/../../public' . $existingProgram['image'];
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            // Delete image file using UploadManager
+            UploadManager::delete($existingProgram['image']);
             
             // Update database - set image to NULL
             $db->query("UPDATE programs_harian SET image = NULL WHERE id = ?", [$programId]);
@@ -1170,11 +1054,8 @@ class ActivityController extends Controller {
                 throw new Exception('Gallery image not found');
             }
             
-            // Delete image file
-            $imagePath = __DIR__ . '/../../public' . $existingImage['image_path'];
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            // Delete image file using UploadManager
+            UploadManager::delete($existingImage['image_path']);
             
             // Delete from database
             $db->query("DELETE FROM program_harian_gallery WHERE id = ? AND program_harian_id = ?", [$galleryImageId, $programId]);

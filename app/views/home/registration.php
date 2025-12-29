@@ -3,42 +3,30 @@ $pageTitle = 'Pendaftaran Sekolah';
 ob_start(); 
 ?>
 
-<!-- Hero Section -->
-<section class="container mx-auto px-5 mt-[52px] mb-[80px]">
-    <div class="bg-primary rounded-[24px] p-[24px] h-[214px] relative overflow-hidden flex items-center">
-        <!-- Vector Star 4 -->
-        <img 
-            src="<?= url('/images/vectors/vector_star4.png') ?>" 
-            alt="" 
-            class="absolute bottom-0 -left-[30px] w-[150px] h-[150px] pointer-events-none z-0"
-        >
-        
-        <!-- Title -->
-        <h1 class="font-bold text-[32px] leading-[38px] text-white-neutral relative z-10">
-            Pendaftaran Sekolah Zivana Montessori
-        </h1>
-    </div>
-</section>
+<!-- Page Header -->
+<div class="mb-[80px]">
+    <?php component('page_hero', ['title' => 'Pendaftaran Sekolah Zivana Montessori', 'variant' => 'primary']); ?>
+</div>
 
 <!-- Form Section -->
 <section class="container mx-auto px-5 mb-[88px] relative">
-    <!-- Vector Registration - Outside container to reach screen edge -->
+    <!-- Vector Registration - Outside container to reach screen edge (Desktop Only) -->
     <img 
         src="<?= url('images/vectors/vector_registration.png') ?>" 
         alt="" 
-        class="absolute top-[122px] -left-[calc((100vw-100%)/2)] w-[650px] h-[600px] pointer-events-none z-0"
+        class="hidden md:block absolute top-[122px] -left-[calc((100vw-100%)/2)] w-[650px] h-[600px] pointer-events-none z-0"
     >
     
-    <div class="grid grid-cols-2 gap-[24px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
         <!-- Section 1: Information Card -->
-        <div class="bg-white-neutral rounded-[20px] p-[24px] h-[272px] flex flex-col relative z-10">
+        <div class="bg-white-neutral rounded-[20px] p-[24px] md:h-[272px] flex flex-col relative z-10">
             <!-- Title -->
-            <h2 class="font-bold text-[24px] leading-[35px] text-black-soft mb-[16px]">
+            <h2 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[35px] text-black-soft mb-[16px]">
                 Informasi Pendaftaran
             </h2>
             
             <!-- Description -->
-            <p class="font-normal text-[16px] leading-[150%] text-black-soft mb-auto">
+            <p class="font-normal text-[14px] leading-[24px] md:text-[16px] md:leading-[150%] text-black-soft mb-auto">
                 Setelah mengisi form, anda akan diarahkan ke halaman WhatsApp untuk mengirim pesan kepada admin sesuai dengan data yang anda berikan.
             </p>
             
@@ -47,7 +35,7 @@ ob_start();
                 <svg class="w-[20px] h-[24px] flex-shrink-0" fill="none" stroke="#0F65FA" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
-                <p class="font-normal text-[16px] leading-[100%] text-black-highlight">
+                <p class="font-normal text-[14px] leading-[24px] md:text-[16px] md:leading-[100%] text-black-highlight">
                     Informasi yang anda berikan bersifat privasi dan akan dijaga kerahasiaannya.
                 </p>
             </div>

@@ -31,8 +31,8 @@ if (!$showPlaceholder) {
 }
 
 // Ukuran card
-$heightClass = $teamLarge ? 'h-[768px]' : 'h-[372px]';
-$colSpan = $teamLarge ? 'col-span-2 row-span-2' : '';
+$heightClass = $teamLarge ? 'h-[384px] md:h-[768px]' : 'h-[234px] md:h-[372px]';
+$colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
 ?>
 
 <div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden">
@@ -57,10 +57,10 @@ $colSpan = $teamLarge ? 'col-span-2 row-span-2' : '';
     
     <!-- Content - Name & Role -->
     <div class="absolute bottom-0 left-0 right-0 p-[24px]">
-        <h4 class="font-bold text-[24px] leading-[38px] text-white-neutral mb-[4px]">
+        <h4 class="font-bold text-[16px] leading-[28px] md:text-[24px] md:leading-[38px] text-white-neutral mb-[4px]">
             <?= e($teamName) ?>
         </h4>
-        <p class="font-normal text-[20px] leading-[100%] text-white-neutral">
+        <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[100%] text-white-neutral">
             <?= e($teamRole) ?>
         </p>
     </div>

@@ -24,8 +24,22 @@ $galleryUrl = $fasilitasId
 
 <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px] h-[315px] flex flex-col">
     <!-- Header: Title & Link -->
-    <div class="flex justify-between items-center">
+    <!-- Desktop: Title dan Link bersebelahan -->
+    <div class="hidden md:flex justify-between items-center">
         <h4 class="font-bold text-[24px] leading-[100%] text-black-soft">
+            <?= e($fasilitasTitle) ?>
+        </h4>
+        <a href="<?= $galleryUrl ?>" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+            <span class="font-normal text-[20px] leading-[100%] text-primary">Lihat Galeri</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18L15 12L9 6" stroke="#C92C2F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
+    
+    <!-- Mobile: Title dan Link vertical -->
+    <div class="md:hidden">
+        <h4 class="font-bold text-[20px] leading-[32px] text-black-soft mb-[12px]">
             <?= e($fasilitasTitle) ?>
         </h4>
         <a href="<?= $galleryUrl ?>" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">

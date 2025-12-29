@@ -3,6 +3,8 @@
  * Settings Controller
  * Handles school settings management
  */
+require_once APP_PATH . '/helpers/UploadManager.php';
+
 class SettingsController extends Controller {
     private $settingModel;
     private $registrationFieldModel;
@@ -417,15 +419,30 @@ class SettingsController extends Controller {
                 return;
             }
             
-            // Handle image upload if provided
+            // Handle image upload if provided using UploadManager
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadResult = $this->handleImageUpload($_FILES['image'], 'testimonials');
-                if ($uploadResult['success']) {
-                    $data['image'] = $uploadResult['filename'];
-                } else {
+                // Validate file type
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif']);
+                if (!$validation['success']) {
+                    echo json_encode(['success' => false, 'message' => $validation['message']]);
+                    return;
+                }
+                
+                // Validate file size (max 2MB)
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 2097152);
+                if (!$sizeValidation['success']) {
+                    echo json_encode(['success' => false, 'message' => $sizeValidation['message']]);
+                    return;
+                }
+                
+                // Upload file
+                $uploadResult = UploadManager::upload($_FILES['image'], 'testimonials');
+                if (!$uploadResult['success']) {
                     echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
                     return;
                 }
+                
+                $data['image'] = $uploadResult['path'];
             }
             
             $result = $this->testimonialModel->create($data);
@@ -459,23 +476,34 @@ class SettingsController extends Controller {
                 return;
             }
             
-            // Handle image upload if provided
+            // Handle image upload if provided using UploadManager
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadResult = $this->handleImageUpload($_FILES['image'], 'testimonials');
-                if ($uploadResult['success']) {
-                    // Delete old image if exists
-                    $existingTestimonial = $this->testimonialModel->getById($id);
-                    if ($existingTestimonial && !empty($existingTestimonial['image'])) {
-                        $oldImagePath = UPLOAD_PATH . '/testimonials/' . $existingTestimonial['image'];
-                        if (file_exists($oldImagePath)) {
-                            unlink($oldImagePath);
-                        }
-                    }
-                    $data['image'] = $uploadResult['filename'];
-                } else {
+                // Get existing testimonial
+                $existingTestimonial = $this->testimonialModel->getById($id);
+                $oldImage = ($existingTestimonial && !empty($existingTestimonial['image'])) ? $existingTestimonial['image'] : null;
+                
+                // Validate file type
+                $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif']);
+                if (!$validation['success']) {
+                    echo json_encode(['success' => false, 'message' => $validation['message']]);
+                    return;
+                }
+                
+                // Validate file size (max 2MB)
+                $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 2097152);
+                if (!$sizeValidation['success']) {
+                    echo json_encode(['success' => false, 'message' => $sizeValidation['message']]);
+                    return;
+                }
+                
+                // Upload file (will delete old file automatically)
+                $uploadResult = UploadManager::upload($_FILES['image'], 'testimonials', $oldImage);
+                if (!$uploadResult['success']) {
                     echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
                     return;
                 }
+                
+                $data['image'] = $uploadResult['path'];
             }
             
             $result = $this->testimonialModel->update($id, $data);
@@ -501,12 +529,9 @@ class SettingsController extends Controller {
             $result = $this->testimonialModel->delete($id);
             
             if ($result) {
-                // Delete image file if exists
+                // Delete image file if exists using UploadManager
                 if ($testimonial && !empty($testimonial['image'])) {
-                    $imagePath = UPLOAD_PATH . '/testimonials/' . $testimonial['image'];
-                    if (file_exists($imagePath)) {
-                        unlink($imagePath);
-                    }
+                    UploadManager::delete($testimonial['image']);
                 }
                 echo json_encode(['success' => true, 'message' => 'Testimoni berhasil dihapus']);
             } else {
@@ -545,36 +570,38 @@ class SettingsController extends Controller {
     
     // Helper: Handle image upload
     private function handleImageUpload($file, $folder) {
-        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        $maxSize = 2 * 1024 * 1024; // 2MB
+        // Use UploadManager for R2 support
         
         // Validate file type
-        if (!in_array($file['type'], $allowedTypes)) {
-            return ['success' => false, 'message' => 'Tipe file tidak valid. Hanya JPG, PNG, dan GIF yang diizinkan.'];
+        $validation = UploadManager::validateFileType($file, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+        if (!$validation['success']) {
+            return $validation;
         }
         
-        // Validate file size
-        if ($file['size'] > $maxSize) {
-            return ['success' => false, 'message' => 'Ukuran file terlalu besar. Maksimal 2MB.'];
+        // Validate file size (max 2MB)
+        $maxSize = 2 * 1024 * 1024; // 2MB
+        $sizeValidation = UploadManager::validateFileSize($file, $maxSize);
+        if (!$sizeValidation['success']) {
+            return $sizeValidation;
         }
         
-        // Generate unique filename
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid() . '_' . time() . '.' . $extension;
-        
-        // Create folder if not exists
-        $uploadDir = UPLOAD_PATH . '/' . $folder;
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        // Upload using UploadManager
+        $uploadResult = UploadManager::upload($file, $folder);
+        if ($uploadResult['success']) {
+            // Extract filename from path for backward compatibility
+            // For R2: return full URL
+            // For local: return just filename for old code compatibility
+            if (strpos($uploadResult['path'], 'http') === 0) {
+                // R2 URL
+                return ['success' => true, 'filename' => $uploadResult['path']];
+            } else {
+                // Local path (uploads/folder/filename.jpg)
+                $filename = basename($uploadResult['path']);
+                return ['success' => true, 'filename' => $filename];
+            }
         }
         
-        // Move uploaded file
-        $destination = $uploadDir . '/' . $filename;
-        if (move_uploaded_file($file['tmp_name'], $destination)) {
-            return ['success' => true, 'filename' => $filename];
-        } else {
-            return ['success' => false, 'message' => 'Gagal mengupload file.'];
-        }
+        return $uploadResult;
     }
     
     // ===== HIGHLIGHT PROGRAM METHODS =====

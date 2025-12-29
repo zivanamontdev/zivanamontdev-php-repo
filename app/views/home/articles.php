@@ -59,6 +59,10 @@ ob_start();
         width: 100%;
         height: 180px;
         overflow: hidden;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .mobile-article-card-image img {
@@ -176,7 +180,11 @@ ob_start();
                     <div class="mobile-article-card">
                         <!-- Image -->
                         <div class="mobile-article-card-image">
-                            <img src="<?= getArticleImage($article['featured_image']) ?>" alt="<?= e($article['title']) ?>">
+                            <img 
+                                src="<?= getArticleImage($article['featured_image']) ?>" 
+                                alt="<?= e($article['title']) ?>"
+                                onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<svg class=&quot;w-12 h-12 text-gray-300&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.5&quot; d=&quot;M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z&quot;></path></svg>';"
+                            >
                         </div>
                         
                         <!-- Content -->

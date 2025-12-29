@@ -130,6 +130,45 @@ function upload($path) {
 }
 
 /**
+ * Get image URL with R2 proxy support for local development
+ * 
+ * @param string $imagePath - Path or URL from database
+ * @param bool $useProxy - Force use proxy even in production (default: auto-detect)
+ * @return string - Full URL to image
+ */
+function image_url($imagePath, $useProxy = null) {
+    if (empty($imagePath)) {
+        return '';
+    }
+    
+    // Check if it's already a full URL (R2)
+    if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
+        // R2 URL detected
+        
+        // Auto-detect if we should use proxy
+        if ($useProxy === null) {
+            // Use proxy only in local development AND R2 is enabled
+            $useProxy = (APP_ENV === 'local' || strpos(APP_URL, 'localhost') !== false) && R2_ENABLED;
+        }
+        
+        if ($useProxy) {
+            // Use proxy to bypass SSL issues in local development
+            return url('proxy_r2_image.php?url=' . urlencode($imagePath));
+        }
+        
+        // Return R2 URL as-is (production)
+        return $imagePath;
+    }
+    
+    // Local path - convert to URL
+    if (strpos($imagePath, 'uploads/') === 0) {
+        return url($imagePath);
+    }
+    
+    return url('uploads/' . ltrim($imagePath, '/'));
+}
+
+/**
  * Escape HTML
  */
 function e($string) {
