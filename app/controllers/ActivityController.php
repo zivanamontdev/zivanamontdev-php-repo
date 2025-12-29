@@ -626,56 +626,53 @@ class ActivityController extends Controller {
                 $imagePath = $uploadResult['path'];
             }
             
-            // If this is set as cover, copy gallery image to become the program cover
+            // If this is set as cover, swap files between gallery and cover location
             if ($isCover) {
                 error_log("=== SET AS COVER TRIGGERED ===");
-                error_log("Gallery Image ID: {$galleryImageId}");
-                error_log("Program ID: {$programId}");
-                error_log("Current Image Path: {$imagePath}");
                 
-                // Unset all other covers for this program (both gallery and program.image)
+                // Unset all other covers for this program
                 $db->query("UPDATE program_gallery SET is_cover = 0 WHERE program_id = ? AND id != ?", [$programId, $galleryImageId]);
                 
                 // Create slug from program name
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
-                
-                // Get file extension from current gallery image
-                $galleryExtension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
-                
-                // Paths
                 $coverFolderPath = "programs_tahun/{$programId}-{$slug}";
-                $newCoverPath = "{$coverFolderPath}/cover.{$galleryExtension}";
-                
-                error_log("Cover Folder Path: {$coverFolderPath}");
-                error_log("New Cover Path: {$newCoverPath}");
                 
                 if (R2_ENABLED) {
-                    error_log("R2 ENABLED - Using R2 storage");
                     require_once ROOT_PATH . '/app/helpers/CloudflareR2.php';
                     $r2 = new CloudflareR2();
                     
-                    // Get current gallery image key (source)
+                    // Get current gallery image key and filename
                     $galleryKey = str_replace(R2_PUBLIC_URL . '/', '', $imagePath);
-                    error_log("Gallery Key (source): {$galleryKey}");
+                    $galleryFilename = basename($galleryKey);
                     
-                    // Step 1: If old cover exists, move it TO gallery folder
+                    error_log("Gallery to promote: {$galleryKey}");
+                    error_log("Gallery filename: {$galleryFilename}");
+                    
+                    // STEP 1: Move gallery image OUT to root folder (keep original filename)
+                    $newCoverPath = "{$coverFolderPath}/{$galleryFilename}";
+                    error_log("=== STEP 1: Moving gallery OUT to become cover ===");
+                    error_log("New cover path: {$newCoverPath}");
+                    
+                    $moveResult = $r2->moveObject(R2_PUBLIC_BUCKET, $galleryKey, R2_PUBLIC_BUCKET, $newCoverPath);
+                    if (!$moveResult) {
+                        throw new Exception('Failed to move gallery image out');
+                    }
+                    error_log("Gallery moved out: SUCCESS");
+                    
+                    // STEP 2: If old cover exists, move it INTO gallery folder (keep original filename)
                     if ($program['image']) {
-                        error_log("=== STEP 1: Moving old cover to gallery ===");
-                        error_log("Old Cover Path: {$program['image']}");
+                        error_log("=== STEP 2: Moving old cover INTO gallery ===");
                         
                         $oldCoverKey = str_replace(R2_PUBLIC_URL . '/', '', $program['image']);
-                        $oldCoverExtension = strtolower(pathinfo($program['image'], PATHINFO_EXTENSION));
+                        $oldCoverFilename = basename($oldCoverKey);
+                        $oldCoverNewPath = "{$coverFolderPath}/gallery/{$oldCoverFilename}";
                         
-                        // Generate new gallery filename with timestamp
-                        $timestamp = time();
-                        $oldCoverNewPath = "{$coverFolderPath}/gallery/gallery-{$timestamp}.{$oldCoverExtension}";
+                        error_log("Old cover: {$oldCoverKey}");
+                        error_log("Old cover new path: {$oldCoverNewPath}");
                         
-                        error_log("Old Cover Key: {$oldCoverKey}");
-                        error_log("Old Cover New Path: {$oldCoverNewPath}");
-                        
-                        // Move old cover to gallery
+                        // Move old cover into gallery
                         $moveResult = $r2->moveObject(R2_PUBLIC_BUCKET, $oldCoverKey, R2_PUBLIC_BUCKET, $oldCoverNewPath);
-                        error_log("Move old cover result: " . ($moveResult ? 'SUCCESS' : 'FAILED'));
+                        error_log("Move old cover INTO gallery: " . ($moveResult ? 'SUCCESS' : 'FAILED'));
                         
                         if ($moveResult) {
                             // Insert old cover as new gallery image
@@ -684,32 +681,19 @@ class ActivityController extends Controller {
                                 "INSERT INTO program_gallery (program_id, image_path, is_cover) VALUES (?, ?, 0)",
                                 [$programId, $oldCoverFullPath]
                             );
-                            error_log("Inserted old cover as gallery image: {$oldCoverFullPath}");
+                            error_log("Old cover added to gallery table");
                         }
-                    } else {
-                        error_log("No old cover to move");
                     }
                     
-                    // Step 2: Move gallery image OUT of gallery folder to become cover
-                    error_log("=== STEP 2: Moving gallery image to cover ===");
-                    $moveResult = $r2->moveObject(R2_PUBLIC_BUCKET, $galleryKey, R2_PUBLIC_BUCKET, $newCoverPath);
-                    error_log("Move gallery to cover result: " . ($moveResult ? 'SUCCESS' : 'FAILED'));
-                    
-                    if (!$moveResult) {
-                        error_log("FATAL: Failed to move gallery image to cover location");
-                        throw new Exception('Failed to move gallery image to cover location');
-                    }
-                    
-                    // Step 3: Delete gallery record (it's now the cover)
-                    error_log("=== STEP 3: Deleting gallery record ===");
+                    // STEP 3: Delete gallery record (it's now the cover)
+                    error_log("=== STEP 3: Delete old gallery record ===");
                     $db->query("DELETE FROM program_gallery WHERE id = ?", [$galleryImageId]);
-                    error_log("Deleted gallery record ID: {$galleryImageId}");
                     
-                    // Step 4: Update program.image with new cover path
-                    error_log("=== STEP 4: Updating program cover ===");
+                    // STEP 4: Update program.image with new cover path
+                    error_log("=== STEP 4: Update program cover ===");
                     $newCoverFullPath = R2_PUBLIC_URL . '/' . $newCoverPath;
                     $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$newCoverFullPath, $programId]);
-                    error_log("Updated program cover to: {$newCoverFullPath}");
+                    error_log("Program cover updated to: {$newCoverFullPath}");
                     
                     // Return success with new cover path
                     echo json_encode([
