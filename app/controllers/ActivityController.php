@@ -315,6 +315,15 @@ class ActivityController extends Controller {
                 throw new Exception('All fields are required');
             }
             
+            // Insert into database first to get program ID
+            $db = Database::getInstance();
+            $sql = "INSERT INTO programs_tahun (name, description, image, is_active, display_order, created_at, updated_at) 
+                    VALUES (?, ?, NULL, 1, 0, NOW(), NOW())";
+            $db->query($sql, [$name, $description]);
+            
+            // Get inserted ID
+            $insertedId = $db->getConnection()->lastInsertId();
+            
             // Handle image upload using UploadManager
             $imagePath = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -330,23 +339,24 @@ class ActivityController extends Controller {
                     throw new Exception($sizeValidation['message']);
                 }
                 
-                // Upload file
-                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun');
+                // Create slug from name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+                
+                // Get file extension
+                $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                
+                // Upload to: programs_tahun/{id}-{slug}/cover.{ext}
+                $folderPath = "programs_tahun/{$insertedId}-{$slug}";
+                $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, null, 'cover.' . $extension);
                 if (!$uploadResult['success']) {
                     throw new Exception($uploadResult['message']);
                 }
                 
                 $imagePath = $uploadResult['path'];
+                
+                // Update database with image path
+                $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$imagePath, $insertedId]);
             }
-            
-            // Insert into database
-            $db = Database::getInstance();
-            $sql = "INSERT INTO programs_tahun (name, description, image, is_active, display_order, created_at, updated_at) 
-                    VALUES (?, ?, ?, 1, 0, NOW(), NOW())";
-            $db->query($sql, [$name, $description, $imagePath]);
-            
-            // Get inserted ID
-            $insertedId = $db->getConnection()->lastInsertId();
             
             // Return JSON response
             header('Content-Type: application/json');
@@ -379,7 +389,6 @@ class ActivityController extends Controller {
             
             // Handle image upload
             $imagePath = $existingProgram['image']; // Keep existing image by default
-            // Handle image upload using UploadManager
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Validate file type
                 $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
@@ -393,8 +402,15 @@ class ActivityController extends Controller {
                     throw new Exception($sizeValidation['message']);
                 }
                 
-                // Upload file (will delete old file automatically)
-                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun', $imagePath);
+                // Create slug from name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+                
+                // Get file extension
+                $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                
+                // Upload to: programs_tahun/{id}-{slug}/cover.{ext}
+                $folderPath = "programs_tahun/{$id}-{$slug}";
+                $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, $imagePath, 'cover.' . $extension);
                 if (!$uploadResult['success']) {
                     throw new Exception($uploadResult['message']);
                 }
@@ -428,12 +444,25 @@ class ActivityController extends Controller {
                 throw new Exception('Program not found');
             }
             
-            // Delete image file using UploadManager
+            // Get all gallery images for this program
+            $galleryImages = $db->query("SELECT image_path FROM program_gallery WHERE program_id = ?", [$id])->fetchAll();
+            
+            // Delete cover image
             if ($existingProgram['image']) {
                 UploadManager::delete($existingProgram['image']);
             }
             
-            // Soft delete (set is_active to 0)
+            // Delete all gallery images
+            foreach ($galleryImages as $gallery) {
+                if ($gallery['image_path']) {
+                    UploadManager::delete($gallery['image_path']);
+                }
+            }
+            
+            // Delete gallery records from database
+            $db->query("DELETE FROM program_gallery WHERE program_id = ?", [$id]);
+            
+            // Soft delete program (set is_active to 0)
             $sql = "UPDATE programs_tahun SET is_active = 0, updated_at = NOW() WHERE id = ?";
             $db->query($sql, [$id]);
             
@@ -483,8 +512,18 @@ class ActivityController extends Controller {
                 throw new Exception($sizeValidation['message']);
             }
             
-            // Upload file
-            $uploadResult = UploadManager::upload($_FILES['image'], 'program_gallery');
+            // Create slug from program name
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
+            
+            // Get file extension
+            $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            
+            // Generate unique filename with timestamp
+            $filename = 'gallery-' . time() . '-' . uniqid() . '.' . $extension;
+            
+            // Upload to: programs_tahun/{id}-{slug}/gallery/{filename}
+            $folderPath = "programs_tahun/{$programId}-{$slug}/gallery";
+            $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, null, $filename);
             if (!$uploadResult['success']) {
                 throw new Exception($uploadResult['message']);
             }
@@ -528,6 +567,12 @@ class ActivityController extends Controller {
         $db = Database::getInstance();
         
         try {
+            // Get program info
+            $program = $db->query("SELECT * FROM programs_tahun WHERE id = ?", [$programId])->fetch();
+            if (!$program) {
+                throw new Exception('Program not found');
+            }
+            
             // Get existing gallery image
             $existingImage = $db->query(
                 "SELECT * FROM program_gallery WHERE id = ? AND program_id = ?", 
@@ -562,8 +607,18 @@ class ActivityController extends Controller {
                     throw new Exception($sizeValidation['message']);
                 }
                 
-                // Upload file (will delete old file automatically)
-                $uploadResult = UploadManager::upload($_FILES['image'], 'program_gallery', $imagePath);
+                // Create slug from program name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
+                
+                // Get file extension
+                $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                
+                // Generate unique filename
+                $filename = 'gallery-' . time() . '-' . uniqid() . '.' . $extension;
+                
+                // Upload to: programs_tahun/{id}-{slug}/gallery/{filename}
+                $folderPath = "programs_tahun/{$programId}-{$slug}/gallery";
+                $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, $imagePath, $filename);
                 if (!$uploadResult['success']) {
                     throw new Exception($uploadResult['message']);
                 }
@@ -622,8 +677,15 @@ class ActivityController extends Controller {
                     throw new Exception($sizeValidation['message']);
                 }
                 
-                // Upload file (will delete old file automatically)
-                $uploadResult = UploadManager::upload($_FILES['image'], 'programs_tahun', $imagePath);
+                // Create slug from program name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $existingProgram['name'])));
+                
+                // Get file extension
+                $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                
+                // Upload to: programs_tahun/{id}-{slug}/cover.{ext}
+                $folderPath = "programs_tahun/{$programId}-{$slug}";
+                $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, $imagePath, 'cover.' . $extension);
                 if (!$uploadResult['success']) {
                     throw new Exception($uploadResult['message']);
                 }
