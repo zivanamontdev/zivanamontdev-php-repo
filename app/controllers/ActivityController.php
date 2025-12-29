@@ -635,53 +635,115 @@ class ActivityController extends Controller {
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
                 
                 // Get file extension from current gallery image
-                $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+                $galleryExtension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
                 
-                // Copy gallery image to cover location: programs_tahun/{id}-{slug}/cover.{ext}
+                // Paths
                 $coverFolderPath = "programs_tahun/{$programId}-{$slug}";
-                $newCoverPath = "{$coverFolderPath}/cover.{$extension}";
+                $newCoverPath = "{$coverFolderPath}/cover.{$galleryExtension}";
                 
-                // Delete old cover if exists
-                if ($program['image']) {
-                    UploadManager::delete($program['image']);
-                }
-                
-                // Copy file to new cover location
                 if (R2_ENABLED) {
-                    // R2: Copy file within bucket
                     require_once ROOT_PATH . '/app/helpers/CloudflareR2.php';
                     $r2 = new CloudflareR2();
                     
-                    // Get source key (remove R2_PUBLIC_URL from path)
-                    $sourceKey = str_replace(R2_PUBLIC_URL . '/', '', $imagePath);
+                    // Get current gallery image key (source)
+                    $galleryKey = str_replace(R2_PUBLIC_URL . '/', '', $imagePath);
                     
-                    // Copy to new location
-                    $copyResult = $r2->copyObject(R2_PUBLIC_BUCKET, $sourceKey, R2_PUBLIC_BUCKET, $newCoverPath);
-                    if (!$copyResult) {
-                        throw new Exception('Failed to copy image to cover location');
+                    // Step 1: If old cover exists, move it TO gallery folder
+                    if ($program['image']) {
+                        $oldCoverKey = str_replace(R2_PUBLIC_URL . '/', '', $program['image']);
+                        $oldCoverExtension = strtolower(pathinfo($program['image'], PATHINFO_EXTENSION));
+                        
+                        // Generate new gallery filename with timestamp
+                        $timestamp = time();
+                        $oldCoverNewPath = "{$coverFolderPath}/gallery/gallery-{$timestamp}.{$oldCoverExtension}";
+                        
+                        // Move old cover to gallery
+                        $moveResult = $r2->moveObject(R2_PUBLIC_BUCKET, $oldCoverKey, R2_PUBLIC_BUCKET, $oldCoverNewPath);
+                        if ($moveResult) {
+                            // Insert old cover as new gallery image
+                            $oldCoverFullPath = R2_PUBLIC_URL . '/' . $oldCoverNewPath;
+                            $db->query(
+                                "INSERT INTO program_gallery (program_id, image_path, is_cover) VALUES (?, ?, 0)",
+                                [$programId, $oldCoverFullPath]
+                            );
+                        }
                     }
                     
-                    $newCoverPath = R2_PUBLIC_URL . '/' . $newCoverPath;
-                } else {
-                    // Local: Copy file
-                    $sourcePath = ROOT_PATH . '/public/' . $imagePath;
-                    $destPath = ROOT_PATH . '/public/uploads/' . $newCoverPath;
+                    // Step 2: Move gallery image OUT of gallery folder to become cover
+                    $moveResult = $r2->moveObject(R2_PUBLIC_BUCKET, $galleryKey, R2_PUBLIC_BUCKET, $newCoverPath);
+                    if (!$moveResult) {
+                        throw new Exception('Failed to move gallery image to cover location');
+                    }
                     
-                    // Create directory if not exists
-                    $destDir = dirname($destPath);
+                    // Step 3: Delete gallery record (it's now the cover)
+                    $db->query("DELETE FROM program_gallery WHERE id = ?", [$galleryImageId]);
+                    
+                    // Step 4: Update program.image with new cover path
+                    $newCoverFullPath = R2_PUBLIC_URL . '/' . $newCoverPath;
+                    $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$newCoverFullPath, $programId]);
+                    
+                    // Return success with new cover path
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Cover berhasil diperbarui',
+                        'newCoverPath' => $newCoverFullPath
+                    ]);
+                    exit;
+                    
+                } else {
+                    // Local: Similar swap logic for local files
+                    $gallerySourcePath = ROOT_PATH . '/public/' . $imagePath;
+                    $newCoverFullPath = ROOT_PATH . '/public/uploads/' . $newCoverPath;
+                    
+                    // Step 1: If old cover exists, move it TO gallery folder
+                    if ($program['image']) {
+                        $oldCoverSource = ROOT_PATH . '/public/' . $program['image'];
+                        $oldCoverExtension = strtolower(pathinfo($program['image'], PATHINFO_EXTENSION));
+                        
+                        $timestamp = time();
+                        $oldCoverNewPath = "{$coverFolderPath}/gallery/gallery-{$timestamp}.{$oldCoverExtension}";
+                        $oldCoverNewFullPath = ROOT_PATH . '/public/uploads/' . $oldCoverNewPath;
+                        
+                        // Create directory if needed
+                        $destDir = dirname($oldCoverNewFullPath);
+                        if (!is_dir($destDir)) {
+                            mkdir($destDir, 0755, true);
+                        }
+                        
+                        if (file_exists($oldCoverSource) && rename($oldCoverSource, $oldCoverNewFullPath)) {
+                            // Insert old cover as new gallery image
+                            $oldCoverPath = 'uploads/' . $oldCoverNewPath;
+                            $db->query(
+                                "INSERT INTO program_gallery (program_id, image_path, is_cover) VALUES (?, ?, 0)",
+                                [$programId, $oldCoverPath]
+                            );
+                        }
+                    }
+                    
+                    // Step 2: Move gallery image OUT to become cover
+                    $destDir = dirname($newCoverFullPath);
                     if (!is_dir($destDir)) {
                         mkdir($destDir, 0755, true);
                     }
                     
-                    if (!copy($sourcePath, $destPath)) {
-                        throw new Exception('Failed to copy image to cover location');
+                    if (!rename($gallerySourcePath, $newCoverFullPath)) {
+                        throw new Exception('Failed to move gallery image to cover location');
                     }
                     
-                    $newCoverPath = 'uploads/' . $newCoverPath;
+                    // Step 3: Delete gallery record
+                    $db->query("DELETE FROM program_gallery WHERE id = ?", [$galleryImageId]);
+                    
+                    // Step 4: Update program.image
+                    $newCoverDbPath = 'uploads/' . $newCoverPath;
+                    $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$newCoverDbPath, $programId]);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Cover berhasil diperbarui',
+                        'newCoverPath' => $newCoverDbPath
+                    ]);
+                    exit;
                 }
-                
-                // Update program.image in database
-                $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$newCoverPath, $programId]);
             }
             
             // Update database

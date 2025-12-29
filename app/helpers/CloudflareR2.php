@@ -265,6 +265,37 @@ class CloudflareR2 {
     }
     
     /**
+     * Move object within R2 bucket (copy + delete)
+     * 
+     * @param string $sourceBucket - Source bucket name
+     * @param string $sourceKey - Source object key
+     * @param string $destBucket - Destination bucket name
+     * @param string $destKey - Destination object key
+     * @return bool
+     */
+    public function moveObject($sourceBucket, $sourceKey, $destBucket, $destKey) {
+        try {
+            // First copy to destination
+            if (!$this->copyObject($sourceBucket, $sourceKey, $destBucket, $destKey)) {
+                return false;
+            }
+            
+            // Then delete source
+            $client = $sourceBucket === $this->publicBucket ? $this->publicClient : $this->privateClient;
+            $client->deleteObject([
+                'Bucket' => $sourceBucket,
+                'Key' => $sourceKey
+            ]);
+            
+            return true;
+            
+        } catch (AwsException $e) {
+            error_log("R2 Move failed: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
      * Check apakah file exists di Public Bucket
      * 
      * @param string $filePath - Path file di R2
