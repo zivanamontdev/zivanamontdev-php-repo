@@ -7,8 +7,31 @@
 $envLoaded = false;
 $envVars = [];
 if (file_exists(ROOT_PATH . '/.env')) {
+    // Try parse_ini_file first
     $env = parse_ini_file(ROOT_PATH . '/.env');
-    if ($env !== false && !empty($env)) {
+    
+    // If parse_ini_file fails, use manual parsing (fallback for shared hosting)
+    if ($env === false) {
+        $content = file_get_contents(ROOT_PATH . '/.env');
+        $lines = explode("\n", $content);
+        $env = [];
+        foreach ($lines as $line) {
+            $line = trim($line);
+            // Skip empty lines and comments
+            if (empty($line) || strpos($line, '#') === 0) continue;
+            
+            $parts = explode('=', $line, 2);
+            if (count($parts) === 2) {
+                $key = trim($parts[0]);
+                $value = trim($parts[1]);
+                // Remove quotes if any
+                $value = trim($value, '"\'');
+                $env[$key] = $value;
+            }
+        }
+    }
+    
+    if (!empty($env)) {
         foreach ($env as $key => $value) {
             // Skip commented keys (keys starting with #)
             if (strpos($key, '#') === 0) {
