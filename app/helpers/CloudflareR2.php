@@ -275,24 +275,41 @@ class CloudflareR2 {
      */
     public function moveObject($sourceBucket, $sourceKey, $destBucket, $destKey) {
         try {
+            error_log("R2 moveObject START: {$sourceKey} -> {$destKey}");
+            
             // First copy to destination
+            error_log("R2 moveObject: Copying to destination...");
             if (!$this->copyObject($sourceBucket, $sourceKey, $destBucket, $destKey)) {
+                error_log("R2 moveObject FAILED: Copy operation failed");
                 return false;
             }
+            error_log("R2 moveObject: Copy successful");
             
             // Then delete source
+            error_log("R2 moveObject: Deleting source...");
             $client = $sourceBucket === $this->publicBucket ? $this->publicClient : $this->privateClient;
             $client->deleteObject([
                 'Bucket' => $sourceBucket,
                 'Key' => $sourceKey
             ]);
+            error_log("R2 moveObject SUCCESS: {$sourceKey} -> {$destKey}");
             
             return true;
             
         } catch (AwsException $e) {
             error_log("R2 Move failed: " . $e->getMessage());
+            error_log("R2 Move trace: " . $e->getTraceAsString());
             return false;
         }
+    }
+    
+    /**
+     * Get public S3 client (for debugging)
+     * 
+     * @return S3Client
+     */
+    public function getPublicClient() {
+        return $this->publicClient;
     }
     
     /**
