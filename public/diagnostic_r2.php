@@ -53,7 +53,39 @@ echo "<h3>2. PHP Constants Check:</h3>";
 $envVars = [];
 $envPath = dirname(__DIR__) . '/.env';  // Go up one level from public/
 if (file_exists($envPath)) {
+    // Debug: Show parse_ini_file result
     $env = parse_ini_file($envPath);
+    
+    echo "<p><strong>🔍 DEBUG parse_ini_file():</strong></p>";
+    echo "<pre>";
+    if ($env === false) {
+        echo "❌ parse_ini_file() returned FALSE - parsing failed!\n";
+        echo "Trying manual parsing instead...\n\n";
+        
+        // Fallback: Manual parsing
+        $content = file_get_contents($envPath);
+        $lines = explode("\n", $content);
+        $env = [];
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line) || strpos($line, '#') === 0) continue;
+            
+            $parts = explode('=', $line, 2);
+            if (count($parts) === 2) {
+                $key = trim($parts[0]);
+                $value = trim($parts[1]);
+                // Remove quotes if any
+                $value = trim($value, '"\'');
+                $env[$key] = $value;
+            }
+        }
+        echo "Manual parsing result: " . count($env) . " variables found\n";
+    } else {
+        echo "✅ parse_ini_file() SUCCESS - found " . count($env) . " variables\n";
+    }
+    var_dump($env);
+    echo "</pre>";
+    
     if ($env !== false && !empty($env)) {
         foreach ($env as $key => $value) {
             if (strpos($key, '#') !== 0) {
