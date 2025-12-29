@@ -626,9 +626,62 @@ class ActivityController extends Controller {
                 $imagePath = $uploadResult['path'];
             }
             
-            // If this is set as cover, unset all other covers for this program
+            // If this is set as cover, copy gallery image to become the program cover
             if ($isCover) {
+                // Unset all other covers for this program (both gallery and program.image)
                 $db->query("UPDATE program_gallery SET is_cover = 0 WHERE program_id = ? AND id != ?", [$programId, $galleryImageId]);
+                
+                // Create slug from program name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
+                
+                // Get file extension from current gallery image
+                $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+                
+                // Copy gallery image to cover location: programs_tahun/{id}-{slug}/cover.{ext}
+                $coverFolderPath = "programs_tahun/{$programId}-{$slug}";
+                $newCoverPath = "{$coverFolderPath}/cover.{$extension}";
+                
+                // Delete old cover if exists
+                if ($program['image']) {
+                    UploadManager::delete($program['image']);
+                }
+                
+                // Copy file to new cover location
+                if (R2_ENABLED) {
+                    // R2: Copy file within bucket
+                    require_once ROOT_PATH . '/app/helpers/CloudflareR2.php';
+                    $r2 = new CloudflareR2();
+                    
+                    // Get source key (remove R2_PUBLIC_URL from path)
+                    $sourceKey = str_replace(R2_PUBLIC_URL . '/', '', $imagePath);
+                    
+                    // Copy to new location
+                    $copyResult = $r2->copyObject(R2_PUBLIC_BUCKET, $sourceKey, R2_PUBLIC_BUCKET, $newCoverPath);
+                    if (!$copyResult) {
+                        throw new Exception('Failed to copy image to cover location');
+                    }
+                    
+                    $newCoverPath = R2_PUBLIC_URL . '/' . $newCoverPath;
+                } else {
+                    // Local: Copy file
+                    $sourcePath = ROOT_PATH . '/public/' . $imagePath;
+                    $destPath = ROOT_PATH . '/public/uploads/' . $newCoverPath;
+                    
+                    // Create directory if not exists
+                    $destDir = dirname($destPath);
+                    if (!is_dir($destDir)) {
+                        mkdir($destDir, 0755, true);
+                    }
+                    
+                    if (!copy($sourcePath, $destPath)) {
+                        throw new Exception('Failed to copy image to cover location');
+                    }
+                    
+                    $newCoverPath = 'uploads/' . $newCoverPath;
+                }
+                
+                // Update program.image in database
+                $db->query("UPDATE programs_tahun SET image = ? WHERE id = ?", [$newCoverPath, $programId]);
             }
             
             // Update database

@@ -633,6 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-programtahun']); ?>
 <?php component('widget/activities/modals/gallery/modal-add-gallery-image'); ?>
 <?php component('widget/activities/modals/gallery/modal-edit-gallery-image'); ?>
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-gallery']); ?>
 <?php component('widget/activities/modals/program_harian/modal-edit-program-harian'); ?>
 <?php component('widget/activities/modals/program_harian/modal-add-gallery-harian'); ?>
 <?php component('widget/activities/modals/program_harian/modal-edit-gallery-harian'); ?>

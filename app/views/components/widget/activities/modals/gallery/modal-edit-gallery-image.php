@@ -370,35 +370,42 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 } else {
-                    // Delete gallery image
-                    if (confirm('Apakah Anda yakin ingin menghapus foto ini dari galeri?')) {
-                        // Store active tab before delete to prevent glitch on reload
-                        localStorage.setItem('activeTabIndex', '1');
-                        
-                        const galleryImageId = document.getElementById('gallery-image-id-edit').value;
-                        const programId = document.getElementById('gallery-program-id-edit').value;
-                        
-                        // Send AJAX request
-                        fetch(`/admin/activities/programs-tahun/${programId}/gallery/${galleryImageId}/delete`, {
-                            method: 'POST'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                modal.classList.add('hidden');
-                                resetEditGalleryForm();
-                                showToast('Foto berhasil dihapus!', 'success', 3000);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                    // Delete gallery image - Use modal confirmation
+                    const galleryImageId = document.getElementById('gallery-image-id-edit').value;
+                    const programId = document.getElementById('gallery-program-id-edit').value;
+                    
+                    // Open delete confirmation modal
+                    if (typeof window.openModalDeleteGallery === 'function') {
+                        window.openModalDeleteGallery(
+                            'Hapus Foto dari Galeri',
+                            'Apakah Anda yakin ingin menghapus foto ini dari galeri? Tindakan ini tidak dapat dibatalkan.',
+                            function() {
+                                // Store active tab before delete to prevent glitch on reload
+                                localStorage.setItem('activeTabIndex', '1');
+                                
+                                // Send AJAX request
+                                fetch(`/admin/activities/programs-tahun/${programId}/gallery/${galleryImageId}/delete`, {
+                                    method: 'POST'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        modal.classList.add('hidden');
+                                        resetEditGalleryForm();
+                                        showToast('Foto berhasil dihapus!', 'success', 3000);
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                    } else {
+                                        showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                });
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                        });
+                        );
                     }
                 }
             }

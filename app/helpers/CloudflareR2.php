@@ -237,6 +237,34 @@ class CloudflareR2 {
     }
     
     /**
+     * Copy object within R2 bucket
+     * 
+     * @param string $sourceBucket - Source bucket name
+     * @param string $sourceKey - Source object key
+     * @param string $destBucket - Destination bucket name
+     * @param string $destKey - Destination object key
+     * @return bool
+     */
+    public function copyObject($sourceBucket, $sourceKey, $destBucket, $destKey) {
+        try {
+            $client = $sourceBucket === $this->publicBucket ? $this->publicClient : $this->privateClient;
+            
+            $client->copyObject([
+                'Bucket' => $destBucket,
+                'Key' => $destKey,
+                'CopySource' => "{$sourceBucket}/{$sourceKey}",
+                'MetadataDirective' => 'COPY'
+            ]);
+            
+            return true;
+            
+        } catch (AwsException $e) {
+            error_log("R2 Copy failed: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
      * Check apakah file exists di Public Bucket
      * 
      * @param string $filePath - Path file di R2
