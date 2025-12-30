@@ -436,41 +436,60 @@ class ActivityController extends Controller {
     
     public function deleteProgramTahun($id) {
         try {
+            // Debug: Log request
+            error_log('=== deleteProgramTahun() called ===');
+            error_log('Program ID: ' . $id);
+            
             $db = Database::getInstance();
             
             // Get existing program
             $existingProgram = $db->query("SELECT * FROM programs_tahun WHERE id = ?", [$id])->fetch();
             if (!$existingProgram) {
+                error_log('ERROR: Program not found');
                 throw new Exception('Program not found');
             }
             
+            error_log('Program found: ' . $existingProgram['name']);
+            
             // Get all gallery images for this program
             $galleryImages = $db->query("SELECT image_path FROM program_gallery WHERE program_id = ?", [$id])->fetchAll();
+            error_log('Gallery images count: ' . count($galleryImages));
             
             // Delete cover image
             if ($existingProgram['image']) {
+                error_log('Deleting cover image: ' . $existingProgram['image']);
                 UploadManager::delete($existingProgram['image']);
             }
             
             // Delete all gallery images
             foreach ($galleryImages as $gallery) {
                 if ($gallery['image_path']) {
+                    error_log('Deleting gallery image: ' . $gallery['image_path']);
                     UploadManager::delete($gallery['image_path']);
                 }
             }
             
             // Delete gallery records from database
-            $db->query("DELETE FROM program_gallery WHERE program_id = ?", [$id]);
+            error_log('Deleting gallery records from database for program_id: ' . $id);
+            $result = $db->query("DELETE FROM program_gallery WHERE program_id = ?", [$id]);
+            $rowsAffected = $result->rowCount();
+            error_log('Gallery records deleted. Rows affected: ' . $rowsAffected);
             
             // Soft delete program (set is_active to 0)
+            error_log('Soft deleting program (setting is_active = 0)');
             $sql = "UPDATE programs_tahun SET is_active = 0, updated_at = NOW() WHERE id = ?";
-            $db->query($sql, [$id]);
+            $result = $db->query($sql, [$id]);
+            $rowsAffected = $result->rowCount();
+            error_log('Program soft deleted. Rows affected: ' . $rowsAffected);
             
             // Return JSON response
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'message' => 'Program deleted successfully']);
             
         } catch (Exception $e) {
+            error_log('EXCEPTION in deleteProgramTahun: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            
             http_response_code(400);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus program. Silakan coba lagi.')]);
@@ -479,38 +498,54 @@ class ActivityController extends Controller {
     
     public function storeGalleryImage($programId) {
         try {
+            // Debug: Log request
+            error_log('=== storeGalleryImage() called ===');
+            error_log('Program ID: ' . $programId);
+            error_log('POST data: ' . print_r($_POST, true));
+            error_log('FILES data: ' . print_r($_FILES, true));
+            
             // Validate program exists
             $db = Database::getInstance();
             $program = $db->query("SELECT * FROM programs_tahun WHERE id = ? AND is_active = 1", [$programId])->fetch();
             if (!$program) {
+                error_log('ERROR: Program not found');
                 throw new Exception('Program not found');
             }
+            error_log('Program found: ' . $program['name']);
             
             // Validate input
             $description = trim($_POST['description'] ?? '');
             $isCover = isset($_POST['is_cover']) && $_POST['is_cover'] === '1' ? 1 : 0;
             
             if (empty($description)) {
+                error_log('ERROR: Description is empty');
                 throw new Exception('Description is required');
             }
+            error_log('Description: ' . $description);
+            error_log('Is Cover: ' . $isCover);
             
             // Handle image upload using UploadManager
             $imagePath = null;
             if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                error_log('ERROR: Image file missing or upload error: ' . ($_FILES['image']['error'] ?? 'N/A'));
                 throw new Exception('Image is required');
             }
             
             // Validate file type
             $validation = UploadManager::validateFileType($_FILES['image'], ['jpg', 'jpeg', 'png', 'gif', 'webp']);
             if (!$validation['success']) {
+                error_log('ERROR: File type validation failed: ' . $validation['message']);
                 throw new Exception($validation['message']);
             }
+            error_log('File type validation passed');
             
             // Validate file size (max 5MB)
             $sizeValidation = UploadManager::validateFileSize($_FILES['image'], 5242880);
             if (!$sizeValidation['success']) {
+                error_log('ERROR: File size validation failed: ' . $sizeValidation['message']);
                 throw new Exception($sizeValidation['message']);
             }
+            error_log('File size validation passed');
             
             // Create slug from program name
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['name'])));
@@ -523,26 +558,39 @@ class ActivityController extends Controller {
             
             // Upload to: programs_tahun/{id}-{slug}/gallery/{filename}
             $folderPath = "programs_tahun/{$programId}-{$slug}/gallery";
+            error_log('Uploading to folder: ' . $folderPath . ' with filename: ' . $filename);
             $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, null, $filename);
+            error_log('Upload result: ' . print_r($uploadResult, true));
+            
             if (!$uploadResult['success']) {
+                error_log('ERROR: Upload failed: ' . $uploadResult['message']);
                 throw new Exception($uploadResult['message']);
             }
             
             $imagePath = $uploadResult['path'];
+            error_log('Image uploaded successfully to: ' . $imagePath);
             
             // If this is set as cover, unset all other covers for this program
             if ($isCover) {
+                error_log('Unsetting other cover images for program ID: ' . $programId);
                 $db->query("UPDATE program_gallery SET is_cover = 0 WHERE program_id = ?", [$programId]);
             }
             
             // Get max display order for this program
             $maxOrder = $db->query("SELECT MAX(display_order) as max_order FROM program_gallery WHERE program_id = ?", [$programId])->fetch();
             $displayOrder = ($maxOrder['max_order'] ?? 0) + 1;
+            error_log('Display order: ' . $displayOrder);
             
             // Insert into database
+            error_log('Inserting into database - program_id: ' . $programId . ', image_path: ' . $imagePath . ', description: ' . $description . ', is_cover: ' . $isCover . ', display_order: ' . $displayOrder);
             $sql = "INSERT INTO program_gallery (program_id, image_path, description, is_cover, display_order) 
                     VALUES (?, ?, ?, ?, ?)";
-            $db->query($sql, [$programId, $imagePath, $description, $isCover, $displayOrder]);
+            $result = $db->query($sql, [$programId, $imagePath, $description, $isCover, $displayOrder]);
+            error_log('Insert successful! Rows affected: ' . $result->rowCount());
+            
+            // Get inserted ID
+            $insertedId = $db->getConnection()->lastInsertId();
+            error_log('Inserted ID: ' . $insertedId);
             
             // Return JSON response
             header('Content-Type: application/json');
@@ -550,6 +598,7 @@ class ActivityController extends Controller {
                 'success' => true, 
                 'message' => 'Gallery image added successfully',
                 'data' => [
+                    'id' => $insertedId,
                     'image_path' => $imagePath,
                     'description' => $description,
                     'is_cover' => $isCover
@@ -557,6 +606,9 @@ class ActivityController extends Controller {
             ]);
             
         } catch (Exception $e) {
+            error_log('EXCEPTION in storeGalleryImage: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            
             http_response_code(400);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menambah gambar galeri. Silakan coba lagi.')]);
@@ -892,6 +944,11 @@ class ActivityController extends Controller {
         $db = Database::getInstance();
         
         try {
+            // Debug: Log request
+            error_log('=== deleteGalleryImage() called ===');
+            error_log('Program ID: ' . $programId);
+            error_log('Gallery Image ID: ' . $galleryImageId);
+            
             // Get existing gallery image
             $existingImage = $db->query(
                 "SELECT * FROM program_gallery WHERE id = ? AND program_id = ?", 
@@ -899,16 +956,28 @@ class ActivityController extends Controller {
             )->fetch();
             
             if (!$existingImage) {
+                error_log('ERROR: Gallery image not found');
                 throw new Exception('Gallery image not found');
             }
             
+            error_log('Gallery image found: ' . print_r($existingImage, true));
+            
             // Delete image file using UploadManager
             if ($existingImage['image_path']) {
+                error_log('Deleting image file: ' . $existingImage['image_path']);
                 UploadManager::delete($existingImage['image_path']);
+                error_log('Image file deleted successfully');
             }
             
             // Delete from database
-            $db->query("DELETE FROM program_gallery WHERE id = ? AND program_id = ?", [$galleryImageId, $programId]);
+            error_log('Deleting from database: gallery_id=' . $galleryImageId . ', program_id=' . $programId);
+            $result = $db->query("DELETE FROM program_gallery WHERE id = ? AND program_id = ?", [$galleryImageId, $programId]);
+            $rowsAffected = $result->rowCount();
+            error_log('Delete query executed. Rows affected: ' . $rowsAffected);
+            
+            if ($rowsAffected === 0) {
+                error_log('WARNING: No rows were deleted from database');
+            }
             
             // Return JSON response
             header('Content-Type: application/json');
@@ -918,6 +987,9 @@ class ActivityController extends Controller {
             ]);
             
         } catch (Exception $e) {
+            error_log('EXCEPTION in deleteGalleryImage: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            
             http_response_code(400);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => sanitize_error($e, 'Gagal menghapus gambar galeri. Silakan coba lagi.')]);

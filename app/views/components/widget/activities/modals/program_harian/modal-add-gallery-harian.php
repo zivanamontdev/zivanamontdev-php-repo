@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prepare form data
             const formData = new FormData();
             formData.append('description', document.getElementById('photo-description-harian').value);
-            formData.append('set_as_cover', document.getElementById('set-as-cover-harian').checked ? '1' : '0');
+            formData.append('is_cover', document.getElementById('set-as-cover-harian').checked ? '1' : '0');
             
             // Add image (required)
             if (imageInput.files[0]) {
