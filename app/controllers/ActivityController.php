@@ -1071,6 +1071,12 @@ class ActivityController extends Controller {
         $db = Database::getInstance();
         
         try {
+            // Validate program exists
+            $program = $db->query("SELECT * FROM programs_harian WHERE id = ?", [$programId])->fetch();
+            if (!$program) {
+                throw new Exception('Program not found');
+            }
+            
             // Validate input
             if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
                 throw new Exception('Image is required');
@@ -1094,7 +1100,18 @@ class ActivityController extends Controller {
                 throw new Exception($sizeValidation['message']);
             }
             
-            $uploadResult = UploadManager::upload($_FILES['image'], 'program_harian_gallery');
+            // Create slug from program name (day name)
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['day_name'])));
+            
+            // Get file extension
+            $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            
+            // Generate unique filename with timestamp
+            $filename = 'gallery-' . time() . '-' . uniqid() . '.' . $extension;
+            
+            // Upload to: programs_harian/{id}-{slug}/gallery/{filename}
+            $folderPath = "programs_harian/{$programId}-{$slug}/gallery";
+            $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, null, $filename);
             if (!$uploadResult['success']) {
                 throw new Exception($uploadResult['message']);
             }
@@ -1137,6 +1154,12 @@ class ActivityController extends Controller {
         $db = Database::getInstance();
         
         try {
+            // Get program info
+            $program = $db->query("SELECT * FROM programs_harian WHERE id = ?", [$programId])->fetch();
+            if (!$program) {
+                throw new Exception('Program not found');
+            }
+            
             // Validate input
             $description = $_POST['description'] ?? '';
             $isCover = isset($_POST['is_cover']) && $_POST['is_cover'] == '1';
@@ -1170,8 +1193,18 @@ class ActivityController extends Controller {
                     throw new Exception($sizeValidation['message']);
                 }
                 
-                // Upload file (will delete old file automatically)
-                $uploadResult = UploadManager::upload($_FILES['image'], 'program_harian_gallery', $imagePath);
+                // Create slug from day name
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $program['day_name'])));
+                
+                // Get file extension
+                $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                
+                // Generate unique filename
+                $filename = 'gallery-' . time() . '-' . uniqid() . '.' . $extension;
+                
+                // Upload to: programs_harian/{id}-{slug}/gallery/{filename}
+                $folderPath = "programs_harian/{$programId}-{$slug}/gallery";
+                $uploadResult = UploadManager::upload($_FILES['image'], $folderPath, $imagePath, $filename);
                 if (!$uploadResult['success']) {
                     throw new Exception($uploadResult['message']);
                 }

@@ -257,114 +257,65 @@ ob_start();
                     <!-- Galeri Program Label -->
                     <p class="font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">Galeri Program</p>
                     
-                    <!-- Gallery Images -->
-                    <div class="flex items-center gap-[12px]">
+                    <!-- Gallery Images with horizontal scroll -->
+                    <div class="flex items-center gap-[12px] overflow-x-auto pb-2">
                         <!-- Add Button -->
                         <button 
-                            class="btn-add-gallery-harian w-[80px] h-[80px] rounded-xl bg-gray-placeholder flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity"
-                            data-program-id="<?= e($programHarian['id']) ?>"
+                            class="btn-add-gallery-harian w-[80px] h-[80px] rounded-xl bg-gray-placeholder flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
+                            data-program-id="<?= $programHarian['id'] ?>"
                         >
                             <svg class="w-[16px] h-[16px] text-black-highlight" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
                             </svg>
                         </button>
                         
-                        <!-- Display cover image with SAMPUL badge if exists -->
+                        <!-- Sampul (Cover Image) - Always first position -->
                         <?php if (!empty($programHarian['cover_image'])): ?>
-                            <?php if ($programHarian['cover_from_gallery']): ?>
-                                <!-- Cover is from gallery -->
-                                <?php if (!empty($programHarian['gallery']) && is_array($programHarian['gallery'])): ?>
-                                    <?php foreach ($programHarian['gallery'] as $galleryImg): ?>
-                                        <?php if ($galleryImg['is_cover'] == 1): ?>
-                                            <div class="relative w-[80px] h-[80px] rounded-xl overflow-hidden flex-shrink-0">
-                                                <div class="w-full h-full bg-gray-placeholder relative overflow-hidden gallery-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
-                                                     data-gallery-id="<?= e($galleryImg['id']) ?>"
-                                                     data-program-id="<?= e($programHarian['id']) ?>"
-                                                     data-image-path="<?= e($galleryImg['image_path']) ?>"
-                                                     data-description="<?= e($galleryImg['description']) ?>"
-                                                     data-is-cover="1">
-                                                    <img 
-                                                        src="<?= image_url($galleryImg['image_path']) ?>" 
-                                                        alt="Sampul" 
-                                                        class="w-full h-full object-cover"
-                                                        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
-                                                    >
-                                                    <svg class="hidden absolute inset-0 w-8 h-8 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                    </svg>
-                                                </div>
-                                                <!-- SAMPUL Badge -->
-                                                <div class="absolute top-1 right-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded">
-                                                    SAMPUL
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            <?php else: ?>
-                                <!-- Cover is program.image -->
-                                <div class="relative w-[80px] h-[80px] rounded-xl overflow-hidden flex-shrink-0">
-                                    <div class="w-full h-full bg-gray-placeholder relative overflow-hidden program-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
-                                         data-program-id="<?= e($programHarian['id']) ?>"
-                                         data-program-image="<?= e($programHarian['image']) ?>"
-                                         data-description=""
-                                         data-is-cover="0">
-                                        <img 
-                                            src="<?= image_url($programHarian['image']) ?>" 
-                                            alt="Program Image" 
-                                            class="w-full h-full object-cover"
-                                            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
-                                        >
-                                        <svg class="hidden absolute inset-0 w-8 h-8 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <!-- SAMPUL Badge -->
-                                    <div class="absolute top-1 right-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded">
-                                        SAMPUL
-                                    </div>
+                            <div class="relative w-[80px] h-[80px] flex-shrink-0">
+                                <img 
+                                    src="<?= image_url($programHarian['cover_image']) ?>" 
+                                    alt="Sampul <?= e($programHarian['program_name']) ?>" 
+                                    class="w-full h-full rounded-xl object-cover"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
+                                >
+                                <div class="absolute top-1 right-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded">
+                                    SAMPUL
                                 </div>
-                            <?php endif; ?>
+                            </div>
                         <?php endif; ?>
                         
-                        <!-- Display program.image if not cover -->
-                        <?php if ($programHarian['image'] && $programHarian['cover_from_gallery']): ?>
-                            <div class="w-[80px] h-[80px] rounded-xl bg-gray-placeholder relative overflow-hidden flex-shrink-0 program-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
-                                 data-program-id="<?= e($programHarian['id']) ?>"
+                        <!-- Program Image (if exists and not used as cover) -->
+                        <?php if (!empty($programHarian['image']) && $programHarian['cover_from_gallery']): ?>
+                            <div class="relative w-[80px] h-[80px] flex-shrink-0 program-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
+                                 data-program-id="<?= $programHarian['id'] ?>"
                                  data-program-image="<?= e($programHarian['image']) ?>"
                                  data-description=""
                                  data-is-cover="0">
                                 <img 
                                     src="<?= image_url($programHarian['image']) ?>" 
-                                    alt="Program Image" 
-                                    class="w-full h-full object-cover"
-                                    onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+                                    alt="<?= e($programHarian['program_name']) ?>" 
+                                    class="w-full h-full rounded-xl object-cover"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
                                 >
-                                <svg class="hidden absolute inset-0 w-8 h-8 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
                             </div>
                         <?php endif; ?>
                         
-                        <!-- Display other gallery images (not cover) -->
+                        <!-- Gallery Images (exclude the one marked as cover) -->
                         <?php if (!empty($programHarian['gallery']) && is_array($programHarian['gallery'])): ?>
                             <?php foreach ($programHarian['gallery'] as $galleryImg): ?>
                                 <?php if ($galleryImg['is_cover'] != 1): ?>
-                                    <div class="w-[80px] h-[80px] rounded-xl bg-gray-placeholder relative overflow-hidden flex-shrink-0 gallery-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
-                                         data-gallery-id="<?= e($galleryImg['id']) ?>"
-                                         data-program-id="<?= e($programHarian['id']) ?>"
-                                         data-image-path="<?= e($galleryImg['image_path']) ?>"
+                                    <div class="relative w-[80px] h-[80px] flex-shrink-0 gallery-image-item-harian cursor-pointer hover:opacity-80 transition-opacity"
+                                         data-gallery-id="<?= $galleryImg['id'] ?>"
+                                         data-program-id="<?= $programHarian['id'] ?>"
                                          data-description="<?= e($galleryImg['description']) ?>"
-                                         data-is-cover="0">
+                                         data-image-path="<?= e($galleryImg['image_path']) ?>"
+                                         data-is-cover="<?= $galleryImg['is_cover'] ?>">
                                         <img 
                                             src="<?= image_url($galleryImg['image_path']) ?>" 
-                                            alt="Gallery" 
-                                            class="w-full h-full object-cover"
-                                            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+                                            alt="<?= e($galleryImg['description']) ?>" 
+                                            class="w-full h-full rounded-xl object-cover"
+                                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-[80px] h-[80px] rounded-xl bg-gray-200 flex items-center justify-center\'><span class=\'text-xs text-gray-400\'>Error</span></div>';"
                                         >
-                                        <svg class="hidden absolute inset-0 w-8 h-8 m-auto text-white-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
                                     </div>
                                 <?php endif; ?>
                             <?php endforeach; ?>
@@ -637,6 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php component('widget/activities/modals/program_harian/modal-edit-program-harian'); ?>
 <?php component('widget/activities/modals/program_harian/modal-add-gallery-harian'); ?>
 <?php component('widget/activities/modals/program_harian/modal-edit-gallery-harian'); ?>
+<?php component('widget/modal-delete-confirmation', ['modalId' => 'modal-delete-gallery-harian']); ?>
 
 <?php
 

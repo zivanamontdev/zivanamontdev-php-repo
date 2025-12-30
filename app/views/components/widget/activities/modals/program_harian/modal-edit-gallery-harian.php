@@ -397,50 +397,57 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 } else {
-                    // Delete gallery image
-                    if (confirm('Apakah Anda yakin ingin menghapus foto ini dari galeri?')) {
-                        // Store active tab before delete to prevent glitch on reload
-                        localStorage.setItem('activeTabIndex', '2');
-                        
-                        const galleryImageId = document.getElementById('gallery-harian-image-id-edit').value;
-                        const programId = document.getElementById('gallery-harian-program-id-edit').value;
-                        
-                        console.log('Deleting gallery image - Program ID:', programId, 'Gallery ID:', galleryImageId);
-                        
-                        // Validate IDs
-                        if (!programId || programId === 'undefined' || programId === '') {
-                            showToast('Error: Program ID tidak valid. Silakan tutup modal dan coba lagi.', 'error', 5000);
-                            console.error('Invalid program ID on delete:', programId);
-                            return;
-                        }
-                        
-                        if (!galleryImageId || galleryImageId === 'undefined' || galleryImageId === '') {
-                            showToast('Error: Gallery ID tidak valid. Silakan tutup modal dan coba lagi.', 'error', 5000);
-                            console.error('Invalid gallery ID on delete:', galleryImageId);
-                            return;
-                        }
-                        
-                        // Send AJAX request
-                        fetch(`/admin/activities/programs-harian/${programId}/gallery/${galleryImageId}/delete`, {
-                            method: 'POST'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                modal.classList.add('hidden');
-                                resetEditGalleryForm();
-                                showToast('Foto berhasil dihapus!', 'success', 3000);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                    // Delete gallery image - use modal delete confirmation
+                    const galleryImageId = document.getElementById('gallery-harian-image-id-edit').value;
+                    const programId = document.getElementById('gallery-harian-program-id-edit').value;
+                    
+                    console.log('Deleting gallery image - Program ID:', programId, 'Gallery ID:', galleryImageId);
+                    
+                    // Validate IDs
+                    if (!programId || programId === 'undefined' || programId === '') {
+                        showToast('Error: Program ID tidak valid. Silakan tutup modal dan coba lagi.', 'error', 5000);
+                        console.error('Invalid program ID on delete:', programId);
+                        return;
+                    }
+                    
+                    if (!galleryImageId || galleryImageId === 'undefined' || galleryImageId === '') {
+                        showToast('Error: Gallery ID tidak valid. Silakan tutup modal dan coba lagi.', 'error', 5000);
+                        console.error('Invalid gallery ID on delete:', galleryImageId);
+                        return;
+                    }
+                    
+                    // Open delete confirmation modal
+                    if (typeof window.openModalDeleteGalleryharian === 'function') {
+                        window.openModalDeleteGalleryharian(
+                            'Hapus Foto dari Galeri',
+                            'Apakah Anda yakin ingin menghapus foto ini dari galeri? Tindakan ini tidak dapat dibatalkan.',
+                            function() {
+                                // Store active tab before delete to prevent glitch on reload
+                                localStorage.setItem('activeTabIndex', '2');
+                                
+                                // Send AJAX request
+                                fetch(`/admin/activities/programs-harian/${programId}/gallery/${galleryImageId}/delete`, {
+                                    method: 'POST'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        modal.classList.add('hidden');
+                                        resetEditGalleryForm();
+                                        showToast('Foto berhasil dihapus!', 'success', 3000);
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                    } else {
+                                        showToast(data.message || 'Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
+                                });
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showToast('Terjadi kesalahan saat menghapus data', 'error', 5000);
-                        });
+                        );
                     }
                 }
             }
