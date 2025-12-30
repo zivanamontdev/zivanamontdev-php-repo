@@ -417,8 +417,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // Open delete confirmation modal
-                    if (typeof window.openModalDeleteGalleryharian === 'function') {
-                        window.openModalDeleteGalleryharian(
+                    if (typeof window.openModalDeleteGalleryHarian === 'function') {
+                        window.openModalDeleteGalleryHarian(
                             'Hapus Foto dari Galeri',
                             'Apakah Anda yakin ingin menghapus foto ini dari galeri? Tindakan ini tidak dapat dibatalkan.',
                             function() {
