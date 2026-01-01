@@ -2,6 +2,8 @@
 /**
  * Admin Article Controller
  */
+require_once APP_PATH . '/helpers/CloudflareR2.php';
+
 class ArticleController extends Controller {
     private $articleModel;
     
@@ -48,12 +50,38 @@ class ArticleController extends Controller {
             // Generate unique slug
             $slug = $this->articleModel->generateUniqueSlug($title);
             
-            // Handle image upload
+            // Handle image upload to R2
             $featuredImage = null;
             if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['featured_image'], 'articles');
-                if ($upload['success']) {
-                    $featuredImage = $upload['path'];
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "article-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload to R2 in articles folder
+                    $r2Key = "articles/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['featured_image']['tmp_name'],
+                        $r2Key,
+                        $_FILES['featured_image']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $featuredImage = $uploadResult['url'];
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']]);
+                        return;
+                    }
+                } else {
+                    // Fallback to local upload
+                    $upload = upload_file($_FILES['featured_image'], 'articles');
+                    if ($upload['success']) {
+                        $featuredImage = $upload['path'];
+                    }
                 }
             }
             
@@ -129,16 +157,48 @@ class ArticleController extends Controller {
                 $slug = $this->articleModel->generateUniqueSlug($title, $id);
             }
             
-            // Handle image upload
+            // Handle image upload to R2
             $featuredImage = $article['featured_image'];
             if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['featured_image'], 'articles');
-                if ($upload['success']) {
-                    // Delete old image
-                    if ($featuredImage) {
-                        delete_file($featuredImage);
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Delete old image from R2 if exists
+                    if ($featuredImage && strpos($featuredImage, R2_PUBLIC_URL) === 0) {
+                        $oldKey = str_replace(R2_PUBLIC_URL . '/', '', $featuredImage);
+                        $r2->deletePublic($oldKey);
                     }
-                    $featuredImage = $upload['path'];
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "article-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload new image to R2
+                    $r2Key = "articles/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['featured_image']['tmp_name'],
+                        $r2Key,
+                        $_FILES['featured_image']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $featuredImage = $uploadResult['url'];
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']]);
+                        return;
+                    }
+                } else {
+                    // Fallback to local upload
+                    $upload = upload_file($_FILES['featured_image'], 'articles');
+                    if ($upload['success']) {
+                        // Delete old image
+                        if ($featuredImage) {
+                            delete_file($featuredImage);
+                        }
+                        $featuredImage = $upload['path'];
+                    }
                 }
             }
             
@@ -185,9 +245,15 @@ class ArticleController extends Controller {
                 return;
             }
             
-            // Delete featured image
+            // Delete featured image from R2 or local storage
             if ($article['featured_image']) {
-                delete_file($article['featured_image']);
+                if (R2_ENABLED && strpos($article['featured_image'], R2_PUBLIC_URL) === 0) {
+                    $r2 = new CloudflareR2();
+                    $key = str_replace(R2_PUBLIC_URL . '/', '', $article['featured_image']);
+                    $r2->deletePublic($key);
+                } else {
+                    delete_file($article['featured_image']);
+                }
             }
             
             $this->articleModel->delete($id);

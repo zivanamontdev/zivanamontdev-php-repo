@@ -39,10 +39,17 @@ if (!function_exists('getArticleImageUrl')) {
         if (empty($imagePath)) {
             return url('images/default-article.jpg');
         }
+        
+        // If image is from R2 (contains R2_PUBLIC_URL), return as-is
+        if (defined('R2_PUBLIC_URL') && strpos($imagePath, R2_PUBLIC_URL) === 0) {
+            return $imagePath;
+        }
+        
         // If path already includes 'uploads/', use it directly
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
+        
         return url('uploads/' . $imagePath);
     }
 }
