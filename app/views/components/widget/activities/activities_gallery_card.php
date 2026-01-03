@@ -33,7 +33,7 @@ if (!function_exists('getActivityGalleryImageUrl')) {
     <?php foreach ($items as $index => $item): ?>
     <div 
         class="bg-white-neutral p-[16px] rounded-[20px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-        @click="showModal = true; currentImage = <?= json_encode(getActivityGalleryImageUrl($item['image'] ?? '')) ?>; currentDescription = <?= json_encode($item['description'] ?? '') ?>"
+        @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode(getActivityGalleryImageUrl($item['image'] ?? '')), ENT_QUOTES, 'UTF-8') ?>; currentDescription = <?= htmlspecialchars(json_encode($item['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
     >
         <!-- Image -->
         <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] bg-gray-placeholder relative">

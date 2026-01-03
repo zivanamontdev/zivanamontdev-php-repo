@@ -47,7 +47,7 @@ ob_start();
         <?php foreach ($galleryImages as $item): ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-            @click="showModal = true; currentImage = <?= json_encode(getGalleryImageUrl($item['image_path'])) ?>; currentTitle = <?= json_encode($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>"
+            @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode(getGalleryImageUrl($item['image_path'])), ENT_QUOTES, 'UTF-8') ?>; currentTitle = <?= htmlspecialchars(json_encode($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')), ENT_QUOTES, 'UTF-8') ?>"
         >
             <!-- Image -->
             <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
