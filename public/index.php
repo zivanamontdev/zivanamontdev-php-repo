@@ -41,6 +41,11 @@ spl_autoload_register(function ($class) {
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/helpers/geoip.php';
 
+// Check subdomain and handle restrictions
+if (class_exists('SubdomainMiddleware')) {
+    SubdomainMiddleware::handle();
+}
+
 // Initialize router
 $router = new Router();
 

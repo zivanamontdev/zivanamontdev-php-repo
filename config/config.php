@@ -81,12 +81,14 @@ if ($isProduction && (!$envLoaded || empty($envVars['APP_URL']) || strpos($envVa
     // Force production app config
     define('APP_NAME', 'Zivana Montessori School');
     define('APP_URL', 'https://dev.sekolahzivanamontessori.sch.id');
+    define('ADMIN_URL', 'https://admin.sekolahzivanamontessori.sch.id');
     define('APP_ENV', 'production');
     define('APP_DEBUG', false);
 } else {
     // Use .env values or local defaults
     define('APP_NAME', $envVars['APP_NAME'] ?? 'Zivana Montessori School');
     define('APP_URL', $envVars['APP_URL'] ?? 'http://localhost');
+    define('ADMIN_URL', $envVars['ADMIN_URL'] ?? 'http://localhost');
     define('APP_ENV', $envVars['APP_ENV'] ?? 'local');
     define('APP_DEBUG', filter_var($envVars['APP_DEBUG'] ?? true, FILTER_VALIDATE_BOOLEAN));
 }

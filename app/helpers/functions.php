@@ -99,12 +99,28 @@ function render_component(string $__component_name__, array $__component_data__ 
 }
 
 /**
- * Generate URL
+ * Generate URL based on subdomain context
  */
 function url($path = '') {
-    $baseUrl = APP_URL;
+    // Check if this is admin route
+    $isAdminRoute = strpos($path, '/admin') === 0 || strpos($path, 'admin/') !== false;
     
-    // Auto-detect port if localhost and port not in APP_URL
+    // Check if we're on admin subdomain
+    $isAdminSubdomain = false;
+    if (defined('IS_ADMIN_SUBDOMAIN') && IS_ADMIN_SUBDOMAIN === true) {
+        $isAdminSubdomain = true;
+    } elseif (isset($_SERVER['HTTP_HOST'])) {
+        $isAdminSubdomain = strpos($_SERVER['HTTP_HOST'], 'admin.') === 0;
+    }
+    
+    // Determine base URL
+    if ($isAdminRoute || $isAdminSubdomain) {
+        $baseUrl = ADMIN_URL ?? APP_URL;
+    } else {
+        $baseUrl = APP_URL;
+    }
+    
+    // Auto-detect port if localhost and port not in URL
     if (strpos($baseUrl, 'localhost') !== false && strpos($baseUrl, ':') === false) {
         // Check if running on non-standard port
         if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
@@ -113,6 +129,22 @@ function url($path = '') {
     }
     
     return $baseUrl . '/' . ltrim($path, '/');
+}
+
+/**
+ * Generate admin URL (always points to admin subdomain)
+ */
+function adminUrl($path = '') {
+    $adminUrl = ADMIN_URL ?? APP_URL;
+    
+    // Auto-detect port if localhost
+    if (strpos($adminUrl, 'localhost') !== false && strpos($adminUrl, ':') === false) {
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+            $adminUrl = rtrim($adminUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+        }
+    }
+    
+    return $adminUrl . '/' . ltrim($path, '/');
 }
 
 /**
