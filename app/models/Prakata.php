@@ -19,8 +19,8 @@ class Prakata extends Model {
             return [
                 'id' => null,
                 'image' => '',
-                'title' => 'Sejarah Singkat/Prakata Sekolah',
-                'description' => 'TK Zivana Montessori didirikan pada tahun 2021 di bawah naungan Yayasan Zivana Insan Mandiri. TK Zivana Montessori  merupakan salah satu satuan pendidikan non formal yang terletak di daerah perkotaan. Lokasi satuan pendidikan agak jauh dari jalan raya, sehingga satuan pendidikan dan masyarakat sekitar aman dan tidak terganggu oleh hiruk pikuk dan kebisingan lalu lintas di perkotaan. Tokoh yang paling berjasa dalam lahirnya TK Zivana Montessori yakni Ibu Adilah Wina Fitria.',
+                'title' => 'Profil Singkat',
+                'description' => "Sejak 2021, Zivana Montessori hadir sebagai sekolah inklusi yang memadukan metode Montessori Islami, Deep Learning, dan pendekatan Neurosensory. Anak reguler dan berkebutuhan khusus belajar bersama untuk mengasah fokus, emosi, dan kemandirian.\n\nDengan 6 area belajar dan motto CHAMPION (Cerdas, Berakhlak, Mandiri, Peduli, Berorientasi Islam), kami berkomitmen mencetak generasi yang percaya diri, cerdas, dan peduli sesama sesuai fitrah dan kecepatan belajarnya masing-masing.",
                 'updated_at' => date('Y-m-d H:i:s')
             ];
         }

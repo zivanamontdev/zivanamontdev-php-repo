@@ -26,13 +26,15 @@
             <div class="bg-white-neutral rounded-[12px] px-[24px] py-[16px] h-auto md:h-[455px] relative overflow-hidden">
                 <!-- Title -->
                 <h3 class="font-bold text-[16px] leading-[28px] md:text-[24px] md:leading-[38px] text-black-soft mb-[16px]">
-                    Sejarah Singkat/Prakata Kepala Sekolah
+                    <?= htmlspecialchars($prakata['title'] ?? 'Profil Singkat') ?>
                 </h3>
                 
                 <!-- Description -->
-                <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[38px] text-black-soft h-auto md:h-[365px] overflow-hidden">
-                    TK Zivana Montessori didirikan pada tahun 2021 di bawah naungan Yayasan Zivana Insan Mandiri. TK Zivana Montessori  merupakan salah satu satuan pendidikan non formal yang terletak di daerah perkotaan. Lokasi satuan pendidikan agak jauh dari jalan raya, sehingga satuan pendidikan dan masyarakat sekitar aman dan tidak terganggu oleh hiruk pikuk dan kebisingan lalu lintas di perkotaan. Tokoh yang paling berjasa dalam lahirnya TK Zivana Montessori yakni Ibu Adilah Wina Fitria.
-                </p>
+                <div class="h-auto md:h-[365px] overflow-hidden font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[38px] text-black-soft">
+                    <?= nl2br(htmlspecialchars($prakata['description'] ?? 'Sejak 2021, Zivana Montessori hadir sebagai sekolah inklusi yang memadukan metode Montessori Islami, Deep Learning, dan pendekatan Neurosensory. Anak reguler dan berkebutuhan khusus belajar bersama untuk mengasah fokus, emosi, dan kemandirian.
+
+Dengan 6 area belajar dan motto CHAMPION (Cerdas, Berakhlak, Mandiri, Peduli, Berorientasi Islam), kami berkomitmen mencetak generasi yang percaya diri, cerdas, dan peduli sesama sesuai fitrah dan kecepatan belajarnya masing-masing.')) ?>
+                </div>
                 
                 <!-- Vector Profile - Bottom Right -->
                 <img 

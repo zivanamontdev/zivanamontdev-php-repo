@@ -24,7 +24,7 @@ $status = $status ?? 'private';
 
 <div class="flex flex-col md:grid md:grid-cols-12 gap-[24px]">
     <!-- Section 1 - Date -->
-    <div class="md:col-span-2 h-[118px] bg-primary rounded-[24px] p-[24px] relative overflow-hidden flex items-center justify-center">
+    <div class="md:col-span-2 h-[118px] md:h-full bg-primary rounded-[24px] p-[24px] relative overflow-hidden flex items-center justify-center">
         <!-- Vector Star 4 -->
         <img 
             src="<?= url('/images/vectors/vector_star4.png') ?>" 
@@ -43,33 +43,39 @@ $status = $status ?? 'private';
     </div>
     
     <!-- Section 2 - Details -->
-    <div class="md:col-span-10 bg-white-neutral rounded-[24px] p-[24px] flex flex-col items-center text-center">
-        <!-- Nama Kegiatan -->
-        <h3 class="font-bold text-[24px] leading-[38px] text-black-soft">
-            <?= e($nama_kegiatan) ?>
-        </h3>
-        
-        <!-- Status Badge (if public) -->
-        <?php if ($status === 'public'): ?>
-            <span class="mt-[16px] bg-primary px-[8px] rounded-[4px] font-normal text-[14px] leading-[24px] text-white-neutral">
-                Terbuka untuk Umum
-            </span>
-        <?php endif; ?>
-        
-        <!-- Jam -->
-        <div class="mt-[16px]">
-            <p class="font-normal text-[20px] leading-[32px] text-black-soft">Jam</p>
-            <p class="font-bold text-[20px] leading-[32px] text-black-soft mt-[2px]"><?= e($jam) ?></p>
+    <div class="md:col-span-10 bg-white-neutral rounded-[24px] p-[24px] flex flex-col items-center text-center md:items-start md:text-left">
+        <!-- Nama Kegiatan & Status Badge -->
+        <div class="flex flex-col items-center w-full md:flex-row md:justify-between md:items-start">
+            <!-- Nama Kegiatan -->
+            <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-black-soft">
+                <?= e($nama_kegiatan) ?>
+            </h3>
+            
+            <!-- Status Badge (if public) - Mobile: below, Desktop: right aligned -->
+            <?php if ($status === 'public'): ?>
+                <span class="mt-[16px] md:mt-0 bg-primary px-[8px] rounded-[4px] font-normal text-[14px] leading-[24px] text-white-neutral">
+                    Terbuka untuk Umum
+                </span>
+            <?php endif; ?>
         </div>
         
-        <!-- Tempat -->
-        <div class="mt-[16px]">
-            <p class="font-normal text-[20px] leading-[32px] text-black-soft">Tempat</p>
-            <p class="font-bold text-[20px] leading-[32px] text-black-soft mt-[2px]"><?= e($tempat) ?></p>
+        <!-- Jam & Tempat (Mobile: stacked center, Desktop: horizontal) -->
+        <div class="mt-[16px] flex flex-col items-center gap-[16px] w-full md:flex-row md:items-start md:gap-[16px]">
+            <!-- Jam -->
+            <div class="w-full md:w-1/2">
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft">Jam</p>
+                <p class="font-bold text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft mt-[2px]"><?= e($jam) ?></p>
+            </div>
+            
+            <!-- Tempat -->
+            <div class="w-full md:w-1/2">
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft">Tempat</p>
+                <p class="font-bold text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-black-soft mt-[2px]"><?= e($tempat) ?></p>
+            </div>
         </div>
         
         <!-- Button Text -->
-        <a href="#" class="mt-[16px] font-normal text-[20px] leading-[32px] text-primary hover:underline">
+        <a href="#" class="mt-[16px] font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-primary hover:underline">
             Lihat Informasi Kegiatan
         </a>
     </div>

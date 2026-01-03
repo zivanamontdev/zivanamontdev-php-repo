@@ -7,28 +7,24 @@
 
 $kurikulumItems = [
     [
-        'image' => 'activity_tutwuri_handayani.png',
         'width' => 54,
         'height' => 56,
-        'title' => 'Kurikulum Nasional'
+        'title' => 'Kurikulum Nasional dengan Pendekatan Montessori'
     ],
     [
-        'image' => 'activity_bulan_bintang.png',
         'width' => 53,
         'height' => 56,
         'title' => 'Kurikulum Iman dan Adab'
     ],
     [
-        'image' => 'activity_ummi.png',
         'width' => 56,
         'height' => 56,
-        'title' => 'Metode Ummi'
+        'title' => 'Program Pembelajaran Individu (PPI)'
     ],
     [
-        'image' => 'activity_logo.png',
         'width' => 56,
         'height' => 56,
-        'title' => 'Kurikulum Zivana Montessori (Montessori Islamic)'
+        'title' => 'Pendekatan Neurosensory'
     ]
 ];
 ?>
@@ -37,14 +33,15 @@ $kurikulumItems = [
     <!-- Section 1: Kurikulum Cards -->
     <div class="flex-1 flex flex-col gap-[20px]">
         <?php foreach ($kurikulumItems as $item): ?>
-        <div class="h-auto lg:h-[107px] px-[12px] py-[16px] lg:px-[24px] lg:py-[15px] rounded-[20px] bg-white-neutral flex items-center">
+        <div class="h-auto lg:h-[107px] px-[12px] py-[16px] lg:px-[24px] lg:py-[15px] rounded-[20px] bg-white-neutral flex items-center relative overflow-hidden">
+            <!-- Vector Kurikulum - Bottom Right (Rotated 90deg) -->
             <img 
-                src="<?= url('images/' . $item['image']) ?>" 
-                alt="<?= $item['title'] ?>" 
-                class="object-contain mr-[16px] w-[32px] h-[32px] lg:w-auto lg:h-auto"
-                style="max-width: <?= $item['width'] ?>px; max-height: <?= $item['height'] ?>px;"
+                src="<?= url('images/vectors/vector_kurikulum.png') ?>" 
+                alt="" 
+                class="absolute -bottom-2 -right-2 w-[60px] lg:w-[80px] pointer-events-none rotate-90 opacity-30"
             >
-            <span class="font-bold text-[14px] lg:text-[20px] leading-[100%] text-black-soft">
+            
+            <span class="font-bold text-[14px] lg:text-[20px] leading-[100%] text-black-soft relative z-10">
                 <?= $item['title'] ?>
             </span>
         </div>
@@ -66,11 +63,11 @@ $kurikulumItems = [
             </h3>
             
             <p class="font-normal text-[14px] lg:text-[20px] leading-[24px] lg:leading-[38px] text-black-soft mb-[16px]">
-                Sekolah Zivana Montessori mengintegrasikan Kurikulum Nasional sebagai dasar pembelajaran, diperkaya dengan Kurikulum Iman dan Adab untuk membentuk karakter dan akhlak sejak dini. Proses literasi Al-Qur'an menggunakan Metode Ummi yang sistematis dan mudah dipahami anak.
+                <strong>Integrasi Kurikulum Holistik Zivana memadukan Kurikulum Merdeka, Montessori Islami, dan pendekatan Neurosensory.</strong> Kami merancang pembelajaran aktif dan konkret, mendorong anak bereksplorasi untuk menumbuhkan kemandirian serta rasa ingin tahu yang tinggi.
             </p>
             
             <p class="font-normal text-[14px] lg:text-[20px] leading-[24px] lg:leading-[38px] text-black-soft">
-                Semua itu dipadukan dengan Kurikulum Zivana Montessori (Montessori Islamic) yang menekankan kemandirian, eksplorasi, dan pembelajaran holistik sesuai prinsip Montessori. Kombinasi ini memastikan anak tumbuh cerdas, berkarakter, dan percaya diri.
+                Personal & Berkarakter selain menanamkan <strong>Iman, Adab, dan Al-Qur'an (Metode Ummi), kami menerapkan Program Pembelajaran Individual (PPI).</strong> Pendekatan personal ini memastikan kebutuhan unik fisik, emosi, dan kognitif setiap anak terpenuhi secara optimal.
             </p>
         </div>
     </div>

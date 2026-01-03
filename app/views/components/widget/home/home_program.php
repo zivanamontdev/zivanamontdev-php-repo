@@ -9,21 +9,27 @@
 
 $highlightPrograms = $highlightPrograms ?? [];
 
-// Prepare program data with defaults
-$program1 = $highlightPrograms[0] ?? ['name' => 'Kegiatan Montessori', 'description' => 'Dirancang untuk membantu anak belajar melalui eksplorasi langsung', 'image' => null];
-$program2 = $highlightPrograms[1] ?? ['name' => 'Field Trip', 'description' => 'Dirancang untuk membantu anak belajar melalui eksplorasi langsung', 'image' => null];
-$program3 = $highlightPrograms[2] ?? ['name' => 'Parent Sharing', 'description' => '', 'image' => null];
+// Prepare program data from database only (no dummy data)
+$program1 = $highlightPrograms[0] ?? null;
+$program2 = $highlightPrograms[1] ?? null;
+$program3 = $highlightPrograms[2] ?? null;
+
+// If no programs available, don't display anything
+if (!$program1 && !$program2 && !$program3) {
+    echo '<div class="text-center py-8 text-white-soft"><p>Belum ada program highlight yang ditampilkan</p></div>';
+    return;
+}
 
 // Get image URLs - check if image starts with / (absolute path from public) or is just filename
 $imageUrl1 = !empty($program1['image']) ? 
     (strpos($program1['image'], '/') === 0 ? url($program1['image']) : url('/uploads/programs-tahun/' . $program1['image'])) : 
-    url('/images/program 1.jpg');
+    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22524%22%3E%3Crect width=%22800%22 height=%22524%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 $imageUrl2 = !empty($program2['image']) ? 
     (strpos($program2['image'], '/') === 0 ? url($program2['image']) : url('/uploads/programs-tahun/' . $program2['image'])) : 
-    url('/images/program 2.jpg');
+    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22250%22%3E%3Crect width=%22800%22 height=%22250%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 $imageUrl3 = !empty($program3['image']) ? 
     (strpos($program3['image'], '/') === 0 ? url($program3['image']) : url('/uploads/programs-tahun/' . $program3['image'])) : 
-    url('/images/program 2.jpg');
+    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect width=%22400%22 height=%22250%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 ?>
 
 <div class="flex flex-col lg:flex-row gap-[24px] h-auto lg:h-[524px]">

@@ -25,12 +25,12 @@
     <div class="w-full lg:flex-1 flex flex-col justify-center">
         <!-- Title -->
         <h2 class="font-bold text-[24px] md:text-[32px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
-            Sekolah Inklusi dengan anak reguler dan anak berkebutuhan khusus belajar dalam satu kelas.
+            Belajar Bersama dalam Indahnya Keberagaman
         </h2>
         
         <!-- Description -->
         <p class="mt-[16px] md:mt-[24px] font-normal text-[16px] md:text-[24px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
-            Menggunakan metode montessori dan kurikulum nasional berbasis Islam
+            Sejak 2021, kami menghadirkan ruang inklusi di mana anak reguler dan berkebutuhan khusus tumbuh berdampingan. Dipandu metode Montessori Islami untuk mengasah empati dan kemandirian.
         </p>
         
         <!-- Button -->

@@ -20,6 +20,7 @@ class HomeController extends Controller {
     private $karyawanModel;
     private $fasilitasModel;
     private $registrationSettingModel;
+    private $prakataModel;
     
     public function __construct() {
         parent::__construct();
@@ -39,6 +40,7 @@ class HomeController extends Controller {
         $this->karyawanModel = new Karyawan();
         $this->fasilitasModel = new Fasilitas();
         $this->registrationSettingModel = new RegistrationSetting();
+        $this->prakataModel = new Prakata();
     }
     
     public function index() {
@@ -53,6 +55,7 @@ class HomeController extends Controller {
             'testimonials' => $this->testimonialModel->getAll(),
             'events' => $this->eventModel->getAllEvents(),
             'faqs' => $this->faqModel->getAll(),
+            'prakata' => $this->prakataModel->get(),
         ];
         
         $this->view('home/index', $data);

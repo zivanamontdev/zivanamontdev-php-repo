@@ -19,7 +19,7 @@
             <!-- Card Visi -->
             <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px]">
                 <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[150%] text-black-soft">
-                    Terbentuknya anak usia dini dari berbagai kalangan baik reguler maupun non reguler (berkebutuhan khusus) yang memiliki budi pekerti yang baik, mandiri, percaya diri sesuai dengan usia perkembangan anak serta peduli pada lingkungan.
+                    Terbentuknya anak usia dini dengan berbagai keberagaman, yang memiliki akhlak dan budi pekerti, kemandirian, kepercayaan diri serta kepedulian terhadap lingkungan.
                 </p>
             </div>
         </div>
@@ -41,25 +41,25 @@
                 
                 <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px]">
                     <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[150%] text-black-soft">
-                        Menstimulus/Intervensi dengan pembelajaran yang konkret dan menyenangkan.
+                        Menstimulus dengan pembelajaran yang konkret dan menyenangkan.
                     </p>
                 </div>
                 
                 <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px]">
                     <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[150%] text-black-soft">
-                        Menumbuhkan kepedulian dan cinta lingkungan hidup.
+                        Menumbuhkan kepedulian dan kecintaan terhadap lingkungan.
                     </p>
                 </div>
                 
                 <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px]">
                     <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[150%] text-black-soft">
-                        Menyediakan tenaga pendidik yang islami yang memahami Pendidikan anak usia dini, Pendidikan inklusi, serta metode Montessori, dan upgrading skill secara berkesinambungan
+                        Menyediakan tenaga pendidik yang islami yang memahami Pendidikan anak usia dini, pendidikan inklusi, serta metode Montessori, dan upgrading skill secara berkesinambungan.
                     </p>
                 </div>
                 
                 <div class="bg-white-neutral rounded-[20px] px-[24px] py-[16px]">
                     <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[150%] text-black-soft">
-                        Kolaborasi sekolah dan orangtua.
+                        Membangun sinergi antara pihak sekolah, orang tua siswa dan masyarakat.
                     </p>
                 </div>
             </div>

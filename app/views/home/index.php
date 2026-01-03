@@ -5,24 +5,24 @@ ob_start();
 // Data keunggulan sekolah
 $keunggulanItems = [
     [
-        'image' => 'card1_telescope.png',
-        'title' => 'Guru Bersertifikat Montessori',
-        'description' => 'Pembelajaran dengan pendekatan personal sesuai karakter anak.'
+        'image' => 'card1_islami.png',
+        'title' => 'Montessori Islami',
+        'description' => 'Membangun kemandirian dan akhlak mulia sejak dini melalui perpaduan nilai Islam dan Montessori.'
     ],
     [
-        'image' => 'card2_car.png',
-        'title' => 'Kegiatan Interaktif & Kreatif',
-        'description' => 'Setiap hari anak belajar lewat pengalaman langsung.'
+        'image' => 'card2_flower.png',
+        'title' => 'Inklusif',
+        'description' => 'Menerima berbagai keberagaman anak, serta memberikan dukungan sesuai kebutuhannya.'
     ],
     [
         'image' => 'card3_hourse.png',
-        'title' => 'Fasilitas Aman & Nyaman',
-        'description' => 'Ruang belajar bersih, area bermain luas, dan lingkungan positif.'
+        'title' => 'Pendekatan Neurosensory',
+        'description' => 'Meningkatkan fokus, regulasi emosi, dan kesiapan belajar melalui stimulasi sensorik & hidroterapi.'
     ],
     [
         'image' => 'card4_love.png',
-        'title' => 'Pendekatan Karakter & Empati',
-        'description' => 'Fokus pada pembentukan karakter sejak dini.'
+        'title' => 'Berkarakter & Peduli Lingkungan',
+        'description' => 'Mandiri, empati, bertanggung jawab & cinta ciptaan Allah SWT melalui praktik nyata sehari-hari.'
     ],
 ];
 ?>
