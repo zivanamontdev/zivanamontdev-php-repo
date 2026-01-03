@@ -29,7 +29,7 @@ if (!function_exists('getPrakataImageUrl')) {
 }
 ?>
 
-<section class="container mx-auto px-5 md:px-0">
+<section class="container mx-auto px-5">
     <div class="flex flex-col md:flex-row gap-[24px] md:gap-[32px]">
         <!-- Section A: Image -->
         <div class="flex-1">

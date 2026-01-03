@@ -46,12 +46,12 @@ ob_start();
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
         <?php foreach ($galleryImages as $item): ?>
         <?php 
-            $imageUrl = htmlspecialchars(getGalleryImageUrl($item['image_path']), ENT_QUOTES, 'UTF-8');
-            $titleText = htmlspecialchars($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas'), ENT_QUOTES, 'UTF-8');
+            $imageUrl = getGalleryImageUrl($item['image_path']);
+            $titleText = $item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas');
         ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-            @click="showModal = true; currentImage = '<?= $imageUrl ?>'; currentTitle = '<?= $titleText ?>'"
+            @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode($imageUrl), ENT_QUOTES) ?>; currentTitle = <?= htmlspecialchars(json_encode($titleText), ENT_QUOTES) ?>"
         >
             <!-- Image -->
             <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
