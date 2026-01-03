@@ -5,6 +5,26 @@
  */
 ?>
 
+<!-- Custom Styles for Date/Time Inputs -->
+<style>
+/* Hide native time picker icons */
+#start-time-edit::-webkit-calendar-picker-indicator,
+#end-time-edit::-webkit-calendar-picker-indicator,
+#date-input-edit::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Remove default styling */
+#start-time-edit,
+#end-time-edit {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+</style>
+
 <!-- Modal Backdrop -->
 <div id="modal-edit-event" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <!-- Modal Container -->
@@ -27,19 +47,20 @@
             <!-- Tanggal and Rentang Waktu -->
             <div class="grid grid-cols-2 gap-[20px]">
                 <!-- Tanggal -->
-                <div>
-                    <label for="event-date-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
+                <div class="relative">
+                    <label class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
                         Tanggal
                     </label>
                     <div class="relative">
                         <input 
-                            type="date" 
-                            id="event-date-edit" 
-                            name="event_date"
+                            type="text" 
+                            id="event-date-display-edit" 
+                            readonly
                             placeholder="Pilih tanggal event"
-                            class="w-full h-[52px] px-[24px] pr-[48px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors"
+                            class="w-full h-[52px] px-[24px] pr-[48px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors cursor-pointer"
                         >
-                        <span class="absolute right-[16px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft pointer-events-none">
+                        <input type="hidden" id="event-date-edit" name="event_date">
+                        <span id="date-icon-edit" class="absolute right-[16px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft cursor-pointer">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M10.6667 1.33333V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -48,27 +69,87 @@
                             </svg>
                         </span>
                     </div>
+                    
+                    <!-- Date Picker Modal -->
+                    <div id="date-picker-modal-edit" class="hidden absolute z-[60] mt-1 bg-white-neutral border border-border-light rounded-xl shadow-lg w-full left-0" style="min-width: 280px;">
+                        <!-- Calendar Header -->
+                        <div class="flex items-center justify-between p-3 border-b border-border-light">
+                            <button type="button" id="prev-month-edit" class="p-1 hover:bg-gray-100 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <div class="font-semibold text-[14px] cursor-pointer hover:text-primary" id="calendar-month-year-edit"></div>
+                            <button type="button" id="next-month-edit" class="p-1 hover:bg-gray-100 rounded">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Year Picker Modal -->
+                        <div id="year-picker-edit" class="hidden absolute inset-0 bg-white-neutral rounded-xl z-10">
+                            <div class="flex items-center justify-between p-3 border-b border-border-light">
+                                <button type="button" id="prev-year-range-edit" class="p-1 hover:bg-gray-100 rounded">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                </button>
+                                <div class="font-semibold text-[14px]" id="year-range-display-edit"></div>
+                                <button type="button" id="next-year-range-edit" class="p-1 hover:bg-gray-100 rounded">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
+                            <div class="p-3 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto" id="year-list-edit"></div>
+                        </div>
+                        
+                        <!-- Calendar Grid -->
+                        <div class="p-3">
+                            <!-- Day Names -->
+                            <div class="grid grid-cols-7 gap-1 mb-2">
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Sen</div>
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Sel</div>
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Rab</div>
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Kam</div>
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Jum</div>
+                                <div class="text-center text-[11px] font-semibold text-gray-500">Sab</div>
+                                <div class="text-center text-[11px] font-semibold text-red-500">Min</div>
+                            </div>
+                            <!-- Dates Grid -->
+                            <div class="grid grid-cols-7 gap-1" id="calendar-dates-edit"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Rentang Waktu -->
-                <div>
-                    <label for="event-time-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
+                <div class="relative">
+                    <label class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
                         Rentang Waktu
                     </label>
                     <div class="relative">
                         <input 
                             type="text" 
-                            id="event-time-edit" 
-                            name="event_time"
+                            id="event-time-display-edit" 
+                            readonly
                             placeholder="Pilih rentang waktu event"
-                            class="w-full h-[52px] px-[24px] pr-[48px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors"
+                            class="w-full h-[52px] px-[24px] pr-[48px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft placeholder:text-white-shadow focus:outline-none focus:border-primary transition-colors cursor-pointer"
                         >
-                        <span class="absolute right-[16px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft pointer-events-none">
+                        <input type="hidden" id="event-time-edit" name="event_time">
+                        <span id="time-icon-edit" class="absolute right-[16px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft cursor-pointer">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 14.6667C11.6819 14.6667 14.6667 11.6819 14.6667 8C14.6667 4.3181 11.6819 1.33333 8 1.33333C4.3181 1.33333 1.33333 4.3181 1.33333 8C1.33333 11.6819 4.3181 14.6667 8 14.6667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M8 4V8L10.6667 9.33333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </span>
+                    </div>
+                    
+                    <!-- Time Picker Modal -->
+                    <div id="time-picker-modal-edit" class="hidden absolute z-[60] mt-1 bg-white-neutral border border-border-light rounded-xl shadow-lg p-4 w-full left-0">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[12px] text-black-highlight mb-1">Waktu Mulai</label>
+                                <input type="time" id="start-time-edit" class="w-full px-3 py-2 border border-border-light rounded-lg text-[14px] focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-[12px] text-black-highlight mb-1">Waktu Selesai</label>
+                                <input type="time" id="end-time-edit" class="w-full px-3 py-2 border border-border-light rounded-lg text-[14px] focus:outline-none focus:border-primary">
+                            </div>
+                            <button type="button" id="apply-time-edit" class="w-full py-2 bg-primary text-white rounded-lg text-[14px] font-bold hover:opacity-90">Terapkan</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,6 +246,317 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('modal-edit-event');
     const closeBtn = document.getElementById('close-modal-edit-event');
     const deleteEventBtn = document.getElementById('delete-event-btn');
+    
+    // Date picker elements
+    const datePicker = document.getElementById('date-picker-modal-edit');
+    const dateDisplay = document.getElementById('event-date-display-edit');
+    const dateIcon = document.getElementById('date-icon-edit');
+    const applyDateBtn = document.getElementById('apply-date-edit');
+    
+    // Time picker elements
+    const timePicker = document.getElementById('time-picker-modal-edit');
+    const timeDisplay = document.getElementById('event-time-display-edit');
+    const timeIcon = document.getElementById('time-icon-edit');
+    const applyTimeBtn = document.getElementById('apply-time-edit');
+    
+    // Open date picker
+    function openDatePicker(e) {
+        e.stopPropagation();
+        
+        // Parse current date value if exists
+        const currentValue = document.getElementById('event-date-display-edit').value;
+        if (currentValue) {
+            // Parse dd/mm/yyyy format
+            const parts = currentValue.split('/');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+                const year = parseInt(parts[2], 10);
+                selectedDate = new Date(year, month, day);
+                currentMonth = month;
+                currentYear = year;
+            }
+        } else {
+            // Reset to current date if no value
+            currentMonth = new Date().getMonth();
+            currentYear = new Date().getFullYear();
+        }
+        
+        renderCalendar(currentMonth, currentYear);
+        datePicker.classList.remove('hidden');
+        timePicker.classList.add('hidden'); // Close time picker if open
+    }
+    
+    if (dateDisplay) {
+        dateDisplay.addEventListener('click', openDatePicker);
+    }
+    
+    if (dateIcon) {
+        dateIcon.addEventListener('click', openDatePicker);
+    }
+    
+    // Apply date
+    if (applyDateBtn) {
+        applyDateBtn.addEventListener('click', function() {
+            const dateValue = document.getElementById('date-input-edit').value;
+            
+            if (dateValue) {
+                // Format date to dd/mm/yyyy for display
+                const [year, month, day] = dateValue.split('-');
+                const displayDate = `${day}/${month}/${year}`;
+                
+                document.getElementById('event-date-display-edit').value = displayDate;
+                document.getElementById('event-date-edit').value = dateValue;
+                datePicker.classList.add('hidden');
+                
+                // Trigger validation
+                const event = new Event('input', { bubbles: true });
+                document.getElementById('event-date-edit').dispatchEvent(event);
+            }
+        });
+    }
+    
+    // Calendar functionality
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let selectedDate = null; // Track selected date
+    let yearRangeStart = currentYear - 5; // Start year for year picker
+    
+    function renderYearPicker() {
+        const yearList = document.getElementById('year-list-edit');
+        const yearRangeDisplay = document.getElementById('year-range-display-edit');
+        yearList.innerHTML = '';
+        yearRangeDisplay.textContent = `${yearRangeStart} - ${yearRangeStart + 11}`;
+        
+        for (let i = 0; i < 12; i++) {
+            const year = yearRangeStart + i;
+            const yearBtn = document.createElement('button');
+            yearBtn.type = 'button';
+            yearBtn.className = 'py-2 px-4 text-[13px] rounded hover:bg-primary hover:text-white transition-colors';
+            yearBtn.textContent = year;
+            
+            // Highlight current year
+            if (year === new Date().getFullYear()) {
+                yearBtn.className += ' font-bold text-primary';
+            }
+            
+            // Highlight selected year
+            if (year === currentYear) {
+                yearBtn.className += ' bg-primary text-white font-bold';
+            }
+            
+            yearBtn.addEventListener('click', function() {
+                currentYear = year;
+                document.getElementById('year-picker-edit').classList.add('hidden');
+                renderCalendar(currentMonth, currentYear);
+            });
+            
+            yearList.appendChild(yearBtn);
+        }
+    }
+    
+    function renderCalendar(month, year) {
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mai', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        document.getElementById('calendar-month-year-edit').textContent = `${monthNames[month]} ${year}`;
+        
+        const datesContainer = document.getElementById('calendar-dates-edit');
+        datesContainer.innerHTML = '';
+        
+        // Get first day of month (0 = Sunday, 1 = Monday, etc.)
+        const firstDay = new Date(year, month, 1).getDay();
+        // Get number of days in month
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // Adjust for Monday start (0 = Monday, 6 = Sunday)
+        const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+        
+        // Add empty cells for days before month starts
+        for (let i = 0; i < adjustedFirstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'text-center py-2';
+            datesContainer.appendChild(emptyCell);
+        }
+        
+        // Add date cells
+        const today = new Date();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateCell = document.createElement('button');
+            dateCell.type = 'button';
+            dateCell.className = 'text-center py-2 text-[13px] rounded hover:bg-primary hover:text-white transition-colors';
+            dateCell.textContent = day;
+            
+            // Check if this date is Sunday
+            const currentDate = new Date(year, month, day);
+            const isSunday = currentDate.getDay() === 0;
+            
+            // Highlight selected date
+            if (selectedDate && day === selectedDate.getDate() && month === selectedDate.getMonth() && year === selectedDate.getFullYear()) {
+                dateCell.className += ' bg-primary text-white font-bold';
+            }
+            // Highlight today (if not selected)
+            else if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                dateCell.className += ' font-bold text-primary';
+            }
+            // Color Sunday red (if not selected or today)
+            else if (isSunday) {
+                dateCell.className += ' text-red-500';
+            }
+            
+            // Click handler
+            dateCell.addEventListener('click', function() {
+                selectedDate = new Date(year, month, day);
+                const yyyy = selectedDate.getFullYear();
+                const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(selectedDate.getDate()).padStart(2, '0');
+                
+                const dateValue = `${yyyy}-${mm}-${dd}`;
+                const displayDate = `${dd}/${mm}/${yyyy}`;
+                
+                document.getElementById('event-date-display-edit').value = displayDate;
+                document.getElementById('event-date-edit').value = dateValue;
+                datePicker.classList.add('hidden');
+                
+                // Trigger validation
+                const event = new Event('input', { bubbles: true });
+                document.getElementById('event-date-edit').dispatchEvent(event);
+            });
+            
+            datesContainer.appendChild(dateCell);
+        }
+    }
+    
+    // Previous month button
+    const prevMonthBtn = document.getElementById('prev-month-edit');
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+    }
+    
+    // Next month button
+    const nextMonthBtn = document.getElementById('next-month-edit');
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+    }
+    
+    // Click month-year to open year picker
+    const monthYearDisplay = document.getElementById('calendar-month-year-edit');
+    if (monthYearDisplay) {
+        monthYearDisplay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            yearRangeStart = currentYear - 5;
+            renderYearPicker();
+            document.getElementById('year-picker-edit').classList.remove('hidden');
+        });
+    }
+    
+    // Previous year range button
+    const prevYearRangeBtn = document.getElementById('prev-year-range-edit');
+    if (prevYearRangeBtn) {
+        prevYearRangeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            yearRangeStart -= 12;
+            renderYearPicker();
+        });
+    }
+    
+    // Next year range button
+    const nextYearRangeBtn = document.getElementById('next-year-range-edit');
+    if (nextYearRangeBtn) {
+        nextYearRangeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            yearRangeStart += 12;
+            renderYearPicker();
+        });
+    }
+    
+    // Initialize calendar on first open
+    let calendarInitialized = false;
+    if (dateDisplay) {
+        const originalOpenDatePicker = openDatePicker;
+        window.openDatePicker = function(e) {
+            originalOpenDatePicker(e);
+            if (!calendarInitialized) {
+                renderCalendar(currentMonth, currentYear);
+                calendarInitialized = true;
+            }
+        };
+    }
+    
+    // Prevent date picker from closing when clicking inside it
+    if (datePicker) {
+        datePicker.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    // Open time picker
+    function openTimePicker(e) {
+        e.stopPropagation();
+        timePicker.classList.remove('hidden');
+        datePicker.classList.add('hidden'); // Close date picker if open
+    }
+    
+    if (timeDisplay) {
+        timeDisplay.addEventListener('click', openTimePicker);
+    }
+    
+    if (timeIcon) {
+        timeIcon.addEventListener('click', openTimePicker);
+    }
+    
+    // Apply time range
+    if (applyTimeBtn) {
+        applyTimeBtn.addEventListener('click', function() {
+            const startTime = document.getElementById('start-time-edit').value;
+            const endTime = document.getElementById('end-time-edit').value;
+            
+            if (startTime && endTime) {
+                const display = `${startTime} - ${endTime}`;
+                document.getElementById('event-time-display-edit').value = display;
+                document.getElementById('event-time-edit').value = display;
+                timePicker.classList.add('hidden');
+                
+                // Trigger validation
+                const event = new Event('input', { bubbles: true });
+                document.getElementById('event-time-edit').dispatchEvent(event);
+            }
+        });
+    }
+    
+    // Close pickers when clicking outside
+    document.addEventListener('click', function(e) {
+        // Close date picker
+        if (datePicker && !datePicker.contains(e.target) && e.target !== dateDisplay && e.target !== dateIcon && !dateIcon.contains(e.target)) {
+            datePicker.classList.add('hidden');
+        }
+        
+        // Close time picker
+        if (timePicker && !timePicker.contains(e.target) && e.target !== timeDisplay && e.target !== timeIcon && !timeIcon.contains(e.target)) {
+            timePicker.classList.add('hidden');
+        }
+    });
+    
+    // Prevent time picker from closing when clicking inside it
+    if (timePicker) {
+        timePicker.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
     
     // Close modal
     if (closeBtn) {
@@ -316,6 +708,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetForm() {
         if (form) form.reset();
         
+        // Reset date picker display
+        document.getElementById('event-date-display-edit').value = '';
+        document.getElementById('date-picker-modal-edit').classList.add('hidden');
+        
+        // Reset time picker display
+        document.getElementById('event-time-display-edit').value = '';
+        document.getElementById('start-time-edit').value = '';
+        document.getElementById('end-time-edit').value = '';
+        document.getElementById('time-picker-modal-edit').classList.add('hidden');
+        
         // Reset submit button to variant 10
         const submitButtonWrapper = document.getElementById('submit-button-wrapper-edit-event');
         if (submitButtonWrapper) {
@@ -332,9 +734,31 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set event ID
         document.getElementById('event-id-edit').value = eventData.id || '';
         
-        // Populate form with existing data
-        document.getElementById('event-date-edit').value = eventData.date || '';
-        document.getElementById('event-time-edit').value = eventData.time || '';
+        // Handle date - expects Y-m-d format, convert to display format
+        const dateValue = eventData.date || '';
+        if (dateValue) {
+            // Store raw date value
+            document.getElementById('event-date-edit').value = dateValue;
+            
+            // Format for display as dd/mm/yyyy
+            const [year, month, day] = dateValue.split('-');
+            if (year && month && day) {
+                document.getElementById('event-date-display-edit').value = `${day}/${month}/${year}`;
+            }
+        }
+        
+        // Handle time display
+        const timeValue = eventData.time || '';
+        document.getElementById('event-time-display-edit').value = timeValue;
+        document.getElementById('event-time-edit').value = timeValue;
+        
+        // Parse time range if available
+        if (timeValue.includes(' - ')) {
+            const [startTime, endTime] = timeValue.split(' - ');
+            document.getElementById('start-time-edit').value = startTime.trim();
+            document.getElementById('end-time-edit').value = endTime.trim();
+        }
+        
         document.getElementById('event-name-edit').value = eventData.name || '';
         document.getElementById('event-place-edit').value = eventData.place || '';
         document.getElementById('event-url-edit').value = eventData.url || '';
