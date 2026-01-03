@@ -5,6 +5,25 @@
  * Section 1: Tentang Sekolah
  * Layout 1:1 - Image kiri, Card kanan
  */
+
+// Helper function to get prakata image URL
+if (!function_exists('getPrakataImageUrl')) {
+    function getPrakataImageUrl($imagePath) {
+        if (empty($imagePath)) {
+            // Return default image if no image from database
+            return url('images/image_profile_section_1.png');
+        }
+        // If path is already a full URL (http:// or https://), return as-is
+        if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
+            return $imagePath;
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
 ?>
 
 <section class="container mx-auto px-5 md:px-0">
@@ -13,8 +32,8 @@
         <div class="flex-1">
             <div class="h-[276px] md:h-[527px] rounded-[16px] overflow-hidden">
                 <img 
-                    src="<?= url('images/image_profile_section_1.png') ?>" 
-                    alt="Zivana Montessori" 
+                    src="<?= getPrakataImageUrl($prakata['image'] ?? '') ?>" 
+                    alt="<?= htmlspecialchars($prakata['title'] ?? 'Zivana Montessori') ?>" 
                     class="w-full h-full object-cover object-center"
                 >
             </div>

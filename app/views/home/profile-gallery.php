@@ -10,6 +10,10 @@ if (!function_exists('getGalleryImageUrl')) {
         if (empty($imagePath)) {
             return url('images/default-gallery.jpg');
         }
+        // If path is already a full URL (http:// or https://), return as-is
+        if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
+            return $imagePath;
+        }
         // If path already includes 'uploads/', use it directly
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
@@ -41,9 +45,13 @@ ob_start();
     <!-- Gallery Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
         <?php foreach ($galleryImages as $item): ?>
+        <?php 
+            $imageUrl = htmlspecialchars(getGalleryImageUrl($item['image_path']), ENT_QUOTES, 'UTF-8');
+            $titleText = htmlspecialchars($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas'), ENT_QUOTES, 'UTF-8');
+        ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-            @click="showModal = true; currentImage = '<?= getGalleryImageUrl($item['image_path']) ?>'; currentTitle = '<?= addslashes($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>'"
+            @click="showModal = true; currentImage = '<?= $imageUrl ?>'; currentTitle = '<?= $titleText ?>'"
         >
             <!-- Image -->
             <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
