@@ -3,6 +3,8 @@
  * Admin Management Controller
  * Handles schedules, awards, social media
  */
+require_once APP_PATH . '/helpers/CloudflareR2.php';
+
 class ManagementController extends Controller {
     private $scheduleModel;
     private $awardModel;
@@ -148,16 +150,44 @@ class ManagementController extends Controller {
             
             // Handle image upload if provided
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['image'], 'prakata');
-                
-                if ($upload['success']) {
-                    $data['image'] = $upload['path'];
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "prakata-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload to R2 in prakata folder
+                    $r2Key = "prakata/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['image']['tmp_name'],
+                        $r2Key,
+                        $_FILES['image']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $data['image'] = $uploadResult['url'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                        ]);
+                        exit;
+                    }
                 } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => $upload['message']
-                    ]);
-                    exit;
+                    $upload = upload_file($_FILES['image'], 'prakata');
+                    
+                    if ($upload['success']) {
+                        $data['image'] = $upload['path'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $upload['message']
+                        ]);
+                        exit;
+                    }
                 }
             }
             
@@ -239,16 +269,44 @@ class ManagementController extends Controller {
             }
             // Handle photo upload if provided
             elseif (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['photo'], 'kepala-sekolah');
-                
-                if ($upload['success']) {
-                    $data['photo'] = $upload['path'];
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "kepala-sekolah-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload to R2
+                    $r2Key = "karyawan/kepala-sekolah/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['photo']['tmp_name'],
+                        $r2Key,
+                        $_FILES['photo']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $data['photo'] = $uploadResult['url'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Gagal mengupload foto ke R2: ' . $uploadResult['message']
+                        ]);
+                        exit;
+                    }
                 } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => $upload['message']
-                    ]);
-                    exit;
+                    $upload = upload_file($_FILES['photo'], 'kepala-sekolah');
+                    
+                    if ($upload['success']) {
+                        $data['photo'] = $upload['path'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $upload['message']
+                        ]);
+                        exit;
+                    }
                 }
             }
             
@@ -337,16 +395,44 @@ class ManagementController extends Controller {
             
             // Handle photo upload if provided
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['photo'], 'karyawan');
-                
-                if ($upload['success']) {
-                    $data['photo'] = $upload['path'];
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "karyawan-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload to R2
+                    $r2Key = "karyawan/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['photo']['tmp_name'],
+                        $r2Key,
+                        $_FILES['photo']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $data['photo'] = $uploadResult['url'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Gagal mengupload foto ke R2: ' . $uploadResult['message']
+                        ]);
+                        exit;
+                    }
                 } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => $upload['message']
-                    ]);
-                    exit;
+                    $upload = upload_file($_FILES['photo'], 'karyawan');
+                    
+                    if ($upload['success']) {
+                        $data['photo'] = $upload['path'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $upload['message']
+                        ]);
+                        exit;
+                    }
                 }
             }
             
@@ -408,16 +494,44 @@ class ManagementController extends Controller {
             }
             // Handle photo upload if provided
             elseif (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-                $upload = upload_file($_FILES['photo'], 'karyawan');
-                
-                if ($upload['success']) {
-                    $data['photo'] = $upload['path'];
+                if (R2_ENABLED) {
+                    $r2 = new CloudflareR2();
+                    
+                    // Generate unique filename
+                    $fileExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                    $timestamp = time();
+                    $randomString = bin2hex(random_bytes(8));
+                    $uniqueFilename = "karyawan-{$timestamp}-{$randomString}.{$fileExtension}";
+                    
+                    // Upload to R2
+                    $r2Key = "karyawan/{$uniqueFilename}";
+                    $uploadResult = $r2->uploadPublic(
+                        $_FILES['photo']['tmp_name'],
+                        $r2Key,
+                        $_FILES['photo']['type']
+                    );
+                    
+                    if ($uploadResult['success']) {
+                        $data['photo'] = $uploadResult['url'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Gagal mengupload foto ke R2: ' . $uploadResult['message']
+                        ]);
+                        exit;
+                    }
                 } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => $upload['message']
-                    ]);
-                    exit;
+                    $upload = upload_file($_FILES['photo'], 'karyawan');
+                    
+                    if ($upload['success']) {
+                        $data['photo'] = $upload['path'];
+                    } else {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $upload['message']
+                        ]);
+                        exit;
+                    }
                 }
             }
             
@@ -455,6 +569,19 @@ class ManagementController extends Controller {
         header('Content-Type: application/json');
         
         try {
+            // Get karyawan data first to delete photo
+            $karyawan = $this->karyawanModel->getById($id);
+            
+            if ($karyawan && !empty($karyawan['photo'])) {
+                if (R2_ENABLED && strpos($karyawan['photo'], R2_PUBLIC_URL) === 0) {
+                    $r2 = new CloudflareR2();
+                    $key = str_replace(R2_PUBLIC_URL . '/', '', $karyawan['photo']);
+                    $r2->deletePublic($key);
+                } else {
+                    delete_file($karyawan['photo']);
+                }
+            }
+            
             $result = $this->karyawanModel->deleteEmployee($id);
             
             if ($result) {
@@ -877,16 +1004,44 @@ class ManagementController extends Controller {
         
         // Handle image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadResult = upload_file($_FILES['image'], 'fasilitas');
-            
-            if ($uploadResult['success']) {
-                $data['image'] = $uploadResult['path'];
+            if (R2_ENABLED) {
+                $r2 = new CloudflareR2();
+                
+                // Generate unique filename
+                $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $timestamp = time();
+                $randomString = bin2hex(random_bytes(8));
+                $uniqueFilename = "fasilitas-{$timestamp}-{$randomString}.{$fileExtension}";
+                
+                // Upload to R2
+                $r2Key = "fasilitas/{$uniqueFilename}";
+                $uploadResult = $r2->uploadPublic(
+                    $_FILES['image']['tmp_name'],
+                    $r2Key,
+                    $_FILES['image']['type']
+                );
+                
+                if ($uploadResult['success']) {
+                    $data['image'] = $uploadResult['url'];
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                    ]);
+                    exit;
+                }
             } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => $uploadResult['error']
-                ]);
-                exit;
+                $uploadResult = upload_file($_FILES['image'], 'fasilitas');
+                
+                if ($uploadResult['success']) {
+                    $data['image'] = $uploadResult['path'];
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $uploadResult['error']
+                    ]);
+                    exit;
+                }
             }
         }
         
@@ -962,31 +1117,77 @@ class ManagementController extends Controller {
         else if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             // Delete old image if exists
             if (!empty($fasilitas['image'])) {
-                delete_file($fasilitas['image']);
+                if (R2_ENABLED && strpos($fasilitas['image'], R2_PUBLIC_URL) === 0) {
+                    $r2 = new CloudflareR2();
+                    $key = str_replace(R2_PUBLIC_URL . '/', '', $fasilitas['image']);
+                    $r2->deletePublic($key);
+                } else {
+                    delete_file($fasilitas['image']);
+                }
             }
             
-            $uploadResult = upload_file($_FILES['image'], 'fasilitas');
-            
-            if ($uploadResult['success']) {
-                $data['image'] = $uploadResult['path'];
+            if (R2_ENABLED) {
+                $r2 = new CloudflareR2();
                 
-                // IMPORTANT: Also add this image to fasilitas_gallery as cover
-                // First, clear all existing cover flags
-                $this->fasilitasModel->clearCoverFlags($id);
+                // Generate unique filename
+                $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $timestamp = time();
+                $randomString = bin2hex(random_bytes(8));
+                $uniqueFilename = "fasilitas-{$timestamp}-{$randomString}.{$fileExtension}";
                 
-                // Then add the new image to gallery with is_cover = 1
-                $this->fasilitasModel->addGalleryImage(
-                    $id,
-                    $uploadResult['path'],
-                    'Cover Image',
-                    1
+                // Upload to R2
+                $r2Key = "fasilitas/{$uniqueFilename}";
+                $uploadResult = $r2->uploadPublic(
+                    $_FILES['image']['tmp_name'],
+                    $r2Key,
+                    $_FILES['image']['type']
                 );
+                
+                if ($uploadResult['success']) {
+                    $data['image'] = $uploadResult['url'];
+                    
+                    // IMPORTANT: Also add this image to fasilitas_gallery as cover
+                    // First, clear all existing cover flags
+                    $this->fasilitasModel->clearCoverFlags($id);
+                    
+                    // Then add the new image to gallery with is_cover = 1
+                    $this->fasilitasModel->addGalleryImage(
+                        $id,
+                        $uploadResult['url'],
+                        'Cover Image',
+                        1
+                    );
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                    ]);
+                    exit;
+                }
             } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => $uploadResult['error']
-                ]);
-                exit;
+                $uploadResult = upload_file($_FILES['image'], 'fasilitas');
+                
+                if ($uploadResult['success']) {
+                    $data['image'] = $uploadResult['path'];
+                    
+                    // IMPORTANT: Also add this image to fasilitas_gallery as cover
+                    // First, clear all existing cover flags
+                    $this->fasilitasModel->clearCoverFlags($id);
+                    
+                    // Then add the new image to gallery with is_cover = 1
+                    $this->fasilitasModel->addGalleryImage(
+                        $id,
+                        $uploadResult['path'],
+                        'Cover Image',
+                        1
+                    );
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $uploadResult['error']
+                    ]);
+                    exit;
+                }
             }
         }
         
@@ -1032,14 +1233,26 @@ class ManagementController extends Controller {
         
         // Delete main image if exists
         if (!empty($fasilitas['image'])) {
-            delete_file($fasilitas['image']);
+            if (R2_ENABLED && strpos($fasilitas['image'], R2_PUBLIC_URL) === 0) {
+                $r2 = new CloudflareR2();
+                $key = str_replace(R2_PUBLIC_URL . '/', '', $fasilitas['image']);
+                $r2->deletePublic($key);
+            } else {
+                delete_file($fasilitas['image']);
+            }
         }
         
         // Get gallery images and delete them
         $galleryImages = $this->fasilitasModel->getGalleryImages($id);
         foreach ($galleryImages as $image) {
             if (!empty($image['image_path'])) {
-                delete_file($image['image_path']);
+                if (R2_ENABLED && strpos($image['image_path'], R2_PUBLIC_URL) === 0) {
+                    $r2 = new CloudflareR2();
+                    $key = str_replace(R2_PUBLIC_URL . '/', '', $image['image_path']);
+                    $r2->deletePublic($key);
+                } else {
+                    delete_file($image['image_path']);
+                }
             }
         }
         
@@ -1185,7 +1398,13 @@ class ManagementController extends Controller {
         
         // Delete file
         if (!empty($image['image_path'])) {
-            delete_file($image['image_path']);
+            if (R2_ENABLED && strpos($image['image_path'], R2_PUBLIC_URL) === 0) {
+                $r2 = new CloudflareR2();
+                $key = str_replace(R2_PUBLIC_URL . '/', '', $image['image_path']);
+                $r2->deletePublic($key);
+            } else {
+                delete_file($image['image_path']);
+            }
         }
         
         $result = $this->fasilitasModel->deleteGalleryImage($imageId);
@@ -1266,14 +1485,42 @@ class ManagementController extends Controller {
         $setAsCover = isset($_POST['set_as_cover']) && $_POST['set_as_cover'] == '1';
         
         // Upload image
-        $uploadResult = upload_file($_FILES['image'], 'fasilitas/gallery');
-        
-        if (!$uploadResult['success']) {
-            echo json_encode([
-                'success' => false,
-                'message' => $uploadResult['error']
-            ]);
-            exit;
+        if (R2_ENABLED) {
+            $r2 = new CloudflareR2();
+            
+            // Generate unique filename
+            $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+            $timestamp = time();
+            $randomString = bin2hex(random_bytes(8));
+            $uniqueFilename = "gallery-{$timestamp}-{$randomString}.{$fileExtension}";
+            
+            // Upload to R2
+            $r2Key = "fasilitas/{$id}/gallery/{$uniqueFilename}";
+            $uploadResult = $r2->uploadPublic(
+                $_FILES['image']['tmp_name'],
+                $r2Key,
+                $_FILES['image']['type']
+            );
+            
+            if (!$uploadResult['success']) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                ]);
+                exit;
+            }
+            
+            $uploadResult['path'] = $uploadResult['url'];
+        } else {
+            $uploadResult = upload_file($_FILES['image'], 'fasilitas/gallery');
+            
+            if (!$uploadResult['success']) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => $uploadResult['error']
+                ]);
+                exit;
+            }
         }
         
         // If set as cover, clear previous cover flags and update fasilitas.image
@@ -1344,22 +1591,56 @@ class ManagementController extends Controller {
         
         // Handle new image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadResult = upload_file($_FILES['image'], 'fasilitas/gallery');
-            
-            if (!$uploadResult['success']) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => $uploadResult['error']
-                ]);
-                exit;
+            if (R2_ENABLED) {
+                $r2 = new CloudflareR2();
+                
+                // Delete old image from R2
+                if (!empty($galleryImage['image_path']) && strpos($galleryImage['image_path'], R2_PUBLIC_URL) === 0) {
+                    $oldKey = str_replace(R2_PUBLIC_URL . '/', '', $galleryImage['image_path']);
+                    $r2->deletePublic($oldKey);
+                }
+                
+                // Generate unique filename
+                $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $timestamp = time();
+                $randomString = bin2hex(random_bytes(8));
+                $uniqueFilename = "gallery-{$timestamp}-{$randomString}.{$fileExtension}";
+                
+                // Upload to R2
+                $r2Key = "fasilitas/{$fasilitasId}/gallery/{$uniqueFilename}";
+                $uploadResult = $r2->uploadPublic(
+                    $_FILES['image']['tmp_name'],
+                    $r2Key,
+                    $_FILES['image']['type']
+                );
+                
+                if (!$uploadResult['success']) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                    ]);
+                    exit;
+                }
+                
+                $updateData['image_path'] = $uploadResult['url'];
+            } else {
+                $uploadResult = upload_file($_FILES['image'], 'fasilitas/gallery');
+                
+                if (!$uploadResult['success']) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $uploadResult['error']
+                    ]);
+                    exit;
+                }
+                
+                // Delete old image
+                if (!empty($galleryImage['image_path'])) {
+                    delete_file($galleryImage['image_path']);
+                }
+                
+                $updateData['image_path'] = $uploadResult['path'];
             }
-            
-            // Delete old image
-            if (!empty($galleryImage['image_path'])) {
-                delete_file($galleryImage['image_path']);
-            }
-            
-            $updateData['image_path'] = $uploadResult['path'];
         }
         
         // If set as cover, clear previous cover flags and update fasilitas.image
@@ -1420,22 +1701,56 @@ class ManagementController extends Controller {
         
         // Handle new image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadResult = upload_file($_FILES['image'], 'fasilitas');
-            
-            if (!$uploadResult['success']) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => $uploadResult['error']
-                ]);
-                exit;
-            }
-            
             // Delete old image
             if (!empty($fasilitas['image'])) {
-                delete_file($fasilitas['image']);
+                if (R2_ENABLED && strpos($fasilitas['image'], R2_PUBLIC_URL) === 0) {
+                    $r2 = new CloudflareR2();
+                    $key = str_replace(R2_PUBLIC_URL . '/', '', $fasilitas['image']);
+                    $r2->deletePublic($key);
+                } else {
+                    delete_file($fasilitas['image']);
+                }
             }
             
-            $updateData['image'] = $uploadResult['path'];
+            if (R2_ENABLED) {
+                $r2 = new CloudflareR2();
+                
+                // Generate unique filename
+                $fileExtension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $timestamp = time();
+                $randomString = bin2hex(random_bytes(8));
+                $uniqueFilename = "fasilitas-{$timestamp}-{$randomString}.{$fileExtension}";
+                
+                // Upload to R2
+                $r2Key = "fasilitas/{$uniqueFilename}";
+                $uploadResult = $r2->uploadPublic(
+                    $_FILES['image']['tmp_name'],
+                    $r2Key,
+                    $_FILES['image']['type']
+                );
+                
+                if (!$uploadResult['success']) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Gagal mengupload gambar ke R2: ' . $uploadResult['message']
+                    ]);
+                    exit;
+                }
+                
+                $updateData['image'] = $uploadResult['url'];
+            } else {
+                $uploadResult = upload_file($_FILES['image'], 'fasilitas');
+                
+                if (!$uploadResult['success']) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $uploadResult['error']
+                    ]);
+                    exit;
+                }
+                
+                $updateData['image'] = $uploadResult['path'];
+            }
         }
         
         // Handle is_cover (if setting fasilitas.image as cover)
@@ -1494,7 +1809,13 @@ class ManagementController extends Controller {
         
         // Delete image file
         if (!empty($fasilitas['image'])) {
-            delete_file($fasilitas['image']);
+            if (R2_ENABLED && strpos($fasilitas['image'], R2_PUBLIC_URL) === 0) {
+                $r2 = new CloudflareR2();
+                $key = str_replace(R2_PUBLIC_URL . '/', '', $fasilitas['image']);
+                $r2->deletePublic($key);
+            } else {
+                delete_file($fasilitas['image']);
+            }
         }
         
         // Update database
