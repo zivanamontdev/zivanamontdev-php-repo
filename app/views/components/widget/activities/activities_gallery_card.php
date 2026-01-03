@@ -67,7 +67,6 @@ if (!function_exists('getActivityGalleryImageUrl')) {
         class="fixed inset-0 z-50 flex items-center justify-center"
         @click.self="showModal = false"
         @keydown.escape.window="showModal = false"
-        style="display: none;"
     >
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/70" @click="showModal = false"></div>
