@@ -12,6 +12,10 @@ if (!function_exists('getEmployeePhotoUrl')) {
         if (empty($photoPath)) {
             return null; // Return null for empty photos to show placeholder
         }
+        // If path is already a full URL (http:// or https://), return as-is
+        if (strpos($photoPath, 'http://') === 0 || strpos($photoPath, 'https://') === 0) {
+            return $photoPath;
+        }
         // If path already includes 'uploads/', use it directly
         if (strpos($photoPath, 'uploads/') === 0) {
             return url($photoPath);
@@ -25,6 +29,10 @@ if (!function_exists('getFasilitasCoverImage')) {
     function getFasilitasCoverImage($imagePath) {
         if (empty($imagePath)) {
             return null; // Return null for empty images to show placeholder
+        }
+        // If path is already a full URL (http:// or https://), return as-is
+        if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
+            return $imagePath;
         }
         // If path already includes 'uploads/', use it directly
         if (strpos($imagePath, 'uploads/') === 0) {

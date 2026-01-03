@@ -26,14 +26,12 @@
             <div class="bg-white-neutral rounded-[12px] px-[24px] py-[16px] h-auto md:h-[455px] relative overflow-hidden">
                 <!-- Title -->
                 <h3 class="font-bold text-[16px] leading-[28px] md:text-[24px] md:leading-[38px] text-black-soft mb-[16px]">
-                    <?= htmlspecialchars($prakata['title'] ?? 'Profil Singkat') ?>
+                    <?= htmlspecialchars($prakata['title']) ?>
                 </h3>
                 
                 <!-- Description -->
                 <div class="h-auto md:h-[365px] overflow-hidden font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[38px] text-black-soft">
-                    <?= nl2br(htmlspecialchars($prakata['description'] ?? 'Sejak 2021, Zivana Montessori hadir sebagai sekolah inklusi yang memadukan metode Montessori Islami, Deep Learning, dan pendekatan Neurosensory. Anak reguler dan berkebutuhan khusus belajar bersama untuk mengasah fokus, emosi, dan kemandirian.
-
-Dengan 6 area belajar dan motto CHAMPION (Cerdas, Berakhlak, Mandiri, Peduli, Berorientasi Islam), kami berkomitmen mencetak generasi yang percaya diri, cerdas, dan peduli sesama sesuai fitrah dan kecepatan belajarnya masing-masing.')) ?>
+                    <?= nl2br(htmlspecialchars($prakata['description'])) ?>
                 </div>
                 
                 <!-- Vector Profile - Bottom Right -->

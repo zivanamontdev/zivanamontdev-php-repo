@@ -283,6 +283,7 @@ class HomeController extends Controller {
             'fasilitas' => $this->fasilitasModel->all('created_at DESC'),
             'socialMedia' => $this->socialMediaModel->getActive(),
             'settings' => $this->getSettings(),
+            'prakata' => $this->prakataModel->get(),
         ];
         
         $this->view('home/profile', $data);
