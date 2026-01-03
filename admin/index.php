@@ -9,4 +9,5 @@
 define('IS_ADMIN_SUBDOMAIN', true);
 
 // Load the main application
-require_once __DIR__ . '/../public/index.php';
+// Path: dari /public_html/admin/ ke /public_html/dev/public/index.php
+require_once __DIR__ . '/../dev/public/index.php';
