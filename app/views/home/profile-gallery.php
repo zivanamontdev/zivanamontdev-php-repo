@@ -45,13 +45,9 @@ ob_start();
     <!-- Gallery Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentTitle: '' }">
         <?php foreach ($galleryImages as $item): ?>
-        <?php 
-            $imageUrl = getGalleryImageUrl($item['image_path']);
-            $titleText = $item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas');
-        ?>
         <div 
             class="bg-white-neutral rounded-[20px] p-[16px] h-[264px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-            @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode($imageUrl)) ?>; currentTitle = <?= htmlspecialchars(json_encode($titleText)) ?>"
+            @click="showModal = true; currentImage = <?= json_encode(getGalleryImageUrl($item['image_path'])) ?>; currentTitle = <?= json_encode($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>"
         >
             <!-- Image -->
             <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
