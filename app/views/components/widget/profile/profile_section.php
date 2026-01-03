@@ -6,6 +6,9 @@
  * Layout 1:1 - Image kiri, Card kanan
  */
 
+// Get prakata data from component parameter or parent scope
+$prakata = $prakata ?? [];
+
 // Helper function to get prakata image URL
 if (!function_exists('getPrakataImageUrl')) {
     function getPrakataImageUrl($imagePath) {

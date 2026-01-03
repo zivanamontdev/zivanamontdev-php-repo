@@ -9,12 +9,30 @@
  */
 
 $items = $items ?? [];
+
+// Helper function to get activity gallery image URL
+if (!function_exists('getActivityGalleryImageUrl')) {
+    function getActivityGalleryImageUrl($imagePath) {
+        if (empty($imagePath)) {
+            return url('images/placeholder.jpg');
+        }
+        // If path is already a full URL (http:// or https://), return as-is
+        if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
+            return $imagePath;
+        }
+        // If path already includes 'uploads/', use it directly
+        if (strpos($imagePath, 'uploads/') === 0) {
+            return url($imagePath);
+        }
+        return url('uploads/' . $imagePath);
+    }
+}
 ?>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
     <?php foreach ($items as $index => $item): ?>
     <?php 
-        $imageUrl = htmlspecialchars($item['image'] ?? url('images/placeholder.jpg'), ENT_QUOTES, 'UTF-8');
+        $imageUrl = htmlspecialchars(getActivityGalleryImageUrl($item['image'] ?? ''), ENT_QUOTES, 'UTF-8');
         $descText = htmlspecialchars($item['description'] ?? '', ENT_QUOTES, 'UTF-8');
     ?>
     <div 
@@ -24,7 +42,7 @@ $items = $items ?? [];
         <!-- Image -->
         <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] bg-gray-placeholder relative">
             <img 
-                src="<?= $item['image'] ?? url('images/placeholder.jpg') ?>" 
+                src="<?= getActivityGalleryImageUrl($item['image'] ?? '') ?>" 
                 alt="" 
                 class="w-full h-full object-cover"
                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"

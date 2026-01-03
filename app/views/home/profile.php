@@ -51,7 +51,7 @@ ob_start();
 </div>
 
 <!-- Section 1: Sejarah Singkat -->
-<?php component('widget/profile/profile_section'); ?>
+<?php component('widget/profile/profile_section', ['prakata' => $prakata ?? []]); ?>
 
 <!-- Section 2: Visi Misi -->
 <?php component('widget/profile/profile_visimisi'); ?>
