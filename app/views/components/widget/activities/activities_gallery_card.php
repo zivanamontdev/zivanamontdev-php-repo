@@ -34,10 +34,13 @@ if (!function_exists('getActivityGalleryImageUrl')) {
     <?php 
         $imageUrl = getActivityGalleryImageUrl($item['image'] ?? '');
         $descText = $item['description'] ?? '';
+        // Encode for JavaScript - same as profile-gallery.php
+        $imageUrlJson = json_encode($imageUrl);
+        $descTextJson = json_encode($descText);
     ?>
     <div 
         class="bg-white-neutral p-[16px] rounded-[20px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
-        @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode($imageUrl), ENT_QUOTES) ?>; currentDescription = <?= htmlspecialchars(json_encode($descText), ENT_QUOTES) ?>"
+        @click="showModal = true; currentImage = <?= $imageUrlJson ?>; currentDescription = <?= $descTextJson ?>"
     >
         <!-- Image -->
         <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] bg-gray-placeholder relative">
