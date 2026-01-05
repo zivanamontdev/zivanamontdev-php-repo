@@ -52,15 +52,25 @@ class SubdomainMiddleware {
             
             // Block access to non-admin routes (landing page routes)
             if (!$isAdminRoute && $path !== '/') {
-                self::redirect('/admin/dashboard');
-                return;
+                // Show 404 page instead of redirecting
+                http_response_code(404);
+                if (file_exists(VIEW_PATH . '/errors/404.php')) {
+                    require VIEW_PATH . '/errors/404.php';
+                } else {
+                    echo "<h1>404 - Halaman Tidak Ditemukan</h1>";
+                }
+                exit;
             }
         }
         
-        // If main domain/subdomain
+        // If main domain/subdomain (dev, www, or root)
         if (!$isAdminSubdomain) {
-            // Redirect admin routes to admin subdomain
-            if ($isAdminRoute) {
+            // For dev subdomain, allow admin routes (for development/testing)
+            $host = $_SERVER['HTTP_HOST'] ?? '';
+            $isDev = (strpos($host, 'dev.') === 0 || strpos($host, 'localhost') !== false);
+            
+            // If not dev environment and accessing admin route, redirect to admin subdomain
+            if (!$isDev && $isAdminRoute) {
                 $adminUrl = $_ENV['ADMIN_URL'] ?? 'https://admin.sekolahzivanamontessori.sch.id';
                 $fullUrl = rtrim($adminUrl, '/') . $uri;
                 header('Location: ' . $fullUrl);

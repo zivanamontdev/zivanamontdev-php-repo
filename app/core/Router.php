@@ -79,7 +79,7 @@ class Router {
             return call_user_func($this->notFoundCallback);
         } else {
             http_response_code(404);
-            echo "404 - Page Not Found";
+            $this->show404Page();
         }
     }
     
@@ -146,5 +146,17 @@ class Router {
         $url = rtrim(APP_URL, '/') . '/' . ltrim($path, '/');
         header('Location: ' . $url, true, $statusCode);
         exit;
+    }
+    
+    /**
+     * Show 404 error page
+     */
+    private function show404Page() {
+        $viewPath = VIEW_PATH . '/errors/404.php';
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            echo "<h1>404 - Page Not Found</h1>";
+        }
     }
 }
