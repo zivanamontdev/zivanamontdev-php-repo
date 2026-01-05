@@ -52,5 +52,37 @@ $router = new Router();
 // Load routes
 require_once ROOT_PATH . '/routes/web.php';
 
-// Dispatch request
-$router->dispatch();
+// Error handling
+try {
+    // Dispatch request
+    $router->dispatch();
+} catch (Exception $e) {
+    // Log error
+    error_log("Application Error: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    
+    // Check if it's a not found error or server error
+    if ($e->getCode() == 404 || strpos($e->getMessage(), '404') !== false || strpos($e->getMessage(), 'not found') !== false) {
+        http_response_code(404);
+        if (file_exists(VIEW_PATH . '/errors/404.php')) {
+            require VIEW_PATH . '/errors/404.php';
+        } else {
+            echo "<h1>404 - Page Not Found</h1>";
+        }
+    } else {
+        // Show generic error page in production
+        http_response_code(500);
+        if (file_exists(VIEW_PATH . '/errors/500.php')) {
+            require VIEW_PATH . '/errors/500.php';
+        } else {
+            if (APP_ENV === 'development') {
+                echo "<h1>500 - Server Error</h1>";
+                echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+                echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+            } else {
+                echo "<h1>500 - Something went wrong</h1>";
+                echo "<p>We're sorry, but something went wrong. Please try again later.</p>";
+            }
+        }
+    }
+}
