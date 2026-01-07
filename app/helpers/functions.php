@@ -121,10 +121,13 @@ function url($path = '') {
     }
     
     // Auto-detect port if localhost and port not in URL
-    if (strpos($baseUrl, 'localhost') !== false && strpos($baseUrl, ':') === false) {
-        // Check if running on non-standard port
-        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
-            $baseUrl = rtrim($baseUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+    if (strpos($baseUrl, 'localhost') !== false) {
+        // Check if port is already specified in the URL (after localhost)
+        if (!preg_match('/localhost:\d+/', $baseUrl)) {
+            // Check if running on non-standard port
+            if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+                $baseUrl = rtrim($baseUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+            }
         }
     }
     
@@ -138,9 +141,12 @@ function adminUrl($path = '') {
     $adminUrl = ADMIN_URL ?? APP_URL;
     
     // Auto-detect port if localhost
-    if (strpos($adminUrl, 'localhost') !== false && strpos($adminUrl, ':') === false) {
-        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
-            $adminUrl = rtrim($adminUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+    if (strpos($adminUrl, 'localhost') !== false) {
+        // Check if port is already specified in the URL (after localhost)
+        if (!preg_match('/localhost:\d+/', $adminUrl)) {
+            if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+                $adminUrl = rtrim($adminUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+            }
         }
     }
     

@@ -23,7 +23,7 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
     <section class="pt-[204px]">
         <div class="container mx-auto text-center">
             <div class="relative inline-block mb-[24px]">
-                <h2 class="font-bold text-[32px] md:text-[60px] leading-[100%] text-white-neutral">
+                <h2 class="font-bold text-[32px] md:text-[60px] leading-[140%] text-white-neutral">
                     <?= $ctaTitle ?>
                 </h2>
                 <!-- Vector Daftar CTA - Top Right of Title -->
@@ -54,58 +54,64 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
         
         <div class="container mx-auto px-5 md:px-[80px] pb-12 relative z-10">
             <!-- Footer Content - Responsive Layout -->
-            <div class="flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-0 md:gap-8 items-center md:items-start text-center md:text-left">
+            <div class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
                 <!-- Section 1: Logo -->
-                <div class="mb-[20px] md:mb-0 md:mt-[-20px]">
-                    <img src="<?= url('images/logo_white.png') ?>" alt="Zivana Montessori" class="w-[158px] h-[62px] md:w-[330px] md:h-auto object-cover object-center mx-auto md:mx-0">
+                <div class="mb-[20px] md:mb-0 md:mr-[4rem]">
+                    <img src="<?= url('images/logo_white.png') ?>" alt="Zivana Montessori" class="w-[158px] h-[62px] md:w-[232px] md:h-auto object-cover object-center mx-auto md:mx-0">
                 </div>
                 
                 <!-- Section 2: Address & Contact -->
-                <div>
+                <div class="md:flex-1">
                     <!-- Alamat -->
-                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[12px]">
-                        Kunjungi kami di
-                    </h4>
-                    <p class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[100%] text-white-neutral mb-[40px]">
-                        Komp. Mustika Mulia Blok A4.1, Karampuang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231
-                    </p>
+                    <div class="mb-[40px]">
+                        <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[12px]">
+                            Kunjungi kami di
+                        </h4>
+                        <p class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[140%] text-white-neutral">
+                            Komp. Mustika Mulia Blok A4.1, Karampuang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231
+                        </p>
+                    </div>
                     
                     <!-- Kontak -->
-                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[12px]">
-                        Hubungi kami di
-                    </h4>
-                    <div class="flex items-center justify-center md:justify-start gap-[8px] mb-[24px] md:mb-[40px]">
-                        <img src="<?= url('images/vectors/vector_wa.png') ?>" alt="WhatsApp" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                        <img src="<?= url('images/vectors/vector_phone.png') ?>" alt="Phone" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                        <span class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[100%] text-white-neutral">+62 0812 3456 7890</span>
+                    <div class="mb-[24px] md:mb-[40px]">
+                        <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[12px]">
+                            Hubungi kami di
+                        </h4>
+                        <div class="flex items-center justify-center md:justify-start gap-[8px]">
+                            <img src="<?= url('images/vectors/vector_wa.png') ?>" alt="WhatsApp" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                            <img src="<?= url('images/vectors/vector_phone.png') ?>" alt="Phone" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                            <span class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[140%] text-white-neutral">+62 0812 3456 7890</span>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Section 3: Social Media -->
-                <div class="flex flex-col items-center md:items-start">
-                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[16px] md:mb-[12px]">
-                        Ikuti Kami di
-                    </h4>
-                    <div class="flex flex-col items-center md:items-start gap-[12px] mb-[64px]">
-                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                            <img src="<?= url('images/vectors/vector_instagram.png') ?>" alt="Instagram" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">Instagram</span>
-                        </a>
-                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                            <img src="<?= url('images/vectors/vector_tiktok.png') ?>" alt="TikTok" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">TikTok</span>
-                        </a>
-                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                            <img src="<?= url('images/vectors/vector_facebook.png') ?>" alt="Facebook" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">Facebook</span>
-                        </a>
+                <div class="mb-[64px] md:ml-[2rem]">
+                    <div class="flex flex-col items-center md:items-start">
+                        <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[16px] md:mb-[12px]">
+                            Ikuti Kami di
+                        </h4>
+                        <div class="flex flex-col items-center md:items-start gap-[12px]">
+                            <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                                <img src="<?= url('images/vectors/vector_instagram.png') ?>" alt="Instagram" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                                <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">Instagram</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                                <img src="<?= url('images/vectors/vector_tiktok.png') ?>" alt="TikTok" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                                <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">TikTok</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                                <img src="<?= url('images/vectors/vector_facebook.png') ?>" alt="Facebook" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                                <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">Facebook</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Copyright -->
             <div class="text-center md:text-left text-white-neutral">
-                <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[100%]">©2025 Sekolah Zivana Montessori</p>
+                <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%]">©2025 Sekolah Zivana Montessori</p>
             </div>
         </div>
     </footer>
@@ -122,58 +128,64 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
     
     <div class="container mx-auto px-5 md:px-[80px] pb-12 relative z-10">
         <!-- Footer Content - Responsive Layout -->
-        <div class="flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-0 md:gap-8 items-center md:items-start text-center md:text-left">
+        <div class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
             <!-- Section 1: Logo -->
-            <div class="mb-[20px] md:mb-0 md:mt-[-20px]">
+            <div class="mb-[20px] md:mb-0 md:mr-[4rem]">
                 <img src="<?= url('images/logo_white.png') ?>" alt="Zivana Montessori" class="w-[158px] h-[62px] md:w-[330px] md:h-auto object-cover object-center mx-auto md:mx-0">
             </div>
             
             <!-- Section 2: Address & Contact -->
-            <div>
+            <div class="md:flex-1">
                 <!-- Alamat -->
-                <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[12px]">
-                    Kunjungi kami di
-                </h4>
-                <p class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[100%] text-white-neutral mb-[40px]">
-                    Komp. Mustika Mulia Blok A4.1, Karampuang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231
-                </p>
+                <div class="mb-[40px]">
+                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[12px]">
+                        Kunjungi kami di
+                    </h4>
+                    <p class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[140%] text-white-neutral">
+                        Komp. Mustika Mulia Blok A4.1, Karampuang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231
+                    </p>
+                </div>
                 
                 <!-- Kontak -->
-                <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[12px]">
-                    Hubungi kami di
-                </h4>
-                <div class="flex items-center justify-center md:justify-start gap-[8px] mb-[24px] md:mb-[40px]">
-                    <img src="<?= url('images/vectors/vector_wa.png') ?>" alt="WhatsApp" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                    <img src="<?= url('images/vectors/vector_phone.png') ?>" alt="Phone" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                    <span class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[100%] text-white-neutral">+62 0812 3456 7890</span>
+                <div class="mb-[24px] md:mb-[40px]">
+                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[12px]">
+                        Hubungi kami di
+                    </h4>
+                    <div class="flex items-center justify-center md:justify-start gap-[8px]">
+                        <img src="<?= url('images/vectors/vector_wa.png') ?>" alt="WhatsApp" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                        <img src="<?= url('images/vectors/vector_phone.png') ?>" alt="Phone" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                        <span class="font-normal text-[14px] md:text-[20px] leading-[24px] md:leading-[140%] text-white-neutral">+62 0812 3456 7890</span>
+                    </div>
                 </div>
             </div>
             
             <!-- Section 3: Social Media -->
-            <div class="flex flex-col items-center md:items-start">
-                <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-white-neutral mb-[16px] md:mb-[12px]">
-                    Ikuti Kami di
-                </h4>
-                <div class="flex flex-col items-center md:items-start gap-[12px] mb-[64px]">
-                    <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                        <img src="<?= url('images/vectors/vector_instagram.png') ?>" alt="Instagram" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                        <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">Instagram</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                        <img src="<?= url('images/vectors/vector_tiktok.png') ?>" alt="TikTok" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                        <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">TikTok</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
-                        <img src="<?= url('images/vectors/vector_facebook.png') ?>" alt="Facebook" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
-                        <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[100%] text-pale-accent">Facebook</span>
-                    </a>
+            <div class="mb-[64px] md:ml-[2rem]">
+                <div class="flex flex-col items-center md:items-start">
+                    <h4 class="font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-white-neutral mb-[16px] md:mb-[12px]">
+                        Ikuti Kami di
+                    </h4>
+                    <div class="flex flex-col items-center md:items-start gap-[12px]">
+                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                            <img src="<?= url('images/vectors/vector_instagram.png') ?>" alt="Instagram" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">Instagram</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                            <img src="<?= url('images/vectors/vector_tiktok.png') ?>" alt="TikTok" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">TikTok</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">
+                            <img src="<?= url('images/vectors/vector_facebook.png') ?>" alt="Facebook" class="w-[16px] h-[16px] md:w-[24px] md:h-[24px]">
+                            <span class="font-normal text-[16px] md:text-[20px] leading-[28px] md:leading-[140%] text-pale-accent">Facebook</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Copyright -->
         <div class="text-center md:text-left text-white-neutral">
-            <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[100%]">©2025 Sekolah Zivana Montessori</p>
+            <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%]">©2025 Sekolah Zivana Montessori</p>
         </div>
     </div>
 </footer>

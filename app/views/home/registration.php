@@ -35,7 +35,7 @@ ob_start();
                 <svg class="w-[20px] h-[24px] flex-shrink-0" fill="none" stroke="#0F65FA" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
-                <p class="font-normal text-[14px] leading-[24px] md:text-[16px] md:leading-[100%] text-black-highlight">
+                <p class="font-normal text-[14px] leading-[24px] md:text-[16px] md:leading-[140%] text-black-highlight">
                     Informasi yang anda berikan bersifat privasi dan akan dijaga kerahasiaannya.
                 </p>
             </div>

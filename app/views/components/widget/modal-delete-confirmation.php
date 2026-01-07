@@ -20,7 +20,7 @@ $description = $description ?? 'Apakah Anda yakin ingin menghapus item ini? Tind
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-[329px] px-[24px] py-[20px]">
         <!-- Header: Title and Close Button -->
         <div class="flex items-start justify-between mb-[32px]">
-            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft" id="<?= e($modalId) ?>-title">
+            <h3 class="font-bold text-[20px] leading-[140%] text-black-soft" id="<?= e($modalId) ?>-title">
                 <?= e($title) ?>
             </h3>
             <button type="button" id="close-<?= e($modalId) ?>" class="text-black-highlight hover:text-black-soft transition-colors ml-2">

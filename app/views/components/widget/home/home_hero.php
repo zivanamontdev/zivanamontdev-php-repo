@@ -22,21 +22,22 @@
         <div class="relative z-10 h-full flex flex-col justify-center md:justify-between gap-8 md:gap-0">
             <!-- Title with vector background -->
             <div class="relative">
-                <h1 class="text-white-neutral font-bold text-[32px] md:text-[68px] leading-[110%] md:leading-[100%] text-center md:text-left">
-                    Sekolah Berbasis<br>
-                    <span class="relative inline-block mt-[10px]">
-                        <!-- Vector behind "Montessori Islami" -->
-                        <img 
-                            src="<?= url('/images/vectors/vector_hero_home.png') ?>" 
-                            alt="" 
-                            class="absolute left-3 top-[65%] -translate-y-1/2 w-[328px] h-[114px] pointer-events-none -z-10"
-                        >
-                        Montessori Islami
+                <!-- Vector behind title -->
+                <img 
+                    src="<?= url('/images/vectors/vector_hero_home.png') ?>" 
+                    alt="" 
+                    class="absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[2px] w-[238px] h-[94px] md:left-auto md:translate-x-0 md:right-[200px] md:w-[504px] md:h-[120px] pointer-events-none"
+                >
+                
+                <h1 class="text-white-neutral font-bold text-[32px] md:text-[68px] leading-[110%] md:leading-[140%] text-center md:text-left relative z-10">
+                    Sekolah Berbasis Montessori Islami<br>
+                    <span class="inline-block mt-[10px]">
+                        Untuk Semua Anak
                     </span>
                 </h1>
                 
                 <!-- Description -->
-                <p class="text-white-neutral font-normal text-[16px] md:text-[24px] leading-[150%] md:leading-[38px] text-center md:text-left mt-6 md:mt-11">
+                <p class="text-white-neutral font-normal text-[16px] md:text-[24px] leading-[150%] md:leading-[38px] text-center md:text-left mt-6 md:mt-11 relative z-10">
                     Mengembangkan potensi anak secara alami melalui<br>
                     metode Montessori yang menumbuhkan kemandirian,<br>
                     rasa ingin tahu, dan kecintaan belajar.

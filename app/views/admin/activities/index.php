@@ -120,7 +120,7 @@ ob_start();
                     <!-- Header with Title, Description and Edit Button -->
                     <div class="flex items-center mb-[12px]">
                         <div class="flex-1">
-                            <h4 class="font-bold text-[12px] leading-[100%] text-text-dark"><?= e($program['name']) ?></h4>
+                            <h4 class="font-bold text-[12px] leading-[140%] text-text-dark"><?= e($program['name']) ?></h4>
                             <p class="font-normal text-[12px] leading-[20px] text-black-soft mt-1"><?= e($program['description']) ?></p>
                         </div>
                         <div class="flex-shrink-0">
@@ -234,7 +234,7 @@ ob_start();
                     <!-- Header with Title, Description and Edit Button -->
                     <div class="flex items-center mb-[12px]">
                         <div class="flex-1">
-                            <h4 class="font-bold text-[12px] leading-[100%] text-text-dark"><?= e($programHarian['program_name']) ?></h4>
+                            <h4 class="font-bold text-[12px] leading-[140%] text-text-dark"><?= e($programHarian['program_name']) ?></h4>
                             <p class="font-normal text-[12px] leading-[20px] text-black-soft mt-1"><?= e($programHarian['description']) ?></p>
                         </div>
                         <div class="flex-shrink-0">

@@ -41,7 +41,7 @@ $kurikulumItems = [
                 class="absolute -bottom-2 -right-2 w-[60px] lg:w-[80px] pointer-events-none rotate-90 opacity-30"
             >
             
-            <span class="font-bold text-[14px] lg:text-[20px] leading-[100%] text-black-soft relative z-10">
+            <span class="font-bold text-[14px] lg:text-[20px] leading-[140%] text-black-soft relative z-10">
                 <?= $item['title'] ?>
             </span>
         </div>

@@ -38,12 +38,12 @@ ob_start();
     <!-- Table Header -->
     <div class="bg-white-secondary px-[16px] py-[12px] rounded-[12px] mb-[12px]">
         <div class="grid grid-cols-[1.3fr_1.5fr_1.5fr_0.8fr_2.5fr_1fr_40px] gap-4">
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Waktu Pendaftar</span>
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Nama Orang Tua</span>
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Nama Anak</span>
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Umur Anak</span>
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Alamat</span>
-            <span class="font-medium text-[12px] leading-[100%] text-black-neutral">Nomor WhatsApp</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Waktu Pendaftar</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Nama Orang Tua</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Nama Anak</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Umur Anak</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Alamat</span>
+            <span class="font-medium text-[12px] leading-[140%] text-black-neutral">Nomor WhatsApp</span>
             <span></span>
         </div>
     </div>

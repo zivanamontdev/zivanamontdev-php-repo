@@ -59,7 +59,7 @@ ob_start();
             </div>
             
             <!-- Title -->
-            <h3 class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[100%] text-black-soft">
+            <h3 class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[140%] text-black-soft">
                 <?= e($item['description'] ?? ($fasilitas['name'] ?? 'Fasilitas')) ?>
             </h3>
         </div>

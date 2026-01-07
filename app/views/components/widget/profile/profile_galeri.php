@@ -21,7 +21,7 @@ $title = $title ?? 'Galeri';
     </div>
     
     <!-- Title -->
-    <h3 class="font-normal text-[20px] leading-[100%] text-black-soft">
+    <h3 class="font-normal text-[20px] leading-[140%] text-black-soft">
         <?= e($title) ?>
     </h3>
 </div>

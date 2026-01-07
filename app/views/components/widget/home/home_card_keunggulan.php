@@ -31,12 +31,12 @@ include VIEW_PATH . '/components/card.php';
     >
     
     <!-- Title -->
-    <h3 class="mt-[16px] font-bold text-[24px] leading-[38px] tracking-normal text-black-soft h-[76px] line-clamp-2">
+    <h3 class="mt-[16px] font-bold text-[16px] md:text-[20px] leading-[28px] md:leading-[32px] tracking-normal text-black-soft h-[76px] line-clamp-2 flex items-center">
         <?= e($title) ?>
     </h3>
     
     <!-- Description -->
-    <p class="mt-[16px] font-normal text-[16px] leading-[28px] tracking-normal text-black-soft">
+    <p class="font-normal text-[14px] md:text-[16px] leading-[24px] md:leading-[28px] tracking-normal text-black-soft">
         <?= e($description) ?>
     </p>
 </div>

@@ -38,7 +38,7 @@ $config = $variants[$variant] ?? $variants['primary'];
         </div>
         
         <!-- Title -->
-        <h1 class="relative z-10 font-normal text-[20px] md:text-[40px] leading-[32px] md:leading-[100%] <?= $config['textColor'] ?> text-center">
+        <h1 class="relative z-10 font-normal text-[20px] md:text-[40px] leading-[32px] md:leading-[140%] <?= $config['textColor'] ?> text-center">
             <?= e($title) ?>
         </h1>
     </div>

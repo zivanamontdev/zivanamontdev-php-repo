@@ -26,7 +26,7 @@ $galleryUrl = $fasilitasId
     <!-- Header: Title & Link -->
     <!-- Desktop: Title dan Link bersebelahan -->
     <div class="hidden md:flex justify-between items-center">
-        <h4 class="font-bold text-[24px] leading-[100%] text-black-soft">
+        <h4 class="font-bold text-[24px] leading-[140%] text-black-soft">
             <?= e($fasilitasTitle) ?>
         </h4>
         <a href="<?= $galleryUrl ?>" class="flex items-center gap-[8px] hover:opacity-80 transition-opacity">

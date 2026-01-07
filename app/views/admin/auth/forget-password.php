@@ -154,7 +154,7 @@
         <!-- White Card -->
         <div class="bg-white-pure rounded-[16px] px-[24px] py-[32px] shadow-lg">
             <!-- Title -->
-            <h1 class="text-center font-bold text-[20px] leading-[100%] mb-[40px]" style="color: <?= colors('black_highlight') ?>;">
+            <h1 class="text-center font-bold text-[20px] leading-[140%] mb-[40px]" style="color: <?= colors('black_highlight') ?>;">
                 Lupa Kata Sandi
             </h1>
             

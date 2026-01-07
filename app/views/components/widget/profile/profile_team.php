@@ -35,7 +35,7 @@ $heightClass = $teamLarge ? 'h-[384px] md:h-[768px]' : 'h-[234px] md:h-[372px]';
 $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
 ?>
 
-<div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden">
+<div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden group cursor-pointer">
     <?php if ($showPlaceholder): ?>
         <!-- Placeholder with Icon -->
         <div class="absolute inset-0 w-full h-full bg-gray-placeholder flex items-center justify-center">
@@ -48,7 +48,7 @@ $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
         <img 
             src="<?= $imageUrl ?>" 
             alt="<?= e($teamName) ?>" 
-            class="absolute inset-0 w-full h-full object-cover object-center grayscale"
+            class="absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-300"
         >
     <?php endif; ?>
     
@@ -60,7 +60,7 @@ $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
         <h4 class="font-bold text-[16px] leading-[28px] md:text-[24px] md:leading-[38px] text-white-neutral mb-[4px]">
             <?= e($teamName) ?>
         </h4>
-        <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[100%] text-white-neutral">
+        <p class="font-normal text-[14px] leading-[24px] md:text-[20px] md:leading-[140%] text-white-neutral">
             <?= e($teamRole) ?>
         </p>
     </div>

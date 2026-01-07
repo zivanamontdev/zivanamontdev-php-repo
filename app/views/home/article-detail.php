@@ -202,16 +202,16 @@ ob_start();
     <div class="bg-white-neutral rounded-[24px] p-[32px]">
         <div class="article-header-wrapper">
             <!-- Title -->
-            <h1 class="font-bold text-[32px] leading-[100%] text-black-soft mb-[8px] article-title-mobile">
+            <h1 class="font-bold text-[32px] leading-[140%] text-black-soft mb-[8px] article-title-mobile">
                 <?= e($article['title']) ?>
             </h1>
             
             <!-- Author & Date Row -->
             <div class="flex justify-between items-center mb-[24px] article-meta-row">
-                <span class="font-normal text-[20px] leading-[100%] text-black-highlight mobile-article-author">
+                <span class="font-normal text-[20px] leading-[140%] text-black-highlight mobile-article-author">
                     <?= e($article['author_name']) ?>
                 </span>
-                <span class="font-normal text-[20px] leading-[100%] text-black-highlight mobile-article-date">
+                <span class="font-normal text-[20px] leading-[140%] text-black-highlight mobile-article-date">
                     <?= formatArticleDate($article['published_at']) ?>
                 </span>
             </div>
