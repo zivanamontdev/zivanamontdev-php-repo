@@ -13,7 +13,14 @@ class SubdomainMiddleware {
         
         // Fallback: check HTTP_HOST
         $host = $_SERVER['HTTP_HOST'] ?? '';
-        return strpos($host, 'admin.') === 0;
+        
+        // Remove port if exists
+        $host = preg_replace('/:\d+$/', '', $host);
+        
+        return (
+            $host === 'admin.sekolahzivanamontessori.sch.id' ||
+            strpos($host, 'admin.') === 0
+        );
     }
     
     /**
@@ -41,6 +48,10 @@ class SubdomainMiddleware {
         $isAdminRoute = self::isAdminRoute();
         $uri = $_SERVER['REQUEST_URI'] ?? '';
         $path = parse_url($uri, PHP_URL_PATH);
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        
+        // Debug logging (comment out in production after fixing)
+        error_log("SubdomainMiddleware - Host: $host, Path: $path, IsAdminSubdomain: " . ($isAdminSubdomain ? 'YES' : 'NO') . ", IsAdminRoute: " . ($isAdminRoute ? 'YES' : 'NO'));
         
         // If admin subdomain
         if ($isAdminSubdomain) {
