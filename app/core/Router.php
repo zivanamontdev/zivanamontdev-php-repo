@@ -142,8 +142,8 @@ class Router {
             exit;
         }
         
-        // Use absolute URL with APP_URL for internal paths
-        $url = rtrim(APP_URL, '/') . '/' . ltrim($path, '/');
+        // Use url() helper which is aware of admin subdomain context
+        $url = url($path);
         header('Location: ' . $url, true, $statusCode);
         exit;
     }
