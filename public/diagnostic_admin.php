@@ -59,8 +59,8 @@ header('Content-Type: text/html; charset=utf-8');
         $checks = [
             'index.php' => $docRoot . '/index.php',
             '.htaccess' => $docRoot . '/.htaccess',
-            'Admin subdomain index.php' => dirname($docRoot) . '/subdomain/admin/index.php',
-            'Admin subdomain .htaccess' => dirname($docRoot) . '/subdomain/admin/.htaccess',
+            'Admin subdomain index.php' => $docRoot . '/subdomain/admin/index.php',
+            'Admin subdomain .htaccess' => $docRoot . '/subdomain/admin/.htaccess',
         ];
         
         echo '<table>';
