@@ -2,6 +2,11 @@
     RewriteEngine On
     RewriteBase /
     
+    # Block admin routes on main domain (before public redirect)
+    RewriteCond %{HTTP_HOST} !^admin\. [NC]
+    RewriteCond %{REQUEST_URI} ^/admin(/.*)?$ [NC]
+    RewriteRule .* - [F,L]
+    
     # Redirect to public folder
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]

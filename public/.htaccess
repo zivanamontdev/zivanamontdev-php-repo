@@ -1,13 +1,21 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Block direct access to admin routes on main domain
-    RewriteCond %{HTTP_HOST} !^admin\.
+    # Disable automatic trailing slash redirect
+    DirectorySlash Off
+    
+    # Block admin routes on main domain
+    RewriteCond %{HTTP_HOST} !^admin\. [NC]
     RewriteCond %{REQUEST_URI} ^/admin(/.*)?$ [NC]
-    RewriteRule .* - [R=404,L]
+    RewriteRule .* - [F,L]
     
     # Handle Front Controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Custom error pages
+ErrorDocument 403 /index.php?error=404
+ErrorDocument 404 /index.php?error=404
+ErrorDocument 500 /index.php?error=404
