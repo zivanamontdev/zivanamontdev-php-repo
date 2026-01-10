@@ -30,12 +30,19 @@ class SubdomainMiddleware {
         $uri = $_SERVER['REQUEST_URI'] ?? '';
         $path = parse_url($uri, PHP_URL_PATH);
         
-        // Admin routes
-        if (strpos($path, '/admin') === 0) return true;
-        if (strpos($path, '/login') === 0) return true;
-        if (strpos($path, '/logout') === 0) return true;
-        if (strpos($path, '/forget-password') === 0) return true;
-        if (strpos($path, '/reset-password') === 0) return true;
+        // Normalize path: remove trailing slash for consistent matching
+        $path = rtrim($path, '/');
+        if (empty($path)) $path = '/';
+        
+        // Admin routes (case-insensitive for security)
+        $adminPaths = ['/admin', '/login', '/logout', '/forget-password', '/reset-password'];
+        
+        foreach ($adminPaths as $adminPath) {
+            // Exact match or starts with admin path followed by /
+            if ($path === $adminPath || strpos($path, $adminPath . '/') === 0) {
+                return true;
+            }
+        }
         
         return false;
     }
@@ -130,15 +137,33 @@ class SubdomainMiddleware {
         }
         
         } catch (Exception $e) {
-            // Log error and show generic 500 page
+            // Log error and show 404 instead of 500 for security
             error_log("SubdomainMiddleware Error: " . $e->getMessage());
-            http_response_code(500);
-            echo "<h1>500 - Internal Server Error</h1>";
-            echo "<p>Terjadi kesalahan pada server. Silakan coba lagi nanti.</p>";
-            if (defined('APP_DEBUG') && APP_DEBUG) {
-                echo "<pre>" . htmlspecialchars($e->getMessage()) . "</pre>";
-                echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
-            }
+            error_log("Stack trace: " . $e->getTraceAsString());
+            
+            // SECURITY: Never show 500 to users for /admin routes - always 404
+            http_response_code(404);
+            header('Content-Type: text/html; charset=UTF-8');
+            
+            echo '<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+        h1 { color: #C92C2F; font-size: 72px; margin: 0; }
+        p { color: #666; font-size: 18px; }
+        a { color: #C92C2F; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>404</h1>
+    <p>Halaman yang Anda cari tidak ditemukan.</p>
+    <p><a href="/">← Kembali ke Beranda</a></p>
+</body>
+</html>';
             exit;
         }
     }
