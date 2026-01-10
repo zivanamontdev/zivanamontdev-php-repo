@@ -45,7 +45,7 @@ $keunggulanItems = [
             <img 
                 src="<?= url('/images/vectors/vector_keunggulan.png') ?>" 
                 alt="" 
-                class="absolute -top-[76px] -right-4 w-[68px] h-[74px] -rotate-6 pointer-events-none z-10"
+                class="hidden md:block absolute -top-[76px] -right-4 w-[68px] h-[74px] -rotate-6 pointer-events-none z-10"
             >
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-[32px]">
@@ -54,7 +54,8 @@ $keunggulanItems = [
                         'image' => $item['image'],
                         'title' => $item['title'],
                         'description' => $item['description'],
-                        'bgColor' => ($index === 1) ? 'bg-[#FEDBA9]' : 'bg-white-neutral'
+                        'bgColor' => ($index === 1) ? 'bg-[#FEDBA9]' : 'bg-white-neutral',
+                        'isFirst' => ($index === 0)
                     ]); ?>
                 <?php endforeach; ?>
             </div>
@@ -68,7 +69,7 @@ $keunggulanItems = [
     <img 
         src="<?= url('/images/vectors/vector_about.png') ?>" 
         alt="" 
-        class="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[143px] h-[143px] pointer-events-none z-10"
+        class="hidden md:block absolute -top-[120px] left-1/2 -translate-x-1/2 w-[143px] h-[143px] pointer-events-none z-10"
     >
     
     <div class="w-full lg:container mx-auto px-5 relative">
@@ -78,7 +79,7 @@ $keunggulanItems = [
         <img 
             src="<?= url('/images/vectors/vector_pita.png') ?>" 
             alt="" 
-            class="absolute -bottom-[50px] -right-[10px] w-[140px] h-[110px] pointer-events-none z-10"
+            class="hidden md:block absolute -bottom-[50px] -right-[10px] w-[140px] h-[110px] pointer-events-none z-10"
         >
     </div>
 </section>
@@ -89,7 +90,7 @@ $keunggulanItems = [
     <img 
         src="<?= url('/images/vectors/vector_program.png') ?>" 
         alt="" 
-        class="absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-0"
+        class="hidden md:block absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-0"
     >
     
     <div class="w-full lg:container mx-auto px-5 relative">

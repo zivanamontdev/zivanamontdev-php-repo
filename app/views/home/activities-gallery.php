@@ -4,10 +4,12 @@ ob_start();
 ?>
 
 <!-- Page Header -->
+<div class="-mt-20">
 <?php 
 $heroTitle = !empty($programData) ? 'Galeri ' . $programData['name'] : 'Galeri Aktivitas Sensori';
 component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 
 ?>
+</div>
 
 <!-- Back Button -->
 <section class="container mx-auto px-5 mt-[32px]">

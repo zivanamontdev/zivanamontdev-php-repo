@@ -110,10 +110,18 @@
         </div>
     <?php else: ?>
         <!-- Header Component (rendered once, non-admin only) -->
+        <?php 
+        // Hide header for gallery pages
+        $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $isGalleryPage = strpos($currentPath, '-gallery') !== false;
+        
+        if (!$isGalleryPage): 
+        ?>
         <?php component('header', [
             'settings' => $settings ?? [],
             'socialMedia' => $socialMedia ?? []
         ]); ?>
+        <?php endif; ?>
         <!-- Main Content Container -->
         <div id="page-content">
             <main class="pt-20">
@@ -162,6 +170,18 @@
             });
             
             async function navigateTo(url, pushState = true) {
+                // Force full reload for gallery pages to/from
+                const currentPath = window.location.pathname;
+                const targetPath = new URL(url).pathname;
+                const isCurrentGallery = currentPath.includes('-gallery');
+                const isTargetGallery = targetPath.includes('-gallery');
+                
+                // If navigating to or from a gallery page, do full reload
+                if (isCurrentGallery || isTargetGallery) {
+                    window.location.href = url;
+                    return;
+                }
+                
                 // Add loading state
                 pageContent.classList.add('loading');
                 

@@ -35,7 +35,7 @@ ob_start();
         <img 
             src="<?= url('images/vectors/vector_highlight_program_tahun.png') ?>" 
             alt="" 
-            class="absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
+            class="hidden md:block absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
         >
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" id="program-tahun-grid">
@@ -124,16 +124,16 @@ ob_start();
     </script>
     
     <!-- Program Harian Sekolah Badge -->
-    <div class="flex justify-center mb-[32px]">
+    <div class="flex justify-center md:justify-start mb-[32px]">
         <?php component('badge', ['text' => 'Program Harian Sekolah']); ?>
     </div>
     
     <div class="relative">
-        <!-- Floating Vector -->
+        <!-- Floating Vector - positioned next to card #5 -->
         <img 
             src="<?= url('images/vectors/vector_highlight_program_harian.png') ?>" 
             alt="" 
-            class="absolute left-1/2 -translate-x-1/2 -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
+            class="hidden lg:block absolute left-[calc(33.333%+650px)] top-[calc(184px+32px+300px)] w-[80px] h-[80px] z-10 pointer-events-none"
         >
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">

@@ -29,7 +29,7 @@
         </h2>
         
         <!-- Description -->
-        <p class="mt-[16px] md:mt-[24px] font-normal text-[16px] md:text-[24px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
+        <p class="mt-[16px] font-normal text-[16px] md:text-[24px] leading-[140%] tracking-normal text-black-soft text-center md:text-left">
             Sejak 2021, kami menghadirkan ruang inklusi di mana anak reguler dan berkebutuhan khusus tumbuh berdampingan. Dipandu metode Montessori Islami untuk mengasah empati dan kemandirian.
         </p>
         

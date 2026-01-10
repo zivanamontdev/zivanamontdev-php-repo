@@ -15,7 +15,7 @@ $kelas = $kelas ?? [];
     <img 
         src="<?= url('images/vectors/vector_highlight_kelas.png') ?>" 
         alt="" 
-        class="absolute -left-[54px] -top-[57px] w-[68px] h-[74px] z-10 pointer-events-none"
+        class="hidden md:block absolute -left-[54px] -top-[57px] w-[68px] h-[74px] z-10 pointer-events-none"
     >
     
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-[24px]">

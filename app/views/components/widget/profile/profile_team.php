@@ -35,7 +35,7 @@ $heightClass = $teamLarge ? 'h-[384px] md:h-[768px]' : 'h-[234px] md:h-[372px]';
 $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
 ?>
 
-<div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden group cursor-pointer">
+<div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden group cursor-pointer team-card-mobile">
     <?php if ($showPlaceholder): ?>
         <!-- Placeholder with Icon -->
         <div class="absolute inset-0 w-full h-full bg-gray-placeholder flex items-center justify-center">
@@ -48,7 +48,7 @@ $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
         <img 
             src="<?= $imageUrl ?>" 
             alt="<?= e($teamName) ?>" 
-            class="absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-300"
+            class="absolute inset-0 w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-300 team-card-image"
         >
     <?php endif; ?>
     
@@ -65,3 +65,38 @@ $colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
         </p>
     </div>
 </div>
+
+<style>
+/* Mobile touch/hold state for team cards */
+@media (max-width: 767px) {
+    .team-card-mobile.touching .team-card-image {
+        filter: grayscale(0) !important;
+    }
+}
+</style>
+
+<script>
+// Touch event handler for mobile team cards
+if (window.matchMedia("(max-width: 767px)").matches) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const teamCards = document.querySelectorAll('.team-card-mobile');
+        
+        teamCards.forEach(function(card) {
+            // Touch start - show color
+            card.addEventListener('touchstart', function(e) {
+                this.classList.add('touching');
+            });
+            
+            // Touch end - back to grayscale
+            card.addEventListener('touchend', function(e) {
+                this.classList.remove('touching');
+            });
+            
+            // Touch cancel - back to grayscale (if touch is interrupted)
+            card.addEventListener('touchcancel', function(e) {
+                this.classList.remove('touching');
+            });
+        });
+    });
+}
+</script>

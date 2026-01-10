@@ -27,7 +27,7 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mb-[40px]">
+<div class="-mt-20 mb-[40px]">
     <?php 
     $heroTitle = $fasilitas ? $fasilitas['name'] : 'Galeri Fasilitas';
     component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 

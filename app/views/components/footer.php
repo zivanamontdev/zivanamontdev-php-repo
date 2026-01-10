@@ -11,7 +11,7 @@
 
 $showCta = $showCta ?? true;
 $ctaTitle = $ctaTitle ?? 'Daftar Sekarang';
-$ctaDescription = $ctaDescription ?? 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami<br>di Zivana Montessori School';
+$ctaDescription = $ctaDescription ?? 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami di Zivana Montessori School';
 $ctaButtonText = $ctaButtonText ?? 'Daftar ke Sekolah';
 $ctaButtonHref = $ctaButtonHref ?? url('/registration');
 ?>
@@ -30,7 +30,18 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
                 <img src="<?= url('images/vectors/vector_daftar_cta.png') ?>" alt="" class="absolute top-0 right-0 translate-x-[calc(100%-100px)] -translate-y-[calc(50%+20px)] w-[100px] h-[88px] md:w-[176px] md:h-[154px] pointer-events-none">
             </div>
             <p class="font-normal text-[20px] md:text-[24px] leading-[150%] text-white-neutral mb-[24px]">
-                <?= $ctaDescription ?>
+                <?php
+                // Pisahkan baris CTA untuk <br> hanya di desktop
+                if ($ctaDescription === 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami di Zivana Montessori School') {
+                    // Default CTA, split manual
+                    $first = 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami';
+                    $second = 'di Zivana Montessori School';
+                ?>
+                    <?= $first ?><span class="hidden md:inline"><br></span><?= $second ?>
+                <?php } else {
+                    // Custom CTA, tampilkan apa adanya
+                    echo $ctaDescription;
+                } ?>
             </p>
             <div class="pb-[200px] relative inline-block">
                 <!-- Vector Button CTA 1 - Top Right -->
