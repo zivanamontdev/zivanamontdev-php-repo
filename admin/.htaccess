@@ -5,10 +5,6 @@
     # Set base directory
     RewriteBase /
     
-    # Redirect root to /login
-    RewriteCond %{REQUEST_URI} ^/$
-    RewriteRule ^$ /login [R=301,L]
-    
     # Redirect to index.php if not a real file or directory
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

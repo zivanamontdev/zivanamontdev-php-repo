@@ -1,7 +1,7 @@
 # Panduan Deploy Admin Subdomain
 
 ## 🎯 Tujuan
-Redirect otomatis dari `sekolahzivanamontessori.sch.id/admin` ke `admin.sekolahzivanamontessori.sch.id/login`
+Redirect otomatis dari `sekolahzivanamontessori.sch.id/admin` ke `admin.sekolahzivanamontessori.sch.id/admin/login`
 
 ## 📁 Struktur File Production
 
@@ -16,8 +16,8 @@ public_html/
 └── subdomain/
     ├── dev/                     # Development branch
     └── admin/                   # Admin subdomain
-        ├── .htaccess           # Upload file ini
-        └── index.php           # Upload file ini
+        ├── .htaccess           # Upload file ini (routing)
+        └── index.php           # Upload file ini (entry point)
 ```
 
 ## 🚀 Langkah Deployment
@@ -46,10 +46,6 @@ Upload kedua file dari folder `admin/` ke `/public_html/subdomain/admin/`:
     
     # Set base directory
     RewriteBase /
-    
-    # Redirect root to /login
-    RewriteCond %{REQUEST_URI} ^/$
-    RewriteRule ^$ /login [R=301,L]
     
     # Redirect to index.php if not a real file or directory
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -85,12 +81,6 @@ ErrorDocument 500 /index.php
 // Define that this is admin subdomain
 define('IS_ADMIN_SUBDOMAIN', true);
 
-// Redirect to /login if accessing root
-if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
-    header('Location: /login', true, 301);
-    exit();
-}
-
 // Load the main application
 // Path: dari /public_html/subdomain/admin/ ke /public_html/public/index.php
 require_once __DIR__ . '/../../public/index.php';
@@ -112,17 +102,17 @@ Tambahkan rule berikut ke `/public_html/public/.htaccess` (di bagian atas, sebel
 </IfModule>
 ```
 
-**CATATAN**: File `root_htaccess_config.txt` berisi template lengkap untuk ditambahkan ke root .htaccess
+**CATATAN**: File `root_htaccess_config.txt` berisi template lengkap untuk ditambahkan ke `/public_html/public/.htaccess` (di bagian paling atas sebelum rule lainnya)
 
 ## ✅ Testing
 
 ### Test Case 1: Redirect dari Main Domain
 - URL: `https://sekolahzivanamontessori.sch.id/admin`
-- Expected: Redirect ke `https://admin.sekolahzivanamontessori.sch.id/login`
+- Expected: Redirect ke `https://admin.sekolahzivanamontessori.sch.id/admin/login`
 
 ### Test Case 2: Akses Admin Subdomain Root
 - URL: `https://admin.sekolahzivanamontessori.sch.id/`
-- Expected: Redirect ke `https://admin.sekolahzivanamontessori.sch.id/login`
+- Expected: Redirect ke `https://admin.sekolahzivanamontessori.sch.id/admin/login`
 
 ### Test Case 3: Akses Admin Login Langsung
 - URL: `https://admin.sekolahzivanamontessori.sch.id/login`
@@ -177,14 +167,14 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 1. **User akses**: `sekolahzivanamontessori.sch.id/admin`
 2. **Root .htaccess**: Detect pattern `^admin(/.*)?$`
 3. **Redirect 301**: Ke `admin.sekolahzivanamontessori.sch.id`
-4. **Admin .htaccess**: Detect root access (`^/$`)
-5. **Redirect 301**: Ke `/login`
-6. **Final URL**: `admin.sekolahzivanamontessori.sch.id/login`
+4. **SubdomainMiddleware**: Detect admin subdomain & root access
+5. **Redirect 302**: Ke `/admin/login`
+6. **Final URL**: `admin.sekolahzivanamontessori.sch.id/admin/login`
 
 ### Path Resolution
 
 ```
-admin.sekolahzivanamontessori.sch.id/login
+admin.sekolahzivanamontessori.sch.id/admin/login
   ↓
 /public_html/subdomain/admin/index.php
   ↓
@@ -192,7 +182,7 @@ require_once __DIR__ . '/../../public/index.php'
   ↓
 /public_html/public/index.php (Front Controller)
   ↓
-Router matches /login → AuthController::login()
+Router matches /admin/login → AuthController::showLogin()
 ```
 
 ## 📞 Support

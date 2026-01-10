@@ -16,6 +16,9 @@ $router->get('/registration', [HomeController::class, 'registration']);
 $router->post('/registration', [HomeController::class, 'submitRegistration']);
 
 // Auth routes
+$router->get('/login', function() {
+    Router::redirect('/admin/login');
+});
 $router->get('/admin/login', [AuthController::class, 'showLogin']);
 $router->post('/admin/login', [AuthController::class, 'login']);
 $router->get('/admin/forget-password', [AuthController::class, 'showForgetPassword']);

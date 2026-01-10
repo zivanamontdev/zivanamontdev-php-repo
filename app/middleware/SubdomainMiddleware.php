@@ -44,9 +44,9 @@ class SubdomainMiddleware {
         
         // If admin subdomain
         if ($isAdminSubdomain) {
-            // Redirect root to admin dashboard
+            // Redirect root to /admin/login
             if ($path === '/' || $path === '') {
-                self::redirect('/admin/dashboard');
+                self::redirect('/admin/login');
                 return;
             }
             
