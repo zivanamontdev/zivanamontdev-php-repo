@@ -72,6 +72,9 @@ class SubdomainMiddleware {
                 }
                 exit;
             }
+            
+            // IMPORTANT: Stop here! Don't execute main domain logic when in admin subdomain
+            return;
         }
         
         // If main domain/subdomain (dev, www, or root)
