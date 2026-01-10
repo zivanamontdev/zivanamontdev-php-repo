@@ -2,11 +2,6 @@
     RewriteEngine On
     RewriteBase /
     
-    # Redirect /admin to admin subdomain
-    RewriteCond %{HTTP_HOST} ^sekolahzivanamontessori\.sch\.id$ [OR]
-    RewriteCond %{HTTP_HOST} ^www\.sekolahzivanamontessori\.sch\.id$
-    RewriteRule ^admin(/.*)?$ https://admin.sekolahzivanamontessori.sch.id/admin$1 [R=301,L]
-    
     # Redirect to public folder
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]

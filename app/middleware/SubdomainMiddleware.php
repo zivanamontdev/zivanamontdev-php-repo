@@ -87,11 +87,15 @@ class SubdomainMiddleware {
                 strpos($host, 'dev.') === 0
             );
             
-            // In production, redirect /admin routes to admin subdomain
+            // In production, block admin routes with 404 (admin routes only accessible via admin subdomain)
             if (!$isDev && $isAdminRoute) {
-                $adminUrl = defined('ADMIN_URL') ? ADMIN_URL : 'https://admin.sekolahzivanamontessori.sch.id';
-                $fullUrl = rtrim($adminUrl, '/') . $uri;
-                header('Location: ' . $fullUrl, true, 301);
+                http_response_code(404);
+                if (file_exists(VIEW_PATH . '/errors/404.php')) {
+                    require VIEW_PATH . '/errors/404.php';
+                } else {
+                    echo "<h1>404 - Halaman Tidak Ditemukan</h1>";
+                    echo "<p>Halaman ini hanya dapat diakses melalui admin subdomain.</p>";
+                }
                 exit;
             }
         }
