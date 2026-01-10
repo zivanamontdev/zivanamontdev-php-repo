@@ -1,12 +1,12 @@
+# Disable automatic trailing slash redirect
+DirectorySlash Off
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Disable automatic trailing slash redirect
-    DirectorySlash Off
-    
-    # Block admin routes on main domain
+    # Block admin routes on main domain - return 403 immediately
     RewriteCond %{HTTP_HOST} !^admin\. [NC]
-    RewriteCond %{REQUEST_URI} ^/admin(/.*)?$ [NC]
+    RewriteCond %{REQUEST_URI} ^/admin [NC]
     RewriteRule .* - [F,L]
     
     # Handle Front Controller
@@ -15,7 +15,7 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Custom error pages
-ErrorDocument 403 /index.php?error=404
-ErrorDocument 404 /index.php?error=404
-ErrorDocument 500 /index.php?error=404
+# Simple error pages - direct HTML
+ErrorDocument 403 "<!DOCTYPE html><html><head><title>404</title><style>body{font-family:sans-serif;text-align:center;padding:100px 20px;background:#f5f5f5;}h1{color:#C92C2F;font-size:96px;margin:0;}p{color:#666;}</style></head><body><h1>404</h1><p>Halaman tidak ditemukan</p><p><a href='/'>Kembali ke Beranda</a></p></body></html>"
+ErrorDocument 404 "<!DOCTYPE html><html><head><title>404</title><style>body{font-family:sans-serif;text-align:center;padding:100px 20px;background:#f5f5f5;}h1{color:#C92C2F;font-size:96px;margin:0;}p{color:#666;}</style></head><body><h1>404</h1><p>Halaman tidak ditemukan</p><p><a href='/'>Kembali ke Beranda</a></p></body></html>"
+ErrorDocument 500 "<!DOCTYPE html><html><head><title>404</title><style>body{font-family:sans-serif;text-align:center;padding:100px 20px;background:#f5f5f5;}h1{color:#C92C2F;font-size:96px;margin:0;}p{color:#666;}</style></head><body><h1>404</h1><p>Halaman tidak ditemukan</p><p><a href='/'>Kembali ke Beranda</a></p></body></html>"
