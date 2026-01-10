@@ -24,8 +24,17 @@ include VIEW_PATH . '/components/card.php';
 
 <div class="<?= $bgColor ?> <?= $variantClass ?> <?= $class ?> flex flex-col h-full">
     <!-- Image -->
+    <?php 
+    // Add cache busting parameter to force reload in production
+    $imagePath = '/images/vectors/card_keunggulan/' . $image;
+    $imageUrl = url($imagePath);
+    
+    // Add version parameter to bust cache (change this when updating images)
+    $imageVersion = '20250110'; // Format: YYYYMMDD
+    $imageUrl .= '?v=' . $imageVersion;
+    ?>
     <img 
-        src="<?= url('/images/vectors/card_keunggulan/' . $image) ?>" 
+        src="<?= $imageUrl ?>" 
         alt="<?= e($title) ?>" 
         class="w-full h-[224px] object-contain"
     >
