@@ -51,15 +51,14 @@ class SubdomainMiddleware {
      * Handle subdomain restrictions
      */
     public static function handle() {
-        try {
-            $isAdminSubdomain = self::isAdminSubdomain();
-            $isAdminRoute = self::isAdminRoute();
-            $uri = $_SERVER['REQUEST_URI'] ?? '';
-            $path = parse_url($uri, PHP_URL_PATH);
-            $host = $_SERVER['HTTP_HOST'] ?? '';
-            
-            // Debug logging (comment out in production after fixing)
-            error_log("SubdomainMiddleware - Host: $host, Path: $path, IsAdminSubdomain: " . ($isAdminSubdomain ? 'YES' : 'NO') . ", IsAdminRoute: " . ($isAdminRoute ? 'YES' : 'NO'));
+        $isAdminSubdomain = self::isAdminSubdomain();
+        $isAdminRoute = self::isAdminRoute();
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path = parse_url($uri, PHP_URL_PATH);
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        
+        // Debug logging (comment out in production after fixing)
+        error_log("SubdomainMiddleware - Host: $host, Path: $path, IsAdminSubdomain: " . ($isAdminSubdomain ? 'YES' : 'NO') . ", IsAdminRoute: " . ($isAdminRoute ? 'YES' : 'NO'));
         
         // If admin subdomain
         if ($isAdminSubdomain) {
@@ -134,37 +133,6 @@ class SubdomainMiddleware {
                 }
                 exit;
             }
-        }
-        
-        } catch (Exception $e) {
-            // Log error and show 404 instead of 500 for security
-            error_log("SubdomainMiddleware Error: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            
-            // SECURITY: Never show 500 to users for /admin routes - always 404
-            http_response_code(404);
-            header('Content-Type: text/html; charset=UTF-8');
-            
-            echo '<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Halaman Tidak Ditemukan</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-        h1 { color: #C92C2F; font-size: 72px; margin: 0; }
-        p { color: #666; font-size: 18px; }
-        a { color: #C92C2F; text-decoration: none; }
-    </style>
-</head>
-<body>
-    <h1>404</h1>
-    <p>Halaman yang Anda cari tidak ditemukan.</p>
-    <p><a href="/">← Kembali ke Beranda</a></p>
-</body>
-</html>';
-            exit;
         }
     }
     
