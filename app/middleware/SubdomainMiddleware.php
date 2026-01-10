@@ -95,6 +95,6 @@ class SubdomainMiddleware {
             return $_ENV['ADMIN_URL'] ?? 'https://admin.sekolahzivanamontessori.sch.id';
         }
         
-        return $_ENV['APP_URL'] ?? 'https://dev.sekolahzivanamontessori.sch.id';
+        return $_ENV['APP_URL'] ?? 'https://sekolahzivanamontessori.sch.id';
     }
 }

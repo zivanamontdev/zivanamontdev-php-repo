@@ -80,7 +80,7 @@ if ($isProduction && (!$envLoaded || empty($envVars['DB_USER']) || $envVars['DB_
 if ($isProduction && (!$envLoaded || empty($envVars['APP_URL']) || strpos($envVars['APP_URL'], 'localhost') !== false)) {
     // Force production app config
     define('APP_NAME', 'Zivana Montessori School');
-    define('APP_URL', 'https://dev.sekolahzivanamontessori.sch.id');
+    define('APP_URL', 'https://sekolahzivanamontessori.sch.id');
     define('ADMIN_URL', 'https://admin.sekolahzivanamontessori.sch.id');
     define('APP_ENV', 'production');
     define('APP_DEBUG', false);
