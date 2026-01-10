@@ -90,7 +90,13 @@ class SubdomainMiddleware {
             
             // In production, block admin routes with 404 (admin routes only accessible via admin subdomain)
             if (!$isDev && $isAdminRoute) {
+                // Clear any output buffers
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
+                
                 http_response_code(404);
+                header('Content-Type: text/html; charset=UTF-8');
                 
                 // Try to load 404 view if VIEW_PATH is defined
                 $view404 = defined('VIEW_PATH') ? VIEW_PATH . '/errors/404.php' : null;

@@ -164,7 +164,7 @@ function getSidebarIcon($icon, $isActive = false) {
     
     <!-- Bottom Actions -->
     <div class="mt-auto pt-6">
-        <a href="<?= url('/') ?>" target="_blank" 
+        <a href="<?= defined('APP_URL') ? APP_URL : 'https://sekolahzivanamontessori.sch.id' ?>" target="_blank" 
            title="Lihat Website"
            class="menu-item flex items-center gap-3 px-4 py-[13px] rounded-xl text-white-shadow font-normal text-sm hover:bg-white-secondary transition-all duration-300">
             <span class="w-4 h-4 flex-shrink-0">
