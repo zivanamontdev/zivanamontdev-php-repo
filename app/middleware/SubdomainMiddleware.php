@@ -122,6 +122,7 @@ class SubdomainMiddleware {
                 exit;
             }
         }
+        
         } catch (Exception $e) {
             // Log error and show generic 500 page
             error_log("SubdomainMiddleware Error: " . $e->getMessage());
