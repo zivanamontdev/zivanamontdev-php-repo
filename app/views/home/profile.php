@@ -46,7 +46,7 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mb-[80px]">
+<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
     <?php component('page_hero', ['title' => 'Profil dan Informasi Tentang Kami', 'variant' => 'primary']); ?>
 </div>
 

@@ -35,7 +35,7 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
                 if ($ctaDescription === 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami di Zivana Montessori School') {
                     // Default CTA, split manual
                     $first = 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami';
-                    $second = 'di Zivana Montessori School';
+                    $second = ' di Zivana Montessori School';
                 ?>
                     <?= $first ?><span class="hidden md:inline"><br></span><?= $second ?>
                 <?php } else {

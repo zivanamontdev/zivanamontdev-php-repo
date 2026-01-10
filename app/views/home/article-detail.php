@@ -181,13 +181,13 @@ ob_start();
 }
 </style>
 
-<!-- Back Button -->
-<div class="container mx-auto px-5 mt-[52px] mb-[32px] mobile-back-button">
+<!-- Back Button - Hidden on mobile, visible on desktop -->
+<div class="hidden md:block container mx-auto px-5 mt-[52px] mb-[32px]">
     <?php component('button', ['text' => 'Kembali ke Artikel', 'variant' => '4', 'href' => url('/articles')]); ?>
 </div>
 
 <!-- Featured Image -->
-<section class="container mx-auto px-5 mb-[32px]">
+<section class="container mx-auto px-5 mt-[24px] md:mt-0 mb-[12px] md:mb-[32px]">
     <div class="w-full h-[432px] mobile-featured-image rounded-[16px] overflow-hidden">
         <img 
             src="<?= getArticleFeaturedImage($article['featured_image']) ?>" 

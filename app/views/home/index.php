@@ -28,12 +28,12 @@ $keunggulanItems = [
 ?>
 
 <!-- Hero Section -->
-<div class="mt-[52px]">
+<div class="mt-[40px] md:mt-[52px]">
     <?php component('widget/home/home_hero'); ?>
 </div>
 
 <!-- Keunggulan Sekolah Section -->
-<section class="mt-[120px]">
+<section class="mt-[40px] md:mt-[120px]">
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Keunggulan Sekolah']); ?>
@@ -184,7 +184,7 @@ $keunggulanItems = [
 <?php component('footer', [
     'showCta' => true,
     'ctaTitle' => 'Daftar Sekarang',
-    'ctaDescription' => 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami<br>di Zivana Montessori School',
+    'ctaDescription' => 'Yuk, daftarkan anak anda sekarang dan jadi bangun masa depan anak bersama kami di Zivana Montessori School',
     'ctaButtonText' => 'Daftar ke Sekolah',
     'ctaButtonHref' => url('/registration')
 ]); ?>

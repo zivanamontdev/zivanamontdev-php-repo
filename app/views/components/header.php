@@ -44,7 +44,7 @@ function isArticlesPage($path) {
                 </button>
                 
                 <!-- Logo Mobile -->
-                <a href="<?= url('/') ?>" class="flex-shrink-0">
+                <a href="<?= url('/') ?>" class="flex-shrink-0" id="mobile-logo">
                     <img src="<?= url('/images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="65" height="24" class="h-[24px] w-[65px] object-contain">
                 </a>
             </div>
@@ -137,5 +137,10 @@ function isArticlesPage($path) {
         link.addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.add('hidden');
         });
+    });
+    
+    // Close mobile menu when clicking on mobile logo
+    document.getElementById('mobile-logo').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.add('hidden');
     });
 </script>

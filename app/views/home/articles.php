@@ -50,7 +50,6 @@ ob_start();
         padding-left: 20px;
         padding-right: 20px;
         position: relative;
-        z-index: 100;
     }
     
     .mobile-article-card {
@@ -59,7 +58,6 @@ ob_start();
         overflow: hidden;
         margin-bottom: 16px;
         position: relative;
-        z-index: 100;
     }
     
     .mobile-article-card-image {
@@ -129,7 +127,6 @@ ob_start();
         margin-top: 24px;
         margin-bottom: 40px;
         position: relative;
-        z-index: 100;
     }
 }
 
@@ -141,7 +138,7 @@ ob_start();
 </style>
 
 <!-- Page Header -->
-<div class="mb-[80px]">
+<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
     <?php component('page_hero', ['title' => 'Artikel dan Berita Terkini', 'variant' => 'primary']); ?>
 </div>
 
