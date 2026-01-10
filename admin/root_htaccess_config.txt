@@ -1,23 +1,39 @@
 # ========================================
-# File: .htaccess untuk ROOT DOMAIN
-# Location: /public_html/.htaccess
+# INSTRUKSI: Tambahkan ke /public_html/.htaccess
+# Letakkan di BARIS PALING ATAS (sebelum rule lainnya)
 # ========================================
-# Tambahkan kode berikut ke .htaccess di root domain (public_html)
-# untuk redirect /admin ke admin subdomain
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
     
-    # Redirect /admin/xxx ke admin subdomain (preserve full path with /admin)
+    # Redirect /admin ke admin subdomain (TAMBAHKAN INI)
     RewriteCond %{HTTP_HOST} ^sekolahzivanamontessori\.sch\.id$ [OR]
     RewriteCond %{HTTP_HOST} ^www\.sekolahzivanamontessori\.sch\.id$
     RewriteRule ^admin(/.*)?$ https://admin.sekolahzivanamontessori.sch.id$1 [R=301,L]
+    
+    # Redirect to public folder (rule yang sudah ada, JANGAN HAPUS)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
 # ========================================
-# CATATAN:
-# - Pastikan subdomain admin sudah dikonfigurasi di cPanel
-# - Document root subdomain: /public_html/subdomain/admin/
-# - Setelah ditambahkan, test dengan:
-#   sekolahzivanamontessori.sch.id/admin → admin.sekolahzivanamontessori.sch.id/login
+# HASIL AKHIR .htaccess di /public_html/ harus seperti ini:
+# ========================================
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteBase /
+#     
+#     # Redirect /admin ke admin subdomain
+#     RewriteCond %{HTTP_HOST} ^sekolahzivanamontessori\.sch\.id$ [OR]
+#     RewriteCond %{HTTP_HOST} ^www\.sekolahzivanamontessori\.sch\.id$
+#     RewriteRule ^admin(/.*)?$ https://admin.sekolahzivanamontessori.sch.id$1 [R=301,L]
+#     
+#     # Redirect to public folder
+#     RewriteCond %{REQUEST_URI} !^/public/
+#     RewriteRule ^(.*)$ public/$1 [L]
+# </IfModule>
+# 
+# # Security Headers (tetap ada)
+# ...dst
 # ========================================
