@@ -8,6 +8,12 @@
 // Define that this is admin subdomain
 define('IS_ADMIN_SUBDOMAIN', true);
 
+// Redirect to /login if accessing root
+if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
+    header('Location: /login', true, 301);
+    exit();
+}
+
 // Load the main application
-// Path: dari /public_html/admin/ ke /public_html/dev/public/index.php
-require_once __DIR__ . '/../dev/public/index.php';
+// Path: dari /public_html/subdomain/admin/ ke /public_html/public/index.php
+require_once __DIR__ . '/../../public/index.php';
