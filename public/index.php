@@ -41,6 +41,24 @@ spl_autoload_register(function ($class) {
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/helpers/geoip.php';
 
+// Global error handler for security (prevent 500 on admin routes)
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    error_log("PHP Error [$errno]: $errstr in $errfile on line $errline");
+    
+    // Check if this is admin route access attempt
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $path = parse_url($uri, PHP_URL_PATH);
+    $path = rtrim($path, '/');
+    
+    if (strpos($path, '/admin') === 0) {
+        http_response_code(404);
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404</title></head><body><h1>404 - Halaman Tidak Ditemukan</h1><p><a href="/">Kembali ke Beranda</a></p></body></html>';
+        exit;
+    }
+    
+    return false; // Let PHP default error handler run
+});
+
 // Check subdomain and handle restrictions
 if (class_exists('SubdomainMiddleware')) {
     SubdomainMiddleware::handle();
@@ -60,6 +78,17 @@ try {
     // Log error
     error_log("Application Error: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
+    
+    // SECURITY: Check if this is admin route - always return 404, never 500
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $path = parse_url($uri, PHP_URL_PATH);
+    $path = rtrim($path, '/');
+    
+    if (strpos($path, '/admin') === 0) {
+        http_response_code(404);
+        echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>404</title><style>body{font-family:sans-serif;text-align:center;padding:50px;background:#f5f5f5;}h1{color:#C92C2F;font-size:72px;margin:0;}p{color:#666;font-size:18px;}a{color:#C92C2F;text-decoration:none;}</style></head><body><h1>404</h1><p>Halaman yang Anda cari tidak ditemukan.</p><p><a href="/">← Kembali ke Beranda</a></p></body></html>';
+        exit;
+    }
     
     // Check if it's a not found error or server error
     if ($e->getCode() == 404 || strpos($e->getMessage(), '404') !== false || strpos($e->getMessage(), 'not found') !== false) {
