@@ -4,6 +4,47 @@
  * Front Controller
  */
 
+// CRITICAL: Block admin routes on main domain IMMEDIATELY before anything else
+$host = $_SERVER['HTTP_HOST'] ?? '';
+$uri = $_SERVER['REQUEST_URI'] ?? '';
+$path = parse_url($uri, PHP_URL_PATH);
+
+// Check if NOT admin subdomain AND accessing admin route
+$isAdminSubdomain = (strpos($host, 'admin.') === 0 || defined('IS_ADMIN_SUBDOMAIN'));
+$isAdminRoute = (strpos($path, '/admin') === 0);
+
+if (!$isAdminSubdomain && $isAdminRoute) {
+    // Immediately return 404 without any processing
+    http_response_code(404);
+    header('Content-Type: text/html; charset=UTF-8');
+    echo '<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; padding: 100px 20px; background: #f5f5f5; margin: 0; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { color: #C92C2F; font-size: 96px; margin: 0; font-weight: 700; }
+        h2 { color: #333; font-size: 24px; margin: 20px 0; }
+        p { color: #666; font-size: 16px; line-height: 1.6; }
+        a { display: inline-block; margin-top: 20px; padding: 12px 30px; background: #C92C2F; color: white; text-decoration: none; border-radius: 5px; transition: background 0.3s; }
+        a:hover { background: #a52426; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Halaman Tidak Ditemukan</h2>
+        <p>Maaf, halaman yang Anda cari tidak dapat ditemukan atau tidak tersedia.</p>
+        <a href="/">← Kembali ke Beranda</a>
+    </div>
+</body>
+</html>';
+    exit;
+}
+
 // Start session
 session_start();
 
