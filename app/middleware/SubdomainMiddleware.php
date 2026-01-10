@@ -65,15 +65,19 @@ class SubdomainMiddleware {
         
         // If main domain/subdomain (dev, www, or root)
         if (!$isAdminSubdomain) {
-            // For dev subdomain, allow admin routes (for development/testing)
+            // Allow admin routes in development (localhost, 127.0.0.1, dev subdomain)
             $host = $_SERVER['HTTP_HOST'] ?? '';
-            $isDev = (strpos($host, 'dev.') === 0 || strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false);
+            $isDev = (
+                strpos($host, 'localhost') !== false || 
+                strpos($host, '127.0.0.1') !== false ||
+                strpos($host, 'dev.') === 0
+            );
             
-            // If not dev environment and accessing admin route, redirect to admin subdomain (production only)
-            if (!$isDev && $isAdminRoute && defined('APP_ENV') && APP_ENV === 'production') {
-                $adminUrl = $_ENV['ADMIN_URL'] ?? 'https://admin.sekolahzivanamontessori.sch.id';
+            // In production, redirect /admin routes to admin subdomain
+            if (!$isDev && $isAdminRoute) {
+                $adminUrl = defined('ADMIN_URL') ? ADMIN_URL : 'https://admin.sekolahzivanamontessori.sch.id';
                 $fullUrl = rtrim($adminUrl, '/') . $uri;
-                header('Location: ' . $fullUrl);
+                header('Location: ' . $fullUrl, true, 301);
                 exit;
             }
         }

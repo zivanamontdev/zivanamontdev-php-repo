@@ -8,7 +8,7 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Redirect /admin ke admin subdomain
+    # Redirect /admin/xxx ke admin subdomain (preserve full path with /admin)
     RewriteCond %{HTTP_HOST} ^sekolahzivanamontessori\.sch\.id$ [OR]
     RewriteCond %{HTTP_HOST} ^www\.sekolahzivanamontessori\.sch\.id$
     RewriteRule ^admin(/.*)?$ https://admin.sekolahzivanamontessori.sch.id$1 [R=301,L]
