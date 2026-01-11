@@ -27,12 +27,10 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mt-0 mb-[40px] md:-mt-20">
-    <?php 
-    $heroTitle = $fasilitas ? $fasilitas['name'] : 'Galeri Fasilitas';
-    component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 
-    ?>
-</div>
+<?php 
+$heroTitle = $fasilitas ? $fasilitas['name'] : 'Galeri Fasilitas';
+component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 
+?>
 
 <!-- Back Button & Gallery Content -->
 <section class="container mx-auto px-5">
