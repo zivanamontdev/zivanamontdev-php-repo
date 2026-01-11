@@ -151,7 +151,7 @@
         <!-- Section 1: Form Login (Left) -->
         <div class="w-full max-w-[400px] lg:flex-shrink-0">
                 <img 
-                    src="/images/logo.png" 
+                    src="<?= url('/images/logo.png') ?>" 
                     alt="<?= APP_NAME ?>" 
                     class="w-[150px] sm:w-[200px] h-auto mb-[30px] sm:mb-[40px]"
                 >
@@ -233,7 +233,7 @@
         <!-- Section 2: Image (Right) -->
         <div class="hidden lg:block">
             <img 
-                src="/images/image_profile_section_1.png" 
+                src="<?= url('/images/image_profile_section_1.png') ?>" 
                 alt="Login Illustration" 
                 class="rounded-[16px] w-full max-w-[500px] xl:max-w-[650px] h-auto lg:h-[500px] xl:h-[647px] object-cover"
             >

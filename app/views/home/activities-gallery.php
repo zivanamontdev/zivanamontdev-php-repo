@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $pageTitle = 'Galeri Aktivitas';
 ob_start(); 
 ?>
@@ -43,7 +43,7 @@ component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']);
 <!-- Floating Vector Galeri -->
 <div class="relative">
     <img 
-        src="<?= url('images/vectors/vector_galeri.png') ?>" 
+        src="<?= url('/images/vectors/vector_galeri.png') ?>" 
         alt="" 
         class="hidden md:block absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
     >

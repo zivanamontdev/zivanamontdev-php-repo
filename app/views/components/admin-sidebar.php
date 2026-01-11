@@ -128,10 +128,10 @@ function getSidebarIcon($icon, $isActive = false) {
         <!-- Logo and Toggle -->
         <div id="logo-section" class="flex items-center justify-between mb-10 transition-all duration-300">
             <!-- Logo (Full) -->
-            <img id="logo-full" src="<?= url('images/logo.png') ?>" alt="Logo" class="w-[133px] h-[46px] object-contain transition-all duration-300">
+            <img id="logo-full" src="<?= url('/images/logo.png') ?>" alt="Logo" class="w-[133px] h-[46px] object-contain transition-all duration-300">
             
             <!-- Logo (Mini - shown when minimized) - 46x46px square -->
-            <img id="logo-mini" src="<?= url('images/activity_logo.png') ?>" alt="Logo" class="w-[46px] h-[46px] object-contain hidden transition-all duration-300">
+            <img id="logo-mini" src="<?= url('/images/activity_logo.png') ?>" alt="Logo" class="w-[46px] h-[46px] object-contain hidden transition-all duration-300">
             
             <!-- Sidebar Toggle Icon (Expanded mode) -->
             <button id="sidebar-toggle" class="w-5 h-5 text-black-highlight hover:text-black-soft transition-all duration-300 cursor-pointer flex-shrink-0">

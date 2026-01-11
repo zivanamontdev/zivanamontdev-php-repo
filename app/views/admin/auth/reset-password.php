@@ -154,7 +154,7 @@
         <!-- Logo (Left Side) -->
         <div class="hidden lg:block lg:flex-shrink-0">
             <img 
-                src="/images/logo.png" 
+                src="<?= url('/images/logo.png') ?>" 
                 alt="<?= APP_NAME ?>" 
                 class="w-[200px] h-[73px]"
             >

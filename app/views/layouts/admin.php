@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?>Admin Panel - <?= APP_NAME ?></title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= url('images/activity_logo.png') ?>">
+    <link rel="icon" type="image/png" href="<?= url('/images/activity_logo.png') ?>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     

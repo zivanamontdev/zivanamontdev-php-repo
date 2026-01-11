@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $pageTitle = 'Tentang Kami';
 
 // Get data from controller
@@ -20,7 +20,7 @@ if (!function_exists('getEmployeePhotoUrl')) {
         if (strpos($photoPath, 'uploads/') === 0) {
             return url($photoPath);
         }
-        return url('uploads/' . $photoPath);
+        return url('/uploads/' . $photoPath);
     }
 }
 
@@ -38,7 +38,7 @@ if (!function_exists('getFasilitasCoverImage')) {
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
-        return url('uploads/' . $imagePath);
+        return url('/uploads/' . $imagePath);
     }
 }
 

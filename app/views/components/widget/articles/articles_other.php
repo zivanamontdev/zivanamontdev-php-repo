@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Articles Other Widget Component
  * 
@@ -18,7 +18,7 @@ $articles = $__component_data__['articles'] ?? [];
 if (!function_exists('getArticleImageUrlOther')) {
     function getArticleImageUrlOther($imagePath) {
         if (empty($imagePath)) {
-            return url('images/default-article.jpg');
+            return url('/images/default-article.jpg');
         }
         
         // If image is from R2 (contains R2_PUBLIC_URL), return as-is
@@ -31,7 +31,7 @@ if (!function_exists('getArticleImageUrlOther')) {
             return url($imagePath);
         }
         
-        return url('uploads/' . $imagePath);
+        return url('/uploads/' . $imagePath);
     }
 }
 ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Activities Kelas Widget Component
  * 
@@ -13,7 +13,7 @@ $kelas = $kelas ?? [];
 <div class="relative">
     <!-- Floating Vector -->
     <img 
-        src="<?= url('images/vectors/vector_highlight_kelas.png') ?>" 
+        src="<?= url('/images/vectors/vector_highlight_kelas.png') ?>" 
         alt="" 
         class="hidden md:block absolute -left-[54px] -top-[57px] w-[68px] h-[74px] z-10 pointer-events-none"
     >
@@ -24,7 +24,7 @@ $kelas = $kelas ?? [];
         <!-- Image -->
         <div class="w-full h-[240px] rounded-[16px] overflow-hidden mb-[16px] bg-gray-placeholder relative">
             <img 
-                src="<?= $item['image'] ?? url('images/placeholder.jpg') ?>" 
+                src="<?= $item['image'] ?? url('/images/placeholder.jpg') ?>" 
                 alt="<?= $item['title'] ?? '' ?>" 
                 class="w-full h-full object-cover"
                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"

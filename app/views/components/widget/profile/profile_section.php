@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Profile Section Widget Component
  * 
@@ -14,7 +14,7 @@ if (!function_exists('getPrakataImageUrl')) {
     function getPrakataImageUrl($imagePath) {
         if (empty($imagePath)) {
             // Return default image if no image from database
-            return url('images/image_profile_section_1.png');
+            return url('/images/image_profile_section_1.png');
         }
         // If path is already a full URL (http:// or https://), return as-is
         if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
@@ -24,7 +24,7 @@ if (!function_exists('getPrakataImageUrl')) {
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
-        return url('uploads/' . $imagePath);
+        return url('/uploads/' . $imagePath);
     }
 }
 ?>
@@ -58,7 +58,7 @@ if (!function_exists('getPrakataImageUrl')) {
                 
                 <!-- Vector Profile - Bottom Right -->
                 <img 
-                    src="<?= url('images/vectors/vector_profile.png') ?>" 
+                    src="<?= url('/images/vectors/vector_profile.png') ?>" 
                     alt="" 
                     class="absolute bottom-0 right-0 w-[180px] h-auto pointer-events-none"
                 >
