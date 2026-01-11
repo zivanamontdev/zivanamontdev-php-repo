@@ -631,6 +631,11 @@ class SettingsController extends Controller {
             $db = Database::getInstance();
             $programs = $db->fetchAll($query);
             
+            // Add full image URL to each program
+            foreach ($programs as &$program) {
+                $program['image_url'] = image_url($program['image']);
+            }
+            
             echo json_encode(['success' => true, 'data' => $programs]);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);

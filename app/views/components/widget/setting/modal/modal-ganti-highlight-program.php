@@ -111,13 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
             div.className = 'program-tile flex items-center justify-between cursor-pointer hover:opacity-70 transition-opacity';
             div.dataset.programId = program.id;
             
-            const imagePath = program.image ? (program.image.startsWith('/') ? program.image : '/uploads/programs-tahun/' + program.image) : '';
+            // Use image_url from backend
+            const imageUrl = program.image_url || '';
+            const hasImage = imageUrl && imageUrl !== '' && !imageUrl.includes('uploads//');
             
             div.innerHTML = `
                 <div class="flex items-center flex-1">
                     <div class="flex-shrink-0 mr-[12px]" style="width: 62px; height: 62px; border-radius: 8px; background-color: <?= colors('gray_placeholder') ?>; overflow: hidden;">
-                        ${imagePath ? `
-                            <img src="${imagePath}" alt="${program.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        ${hasImage ? `
+                            <img src="${imageUrl}" alt="${program.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="w-full h-full flex items-center justify-center" style="display: none;">
                         ` : `
                             <div class="w-full h-full flex items-center justify-center">
