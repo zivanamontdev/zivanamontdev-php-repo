@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Header/Navigation Component
  * 
@@ -45,13 +45,13 @@ function isArticlesPage($path) {
                 
                 <!-- Logo Mobile -->
                 <a href="<?= url('/') ?>" class="flex-shrink-0" id="mobile-logo">
-                    <img src="<?= url('/images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="65" height="24" class="h-[24px] w-[65px] object-contain">
+                    <img src="<?= asset('images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="65" height="24" class="h-[24px] w-[65px] object-contain">
                 </a>
             </div>
             
             <!-- Desktop Logo -->
             <a href="<?= url('/') ?>" class="hidden md:block flex-shrink-0">
-                <img src="<?= url('/images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="164" height="60" class="h-[60px] w-[164px] object-contain">
+                <img src="<?= asset('images/logo.png') ?>" alt="<?= e($settings['school_name'] ?? APP_NAME) ?>" width="164" height="60" class="h-[60px] w-[164px] object-contain">
             </a>
             
             <div class="hidden md:flex items-center justify-center flex-1 px-8">

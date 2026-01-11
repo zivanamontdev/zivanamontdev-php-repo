@@ -18,7 +18,7 @@ $floatingVectorCenter = $floatingVectorCenter ?? null;
     <?php if ($floatingVector): ?>
     <!-- Floating Vector Top Right -->
     <img 
-        src="<?= url('/images/vectors/' . $floatingVector) ?>" 
+        src="<?= asset('images/vectors/' . $floatingVector) ?>" 
         alt="" 
         class="absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
     >
@@ -27,7 +27,7 @@ $floatingVectorCenter = $floatingVectorCenter ?? null;
     <?php if ($floatingVectorCenter): ?>
     <!-- Floating Vector Center Second Row -->
     <img 
-        src="<?= url('/images/vectors/' . $floatingVectorCenter) ?>" 
+        src="<?= asset('images/vectors/' . $floatingVectorCenter) ?>" 
         alt="" 
         class="absolute left-1/2 translate-x-[400px] top-[50%] translate-y-[120px] w-[90px] h-[90px] z-10 pointer-events-none"
     >
@@ -39,7 +39,7 @@ $floatingVectorCenter = $floatingVectorCenter ?? null;
         <!-- Image -->
         <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
             <img 
-                src="<?= $item['image'] ?? url('/images/placeholder.jpg') ?>" 
+                src="<?= $item['image'] ?? asset('images/placeholder.jpg') ?>" 
                 alt="<?= $item['title'] ?? '' ?>" 
                 class="w-full h-full object-cover"
                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"

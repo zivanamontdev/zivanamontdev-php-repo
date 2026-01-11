@@ -36,7 +36,7 @@ $kurikulumItems = [
         <div class="h-auto lg:h-[107px] px-[12px] py-[16px] lg:px-[24px] lg:py-[15px] rounded-[20px] bg-white-neutral flex items-center relative overflow-hidden">
             <!-- Vector Kurikulum - Bottom Right (Rotated 90deg) -->
             <img 
-                src="<?= url('/images/vectors/vector_kurikulum.png') ?>" 
+                src="<?= asset('images/vectors/vector_kurikulum.png') ?>" 
                 alt="" 
                 class="absolute -bottom-2 -right-2 w-[60px] lg:w-[80px] pointer-events-none rotate-90 opacity-30"
             >
@@ -52,7 +52,7 @@ $kurikulumItems = [
     <div class="flex-1 h-auto lg:h-[486px] bg-white-neutral rounded-[20px] p-[24px] relative overflow-hidden">
         <!-- Vector Kurikulum - Top Right -->
         <img 
-            src="<?= url('/images/vectors/vector_kurikulum.png') ?>" 
+            src="<?= asset('images/vectors/vector_kurikulum.png') ?>" 
             alt="" 
             class="absolute top-0 right-0 w-[180px] pointer-events-none"
         >

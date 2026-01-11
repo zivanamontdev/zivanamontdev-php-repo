@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $pageTitle = 'Home';
 ob_start(); 
 
@@ -43,7 +43,7 @@ $keunggulanItems = [
         <div class="relative">
             <!-- Vector decoration -->
             <img 
-                src="<?= url('/images/vectors/vector_keunggulan.png') ?>" 
+                src="<?= asset('images/vectors/vector_keunggulan.png') ?>" 
                 alt="" 
                 class="hidden md:block absolute -top-[76px] -right-4 w-[68px] h-[74px] -rotate-6 pointer-events-none z-10"
             >
@@ -67,7 +67,7 @@ $keunggulanItems = [
 <section class="mt-[120px] relative">
     <!-- Vector About (floating between sections) -->
     <img 
-        src="<?= url('/images/vectors/vector_about.png') ?>" 
+        src="<?= asset('images/vectors/vector_about.png') ?>" 
         alt="" 
         class="hidden md:block absolute -top-[120px] left-1/2 -translate-x-1/2 w-[143px] h-[143px] pointer-events-none z-10"
     >
@@ -77,7 +77,7 @@ $keunggulanItems = [
         
         <!-- Vector Pita (floating at bottom right of container) -->
         <img 
-            src="<?= url('/images/vectors/vector_pita.png') ?>" 
+            src="<?= asset('images/vectors/vector_pita.png') ?>" 
             alt="" 
             class="hidden md:block absolute -bottom-[50px] -right-[10px] w-[140px] h-[110px] pointer-events-none z-10"
         >
@@ -88,7 +88,7 @@ $keunggulanItems = [
 <section class="mt-[120px] relative">
     <!-- Vector Program (floating between sections) -->
     <img 
-        src="<?= url('/images/vectors/vector_program.png') ?>" 
+        src="<?= asset('images/vectors/vector_program.png') ?>" 
         alt="" 
         class="hidden md:block absolute -top-[60px] left-1/2 -translate-x-[calc(50%+50px)] w-[280px] h-[190px] pointer-events-none z-0"
     >

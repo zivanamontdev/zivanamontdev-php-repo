@@ -35,7 +35,7 @@ ob_start();
     <div class="relative">
         <!-- Floating Vector -->
         <img 
-            src="<?= url('/images/vectors/vector_highlight_program_tahun.png') ?>" 
+            src="<?= asset('images/vectors/vector_highlight_program_tahun.png') ?>" 
             alt="" 
             class="hidden md:block absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
         >
@@ -46,7 +46,7 @@ ob_start();
                 <!-- Image -->
                 <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
                     <img 
-                        src="<?= $program['image'] ?? url('/images/placeholder.jpg') ?>" 
+                        src="<?= $program['image'] ?? asset('images/placeholder.jpg') ?>" 
                         alt="<?= $program['title'] ?? '' ?>" 
                         class="w-full h-full object-cover"
                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -133,7 +133,7 @@ ob_start();
     <div class="relative">
         <!-- Floating Vector - positioned next to card #5 -->
         <img 
-            src="<?= url('/images/vectors/vector_highlight_program_harian.png') ?>" 
+            src="<?= asset('images/vectors/vector_highlight_program_harian.png') ?>" 
             alt="" 
             class="hidden lg:block absolute left-[calc(33.333%+650px)] top-[calc(184px+32px+300px)] w-[80px] h-[80px] z-10 pointer-events-none"
         >
@@ -144,7 +144,7 @@ ob_start();
                 <!-- Image -->
                 <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
                     <img 
-                        src="<?= $program['image'] ?? url('/images/placeholder.jpg') ?>" 
+                        src="<?= $program['image'] ?? asset('images/placeholder.jpg') ?>" 
                         alt="<?= $program['title'] ?? '' ?>" 
                         class="w-full h-full object-cover"
                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"

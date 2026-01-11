@@ -14,7 +14,7 @@ $items = $items ?? [];
 if (!function_exists('getActivityGalleryImageUrl')) {
     function getActivityGalleryImageUrl($imagePath) {
         if (empty($imagePath)) {
-            return url('/images/placeholder.jpg');
+            return asset('images/placeholder.jpg');
         }
         // If path is already a full URL (http:// or https://), return as-is
         if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
@@ -24,7 +24,7 @@ if (!function_exists('getActivityGalleryImageUrl')) {
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
-        return url('/uploads/' . $imagePath);
+        return asset('uploads/' . $imagePath);
     }
 }
 ?>

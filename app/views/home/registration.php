@@ -12,7 +12,7 @@ ob_start();
 <section class="container mx-auto px-5 mb-[88px] relative">
     <!-- Vector Registration - Outside container to reach screen edge (Desktop Only) -->
     <img 
-        src="<?= url('/images/vectors/vector_registration.png') ?>" 
+        src="<?= asset('images/vectors/vector_registration.png') ?>" 
         alt="" 
         class="hidden md:block absolute top-[122px] -left-[calc((100vw-100%)/2)] w-[650px] h-[600px] pointer-events-none z-0"
     >

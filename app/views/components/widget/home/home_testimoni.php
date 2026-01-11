@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Home Testimoni Widget
  * 
@@ -33,9 +33,9 @@ $testi3 = $testimonials[2] ?? [
 ];
 
 // Get image URLs
-$imageUrl1 = !empty($testi1['image']) ? url('/uploads/testimonials/' . $testi1['image']) : url('/images/image_testi.jpg');
-$imageUrl2 = !empty($testi2['image']) ? url('/uploads/testimonials/' . $testi2['image']) : url('/images/image_testi.jpg');
-$imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['image']) : url('/images/image_testi.jpg');
+$imageUrl1 = !empty($testi1['image']) ? asset('uploads/testimonials/' . $testi1['image']) : asset('images/image_testi.jpg');
+$imageUrl2 = !empty($testi2['image']) ? asset('uploads/testimonials/' . $testi2['image']) : asset('images/image_testi.jpg');
+$imageUrl3 = !empty($testi3['image']) ? asset('uploads/testimonials/' . $testi3['image']) : asset('images/image_testi.jpg');
 ?>
 
 <div class="flex flex-col lg:flex-row gap-[24px]">
@@ -43,7 +43,7 @@ $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['
     <div class="w-full lg:flex-1 h-auto min-h-[400px] lg:h-[488px] bg-white-neutral rounded-[24px] p-[20px] md:p-[24px] relative flex flex-col overflow-hidden">
         <!-- Vector Star -->
         <img 
-            src="<?= url('/images/vectors/vector_star1.png') ?>" 
+            src="<?= asset('images/vectors/vector_star1.png') ?>" 
             alt="" 
             class="absolute top-0 -right-[50px] w-[230px] h-[230px] pointer-events-none z-0"
         >
@@ -83,7 +83,7 @@ $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['
         <div class="flex-1 bg-secondary rounded-[24px] p-[24px] relative overflow-hidden flex flex-col">
             <!-- Vector Star 2 -->
             <img 
-                src="<?= url('/images/vectors/vector_star2.png') ?>" 
+                src="<?= asset('images/vectors/vector_star2.png') ?>" 
                 alt="" 
                 class="absolute top-0 right-0 w-[150px] h-[150px] pointer-events-none z-0"
             >
@@ -114,7 +114,7 @@ $imageUrl3 = !empty($testi3['image']) ? url('/uploads/testimonials/' . $testi3['
         <div class="flex-1 bg-white-neutral rounded-[24px] p-[24px] relative overflow-hidden flex flex-col">
             <!-- Vector Star 3 -->
             <img 
-                src="<?= url('/images/vectors/vector_star3.png') ?>" 
+                src="<?= asset('images/vectors/vector_star3.png') ?>" 
                 alt="" 
                 class="absolute bottom-0 right-0 w-[150px] h-[150px] pointer-events-none z-0"
             >

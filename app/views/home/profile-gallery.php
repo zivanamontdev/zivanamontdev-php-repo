@@ -8,7 +8,7 @@ $allFasilitas = $allFasilitas ?? [];
 if (!function_exists('getGalleryImageUrl')) {
     function getGalleryImageUrl($imagePath) {
         if (empty($imagePath)) {
-            return url('/images/default-gallery.jpg');
+            return asset('images/default-gallery.jpg');
         }
         // If path is already a full URL (http:// or https://), return as-is
         if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
@@ -18,7 +18,7 @@ if (!function_exists('getGalleryImageUrl')) {
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
-        return url('/uploads/' . $imagePath);
+        return asset('uploads/' . $imagePath);
     }
 }
 
@@ -136,7 +136,7 @@ ob_start();
 <!-- Floating Vector Galeri -->
 <div class="relative">
     <img 
-        src="<?= url('/images/vectors/vector_galeri.png') ?>" 
+        src="<?= asset('images/vectors/vector_galeri.png') ?>" 
         alt="" 
         class="hidden md:block absolute right-[50px] -top-[260px] w-[220px] h-[190px] z-10 pointer-events-none"
     >

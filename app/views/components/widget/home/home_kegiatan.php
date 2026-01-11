@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Home Kegiatan Widget
  * 
@@ -27,7 +27,7 @@ $status = $status ?? 'private';
     <div class="md:col-span-2 h-[118px] md:h-full bg-primary rounded-[24px] p-[24px] relative overflow-hidden flex items-center justify-center">
         <!-- Vector Star 4 -->
         <img 
-            src="<?= url('/images/vectors/vector_star4.png') ?>" 
+            src="<?= asset('images/vectors/vector_star4.png') ?>" 
             alt="" 
             class="absolute bottom-0 -left-[30px] w-[150px] h-[150px] pointer-events-none z-0"
         >

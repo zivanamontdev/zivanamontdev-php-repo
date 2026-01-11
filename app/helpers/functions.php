@@ -154,10 +154,22 @@ function adminUrl($path = '') {
 }
 
 /**
- * Asset URL
+ * Asset URL - Always points to main domain for static assets (images, css, js)
+ * Use this for images, CSS, JS, and other static files
  */
 function asset($path) {
-    return url('assets/' . ltrim($path, '/'));
+    $baseUrl = APP_URL;
+    
+    // Auto-detect port if localhost
+    if (strpos($baseUrl, 'localhost') !== false) {
+        if (!preg_match('/localhost:\d+/', $baseUrl)) {
+            if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+                $baseUrl = rtrim($baseUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+            }
+        }
+    }
+    
+    return $baseUrl . '/' . ltrim($path, '/');
 }
 
 /**

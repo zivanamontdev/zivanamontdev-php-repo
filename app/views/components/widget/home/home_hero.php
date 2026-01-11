@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Home Hero Widget Component
  * 
@@ -12,7 +12,7 @@
         <!-- Background mask with gradient opacity (right to left fade) -->
         <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
             <img 
-                src="<?= url('/images/mask_group.png') ?>" 
+                src="<?= asset('images/mask_group.png') ?>" 
                 alt="" 
                 class="w-full h-full object-cover"
             >
@@ -24,7 +24,7 @@
             <div class="relative">
                 <!-- Vector behind title -->
                 <img 
-                    src="<?= url('/images/vectors/vector_hero_home.png') ?>" 
+                    src="<?= asset('images/vectors/vector_hero_home.png') ?>" 
                     alt="" 
                     class="absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[2px] w-[238px] h-[94px] md:left-auto md:translate-x-0 md:right-[200px] md:w-[504px] md:h-[120px] pointer-events-none"
                 >

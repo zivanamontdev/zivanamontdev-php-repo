@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Page Hero Component
  * 
@@ -31,7 +31,7 @@ $config = $variants[$variant] ?? $variants['primary'];
         <!-- Background mask with gradient opacity -->
         <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
             <img 
-                src="<?= url('/images/mask_group.png') ?>" 
+                src="<?= asset('images/mask_group.png') ?>" 
                 alt="" 
                 class="w-full h-full object-cover"
             >

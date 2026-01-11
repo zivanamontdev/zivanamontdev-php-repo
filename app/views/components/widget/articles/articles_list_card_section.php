@@ -35,7 +35,7 @@ if (!function_exists('formatIndonesianDateList')) {
 if (!function_exists('getArticleImageUrlList')) {
     function getArticleImageUrlList($imagePath) {
         if (empty($imagePath)) {
-            return url('/images/default-article.jpg');
+            return asset('images/default-article.jpg');
         }
         
         // If image is from R2 (contains R2_PUBLIC_URL), return as-is
@@ -48,7 +48,7 @@ if (!function_exists('getArticleImageUrlList')) {
             return url($imagePath);
         }
         
-        return url('/uploads/' . $imagePath);
+        return asset('uploads/' . $imagePath);
     }
 }
 ?>

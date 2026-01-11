@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Home About Widget Component
  * 
@@ -12,7 +12,7 @@
     <div class="w-full lg:flex-1 relative rounded-[24px] md:rounded-[52px] overflow-hidden h-[300px] md:h-[464px]">
         <!-- Background Image -->
         <img 
-            src="<?= url('/images/home_about.png') ?>" 
+            src="<?= asset('images/home_about.png') ?>" 
             alt="Tentang Zivana Montessori" 
             class="w-full h-full object-cover"
         >

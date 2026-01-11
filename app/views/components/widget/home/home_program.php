@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Home Program Sekolah Widget
  * 
@@ -22,13 +22,13 @@ if (!$program1 && !$program2 && !$program3) {
 
 // Get image URLs - check if image starts with / (absolute path from public) or is just filename
 $imageUrl1 = !empty($program1['image']) ? 
-    (strpos($program1['image'], '/') === 0 ? url($program1['image']) : url('/uploads/programs-tahun/' . $program1['image'])) : 
+    (strpos($program1['image'], '/') === 0 ? url($program1['image']) : asset('uploads/programs-tahun/' . $program1['image'])) : 
     'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22524%22%3E%3Crect width=%22800%22 height=%22524%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 $imageUrl2 = !empty($program2['image']) ? 
-    (strpos($program2['image'], '/') === 0 ? url($program2['image']) : url('/uploads/programs-tahun/' . $program2['image'])) : 
+    (strpos($program2['image'], '/') === 0 ? url($program2['image']) : asset('uploads/programs-tahun/' . $program2['image'])) : 
     'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22250%22%3E%3Crect width=%22800%22 height=%22250%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 $imageUrl3 = !empty($program3['image']) ? 
-    (strpos($program3['image'], '/') === 0 ? url($program3['image']) : url('/uploads/programs-tahun/' . $program3['image'])) : 
+    (strpos($program3['image'], '/') === 0 ? url($program3['image']) : asset('uploads/programs-tahun/' . $program3['image'])) : 
     'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect width=%22400%22 height=%22250%22 fill=%22%23E0E0E0%22/%3E%3C/svg%3E';
 ?>
 
@@ -63,7 +63,7 @@ $imageUrl3 = !empty($program3['image']) ?
         <div class="relative rounded-[20px] overflow-hidden h-[262px]">
             <!-- Vector Program 2 (floating on right side) -->
             <img 
-                src="<?= url('/images/vectors/vector_program2.png') ?>" 
+                src="<?= asset('images/vectors/vector_program2.png') ?>" 
                 alt="" 
                 class="absolute top-1/2 -right-[0px] -translate-y-1/2 w-[80px] h-[80px] pointer-events-none z-20"
             >

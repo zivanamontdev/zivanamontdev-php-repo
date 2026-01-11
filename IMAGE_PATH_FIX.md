@@ -10,40 +10,46 @@ Di production, gambar-gambar di halaman admin (seperti logo dan gambar di halama
 
 ### Contoh Masalah
 ```php
-<!-- ❌ SALAH - Path absolut -->
+<!-- ❌ SALAH - Path absolut tanpa helper -->
 <img src="/images/logo.png" alt="Logo">
 
-<!-- ✅ BENAR - Menggunakan fungsi url() -->
+<!-- ❌ SALAH - Menggunakan url() untuk static assets di subdomain -->
 <img src="<?= url('/images/logo.png') ?>" alt="Logo">
+<!-- Di subdomain admin akan menghasilkan: https://admin.domain.com/images/logo.png (FILE TIDAK ADA!) -->
+
+<!-- ✅ BENAR - Menggunakan asset() untuk static assets -->
+<img src="<?= asset('images/logo.png') ?>" alt="Logo">
+<!-- Selalu menghasilkan: https://domain.com/images/logo.png (FILE ADA DI MAIN DOMAIN) -->
 ```
 
 ## Solusi
-Menggunakan fungsi `url()` helper yang sudah ada untuk generate path yang tepat berdasarkan context (subdomain atau main domain).
+Menggunakan fungsi `asset()` helper yang **SELALU mengarah ke main domain (APP_URL)** untuk static assets, tidak peduli dari subdomain mana diakses.
 
-### Fungsi url() di app/helpers/functions.php
-Fungsi ini otomatis mendeteksi:
-- Apakah request dari subdomain admin atau main domain
-- Port untuk development (localhost)
-- Base URL yang tepat (APP_URL atau ADMIN_URL)
+### Perbedaan url() vs asset()
+```php
+// url() - Dinamis berdasarkan subdomain
+// Di main domain: https://sekolahzivanamontessori.sch.id/images/logo.png
+// Di admin subdomain: https://admin.sekolahzivanamontessori.sch.id/images/logo.png ❌ SALAH!
+
+// asset() - SELALU ke main domain
+// Di main domain: https://sekolahzivanamontessori.sch.id/images/logo.png ✅
+// Di admin subdomain: https://sekolahzivanamontessori.sch.id/images/logo.png ✅
+```
+
+### Fungsi asset() di app/helpers/functions.php
+Fungsi ini **SELALU menggunakan APP_URL** (main domain) untuk static assets:
 
 ```php
-function url($path = '') {
-    // Check if this is admin route
-    $isAdminRoute = strpos($path, '/admin') === 0 || strpos($path, 'admin/') !== false;
+function asset($path) {
+    $baseUrl = APP_URL; // ALWAYS use main domain
     
-    // Check if we're on admin subdomain
-    $isAdminSubdomain = false;
-    if (defined('IS_ADMIN_SUBDOMAIN') && IS_ADMIN_SUBDOMAIN === true) {
-        $isAdminSubdomain = true;
-    } elseif (isset($_SERVER['HTTP_HOST'])) {
-        $isAdminSubdomain = strpos($_SERVER['HTTP_HOST'], 'admin.') === 0;
-    }
-    
-    // Determine base URL
-    if ($isAdminRoute || $isAdminSubdomain) {
-        $baseUrl = ADMIN_URL ?? APP_URL;
-    } else {
-        $baseUrl = APP_URL;
+    // Auto-detect port if localhost
+    if (strpos($baseUrl, 'localhost') !== false) {
+        if (!preg_match('/localhost:\d+/', $baseUrl)) {
+            if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+                $baseUrl = rtrim($baseUrl, '/') . ':' . $_SERVER['SERVER_PORT'];
+            }
+        }
     }
     
     return $baseUrl . '/' . ltrim($path, '/');
@@ -51,88 +57,116 @@ function url($path = '') {
 ```
 
 ## File yang Sudah Diperbaiki
-### File Admin
+### File Admin (4 files):
 1. ✅ `app/views/admin/auth/login.php`
-   - Logo: `/images/logo.png` → `<?= url('/images/logo.png') ?>`
-   - Gambar ilustrasi: `/images/image_profile_section_1.png` → `<?= url('/images/image_profile_section_1.png') ?>`
+   - Logo: `url('/images/logo.png')` → `asset('images/logo.png')`
+   - Gambar ilustrasi: `url('/images/image_profile_section_1.png')` → `asset('images/image_profile_section_1.png')`
 
 2. ✅ `app/views/admin/auth/reset-password.php`
-   - Logo: `/images/logo.png` → `<?= url('/images/logo.png') ?>`
+   - Logo: `url('/images/logo.png')` → `asset('images/logo.png')`
 
 3. ✅ `app/views/components/admin-sidebar.php`
-   - Logo full: `url('images/logo.png')` → `url('/images/logo.png')`
-   - Logo mini: `url('images/activity_logo.png')` → `url('/images/activity_logo.png')`
+   - Logo full: `url('/images/logo.png')` → `asset('images/logo.png')`
+   - Logo mini: `url('/images/activity_logo.png')` → `asset('images/activity_logo.png')`
 
-### File Components & Views (Diperbaiki via Script)
-Semua file berikut sudah diperbaiki dengan script otomatis (19 files):
-- ✅ `footer.php` - Logo white, vector icons (WA, phone, Instagram, TikTok, Facebook)
-- ✅ `activities_card.php` - Floating vectors
-- ✅ `activities_gallery_card.php` - Placeholder images
-- ✅ `activities_kelas.php` - Vector highlight kelas
-- ✅ `activities_kurikulum.php` - Vector kurikulum
-- ✅ `articles_grid_section.php` - Default article images
-- ✅ `articles_list_card_section.php` - Article images & uploads
-- ✅ `articles_other.php` - Article thumbnails
-- ✅ `profile_galeri.php` - Gallery images
-- ✅ `profile_section.php` - Profile vector & uploads
-- ✅ `profile_team.php` - Team images
-- ✅ `activities-gallery.php` - Vector galeri
-- ✅ `activities.php` - Program highlight vectors
-- ✅ `article-detail.php` - Article images
-- ✅ `articles.php` - Article listings
-- ✅ `profile-gallery.php` - Gallery & vector galeri
-- ✅ `profile.php` - Profile photos & uploads
-- ✅ `registration.php` - Vector registration
-- ✅ `admin.php` - Favicon
+4. ✅ `app/views/layouts/admin.php`
+   - Favicon: `url('/images/activity_logo.png')` → `asset('images/activity_logo.png')`
 
-**Total: 22 files diperbaiki**
+### File Components & Views (31 files):
+**Images (25 files):** footer.php, header.php, page_hero.php, activities_card.php, activities_gallery_card.php, activities_kelas.php, activities_kurikulum.php, articles_grid_section.php, articles_list_card_section.php, articles_other.php, home_about.php, home_hero.php, home_kegiatan.php, home_program.php, home_testimoni.php, profile_galeri.php, profile_section.php, profile_team.php, activities-gallery.php, activities.php, article-detail.php, articles.php, index.php, profile-gallery.php, registration.php
 
-## Cara Menggunakan url() Helper
+**Uploads (11 files):** activities_gallery_card.php, articles_grid_section.php, articles_list_card_section.php, articles_other.php, home_program.php, home_testimoni.php, profile_section.php, article-detail.php, articles.php, profile-gallery.php, profile.php
+
+**Total: 35 files diperbaiki**
+
+## Cara Menggunakan Helper Functions
+
+### asset() - Untuk Static Assets (Images, CSS, JS)
+**Gunakan ini untuk semua file static yang ada di main domain**
 ```php
-<!-- Untuk gambar -->
-<img src="<?= url('/images/logo.png') ?>" alt="Logo">
+<!-- Untuk gambar di /images/ -->
+<img src="<?= asset('images/logo.png') ?>" alt="Logo">
+
+<!-- Untuk gambar di /uploads/ -->
+<img src="<?= asset('uploads/photo.jpg') ?>" alt="Photo">
 
 <!-- Untuk CSS -->
-<link rel="stylesheet" href="<?= url('/css/style.css') ?>">
+<link rel="stylesheet" href="<?= asset('css/style.css') ?>">
 
 <!-- Untuk JavaScript -->
-<script src="<?= url('/js/app.js') ?>"></script>
+<script src="<?= asset('js/app.js') ?>"></script>
+```
 
+### url() - Untuk Routes/Endpoints
+**Gunakan ini untuk form actions, links ke halaman lain**
+```php
 <!-- Untuk form action -->
 <form action="<?= url('/admin/login') ?>" method="POST">
 
-<!-- Untuk link -->
+<!-- Untuk link ke halaman -->
 <a href="<?= url('/admin/dashboard') ?>">Dashboard</a>
+
+<!-- Untuk redirect -->
+header('Location: ' . url('/admin/settings'));
 ```
 
 ## Hasil di Production
 ### Subdomain Admin (admin.sekolahzivanamontessori.sch.id)
 ```php
-<?= url('/images/logo.png') ?>
-// Output: https://admin.sekolahzivanamontessori.sch.id/images/logo.png
+// ✅ asset() - BENAR (Selalu ke main domain)
+<?= asset('images/logo.png') ?>
+// Output: https://sekolahzivanamontessori.sch.id/images/logo.png
+
+// ✅ url() - BENAR (Untuk routes di admin)
+<?= url('/admin/dashboard') ?>
+// Output: https://admin.sekolahzivanamontessori.sch.id/admin/dashboard
 ```
 
 ### Main Domain (sekolahzivanamontessori.sch.id)
 ```php
-<?= url('/images/logo.png') ?>
+// ✅ asset() - BENAR
+<?= asset('images/logo.png') ?>
 // Output: https://sekolahzivanamontessori.sch.id/images/logo.png
+
+// ✅ url() - BENAR
+<?= url('/about') ?>
+// Output: https://sekolahzivanamontessori.sch.id/about
 ```
 
 ### Development (localhost)
 ```php
-<?= url('/images/logo.png') ?>
-// Output: http://localhost:8000/images/logo.png (atau port yang sedang digunakan)
+// ✅ asset() - BENAR
+<?= asset('images/logo.png') ?>
+// Output: http://localhost:8000/images/logo.png
+
+// ✅ url() - BENAR  
+<?= url('/admin/dashboard') ?>
+// Output: http://localhost:8000/admin/dashboard
 ```
 
 ## Catatan Penting
 - ⚠️ **JANGAN** menggunakan path absolut (`/images/...`) untuk assets
-- ✅ **SELALU** gunakan fungsi `url()` untuk generate path
-- ✅ Fungsi `url()` otomatis mendeteksi environment (production/development)
-- ✅ Fungsi `url()` otomatis handle subdomain admin
+- ✅ **GUNAKAN `asset()`** untuk semua gambar, CSS, JS, dan file static
+- ✅ **GUNAKAN `url()`** untuk routes, form actions, dan links ke halaman
+- ✅ Fungsi `asset()` otomatis mendeteksi environment (production/development)
+- ✅ Fungsi `asset()` **SELALU** mengarah ke main domain untuk static files
+
+### Ringkasan Kapan Menggunakan Apa:
+| Kebutuhan | Helper Function | Contoh |
+|-----------|----------------|---------|
+| Gambar | `asset()` | `asset('images/logo.png')` |
+| Upload Files | `asset()` | `asset('uploads/photo.jpg')` |
+| CSS Files | `asset()` | `asset('css/style.css')` |
+| JS Files | `asset()` | `asset('js/app.js')` |
+| Form Action | `url()` | `url('/admin/login')` |
+| Page Links | `url()` | `url('/about')` |
+| Redirects | `url()` | `url('/dashboard')` |
 
 ## Checklist untuk Developer
 Saat menambahkan gambar atau asset baru, pastikan:
-- [ ] Gunakan `<?= url('/path/to/asset') ?>` bukan `/path/to/asset`
+- [ ] Gunakan `asset('path/to/image.jpg')` untuk gambar, CSS, JS
+- [ ] Gunakan `url('/path/to/page')` untuk links dan form actions
 - [ ] Test di localhost
 - [ ] Test di subdomain admin production
 - [ ] Test di main domain production
+- [ ] Verifikasi gambar load dengan benar di semua environment

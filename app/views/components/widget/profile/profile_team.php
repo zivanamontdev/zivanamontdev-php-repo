@@ -24,7 +24,7 @@ $imageUrl = '';
 if (!$showPlaceholder) {
     if (strpos($teamImage, 'http://') !== 0 && strpos($teamImage, 'https://') !== 0 && strpos($teamImage, '/') !== 0) {
         // If not a URL, add images/ prefix
-        $imageUrl = url('/images/' . $teamImage);
+        $imageUrl = asset('images/' . $teamImage);
     } else {
         $imageUrl = $teamImage;
     }

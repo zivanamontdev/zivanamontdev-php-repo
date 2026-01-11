@@ -20,7 +20,7 @@ if (!function_exists('getEmployeePhotoUrl')) {
         if (strpos($photoPath, 'uploads/') === 0) {
             return url($photoPath);
         }
-        return url('/uploads/' . $photoPath);
+        return asset('uploads/' . $photoPath);
     }
 }
 
@@ -38,7 +38,7 @@ if (!function_exists('getFasilitasCoverImage')) {
         if (strpos($imagePath, 'uploads/') === 0) {
             return url($imagePath);
         }
-        return url('/uploads/' . $imagePath);
+        return asset('uploads/' . $imagePath);
     }
 }
 

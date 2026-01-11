@@ -14,7 +14,7 @@ $title = $title ?? 'Galeri';
     <!-- Image -->
     <div class="h-[184px] mb-[16px] rounded-[12px] overflow-hidden">
         <img 
-            src="<?= url('/images/' . $image) ?>" 
+            src="<?= asset('images/' . $image) ?>" 
             alt="<?= e($title) ?>" 
             class="w-full h-full object-cover object-center"
         >
