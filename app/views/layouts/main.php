@@ -6,6 +6,12 @@
     <meta name="description" content="<?= e($settings['school_description'] ?? 'Quality Montessori education for your child') ?>">
     <title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?><?= e($settings['school_name'] ?? APP_NAME) ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('images/activity_logo.png') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= asset('images/activity_logo.png') ?>">
+    <link rel="shortcut icon" href="<?= asset('images/activity_logo.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset('images/activity_logo.png') ?>">
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
