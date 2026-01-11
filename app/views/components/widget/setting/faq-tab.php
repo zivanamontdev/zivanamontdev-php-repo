@@ -27,7 +27,7 @@ try {
 // Build FAQ cards HTML for slot
 ob_start();
 ?>
-<div class="mt-5 space-y-3">
+<div id="faq-sortable-list" class="mt-5 space-y-3">
     <?php if (empty($faqs)): ?>
         <div class="text-center py-8 text-white-soft">
             <p>Belum ada FAQ yang ditambahkan</p>
@@ -73,15 +73,38 @@ component('tab-content-card', [
 ]);
 ?>
 
+<!-- FAQ Sortable Styles -->
+<style>
+.sortable-ghost {
+    opacity: 0.4;
+}
+
+.sortable-chosen {
+    cursor: grabbing !important;
+}
+
+.sortable-drag {
+    opacity: 0.9;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.drag-handle:hover {
+    opacity: 0.7;
+}
+</style>
+
 <!-- FAQ Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Sortable for drag & drop
-    const sortableFaqs = document.querySelector('.space-y-3');
-    if (sortableFaqs) {
+    const sortableFaqs = document.getElementById('faq-sortable-list');
+    if (sortableFaqs && sortableFaqs.querySelector('.faq-item')) {
         const sortable = Sortable.create(sortableFaqs, {
             animation: 150,
             handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
             onEnd: function() {
                 // Auto save order on drag
                 updateFaqOrder();

@@ -138,13 +138,10 @@ ob_start();
 </style>
 
 <!-- Page Header -->
-<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
-    <?php component('page_hero', ['title' => 'Artikel dan Berita Terkini', 'variant' => 'primary']); ?>
-</div>
+<?php component('page_hero', ['title' => 'Artikel dan Berita Terkini', 'variant' => 'primary']); ?>
 
 <?php if (empty($articles)): ?>
-    <!-- No Articles Message -->
-    <section class="container mx-auto px-5">
+    <!-- No Articles Message --><section class="container mx-auto px-5">
         <div class="bg-white-neutral rounded-[24px] p-[40px] text-center">
             <p class="font-normal text-[20px] leading-[150%] text-black-highlight">
                 Belum ada artikel yang dipublikasikan. Silakan tambah artikel melalui halaman admin.
@@ -152,33 +149,29 @@ ob_start();
         </div>
     </section>
 <?php else: ?>
-    <!-- Desktop Version -->
-    <div class="desktop-only">
-        <!-- Section Grid Berita -->
-        <?php if (!empty($gridArticles)): ?>
-            <?php component('widget/articles/articles_grid_section', ['articles' => $gridArticles]); ?>
-        <?php endif; ?>
+    <!-- Section Grid Berita - Desktop Only -->
+    <?php if (!empty($gridArticles)): ?>
+        <?php component('widget/articles/articles_grid_section', ['articles' => $gridArticles]); ?>
+    <?php endif; ?>
 
-        <!-- Section List Card Berita -->
-        <?php if (!empty($listArticles)): ?>
-            <?php component('widget/articles/articles_list_card_section', ['articles' => $listArticles]); ?>
-        <?php endif; ?>
+    <!-- Section List Card Berita - Desktop Only -->
+    <?php if (!empty($listArticles)): ?>
+        <?php component('widget/articles/articles_list_card_section', ['articles' => $listArticles]); ?>
+    <?php endif; ?>
 
-        <!-- Load More Button -->
-        <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
-        <div class="container mx-auto px-5 mt-[32px] flex justify-end">
-            <?php 
-            $nextPage = ($pagination['current_page'] ?? 1) + 1;
-            $href = $nextPage <= $pagination['last_page'] ? url('/articles?page=' . $nextPage) : '#';
-            component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
-            ?>
-        </div>
-        <?php endif; ?>
+    <!-- Load More Button - Desktop Only -->
+    <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
+    <div class="hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
+        <?php 
+        $nextPage = ($pagination['current_page'] ?? 1) + 1;
+        $href = $nextPage <= $pagination['last_page'] ? url('/articles?page=' . $nextPage) : '#';
+        component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
+        ?>
     </div>
+    <?php endif; ?>
     
     <!-- Mobile Version -->
-    <div class="mobile-only">
-        <div class="mobile-articles-container">
+    <div class="mobile-articles-container md:hidden">
             <?php foreach ($articles as $index => $article): ?>
                 <div class="mobile-article-item <?= ($index < 3) ? 'show' : '' ?>">
                     <div class="mobile-article-card">

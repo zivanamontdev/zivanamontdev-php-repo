@@ -53,9 +53,7 @@ if (!function_exists('getArticleImageUrl')) {
         return asset('uploads/' . $imagePath);
     }
 }
-?>
-
-<style>
+?><style>
     .description-clamp {
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -64,7 +62,7 @@ if (!function_exists('getArticleImageUrl')) {
     }
 </style>
 
-<section class="container mx-auto">
+<section class="container mx-auto px-5 hidden md:block">
     <div class="flex gap-[32px]">
         <!-- Section 1: Main Article Card -->
         <div class="flex-1">

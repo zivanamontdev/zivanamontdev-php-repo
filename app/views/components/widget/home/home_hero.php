@@ -7,7 +7,7 @@
  */
 ?>
 
-<section class="w-full lg:container mx-auto px-5">
+<section class="w-full lg:container mx-auto px-5 mt-[24px] mb-[40px] md:mt-[52px] md:mb-[120px]">
     <div class="bg-primary rounded-[32px] h-auto min-h-[400px] md:h-[544px] py-[32px] px-[20px] md:py-[56px] md:px-[64px] relative overflow-hidden">
         <!-- Background mask with gradient opacity (right to left fade) -->
         <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">

@@ -142,7 +142,7 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
         <div class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
             <!-- Section 1: Logo -->
             <div class="mb-[20px] md:mb-0 md:mr-[4rem]">
-                <img src="<?= asset('images/logo_white.png') ?>" alt="Zivana Montessori" class="w-[158px] h-[62px] md:w-[330px] md:h-auto object-cover object-center mx-auto md:mx-0">
+                <img src="<?= asset('images/logo_white.png') ?>" alt="Zivana Montessori" class="w-[158px] h-[62px] md:w-[232px] md:h-auto object-cover object-center mx-auto md:mx-0">
             </div>
             
             <!-- Section 2: Address & Contact -->

@@ -28,12 +28,10 @@ $keunggulanItems = [
 ?>
 
 <!-- Hero Section -->
-<div class="mt-[40px] md:mt-[52px]">
-    <?php component('widget/home/home_hero'); ?>
-</div>
+<?php component('widget/home/home_hero'); ?>
 
 <!-- Keunggulan Sekolah Section -->
-<section class="mt-[40px] md:mt-[120px]">
+<section>
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Keunggulan Sekolah']); ?>
@@ -158,7 +156,8 @@ $keunggulanItems = [
                         'nama_kegiatan' => $event['name'],
                         'jam' => $jam,
                         'tempat' => $event['place'],
-                        'status' => $status
+                        'status' => $status,
+                        'url' => $event['url'] ?? null
                     ]); ?>
                 <?php endforeach; ?>
             <?php endif; ?>

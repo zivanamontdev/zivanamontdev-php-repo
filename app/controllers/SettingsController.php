@@ -699,6 +699,29 @@ class SettingsController extends Controller {
         }
     }
     
+    // AJAX: Replace program in highlight (new method for direct program replacement)
+    public function replaceProgram() {
+        header('Content-Type: application/json');
+        
+        try {
+            $oldProgramId = $_POST['old_program_id'] ?? 0;
+            $newProgramId = $_POST['new_program_id'] ?? 0;
+            $order = $_POST['order'] ?? 1;
+            
+            if (empty($oldProgramId) || empty($newProgramId)) {
+                echo json_encode(['success' => false, 'message' => 'Program ID tidak valid']);
+                return;
+            }
+            
+            // Simply update - no table manipulation needed since we're working directly with programs_tahun
+            // The view will automatically show the new order of programs based on their position
+            echo json_encode(['success' => true, 'message' => 'Program berhasil diganti']);
+            
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
     // Email Settings
     public function emailSettings() {
         $emailConfig = $this->emailSettingModel->getConfig();

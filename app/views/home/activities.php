@@ -4,12 +4,10 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
-    <?php component('page_hero', ['title' => 'Aktivitas dan Pembelajaran Sekolah', 'variant' => 'primary']); ?>
-</div>
+<?php component('page_hero', ['title' => 'Aktivitas dan Pembelajaran Sekolah', 'variant' => 'primary']); ?>
 
 <!-- Kurikulum Sekolah Section -->
-<section class="container mx-auto px-5 mt-[40px] md:mt-[80px]">
+<section class="container mx-auto px-5">
     <div class="flex justify-center mb-[32px]">
         <?php component('badge', ['text' => 'Kurikulum Sekolah']); ?>
     </div>

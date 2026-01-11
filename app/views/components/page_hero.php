@@ -26,8 +26,8 @@ $variants = [
 $config = $variants[$variant] ?? $variants['primary'];
 ?>
 
-<section class="container mx-auto px-5">
-    <div class="<?= $config['bg'] ?> rounded-[32px] h-[100px] md:h-[132px] px-[12px] py-[16px] md:p-[40px] relative overflow-hidden flex items-center justify-center">
+<div class="container mx-auto px-5 h-[100px] md:h-[132px] mt-[24px] mb-[40px] md:mt-[52px] md:mb-[120px]">
+    <div class="<?= $config['bg'] ?> rounded-[32px] h-full w-full px-[12px] py-[16px] md:p-[40px] relative overflow-hidden flex items-center justify-center">
         <!-- Background mask with gradient opacity -->
         <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
             <img 
@@ -42,4 +42,4 @@ $config = $variants[$variant] ?? $variants['primary'];
             <?= e($title) ?>
         </h1>
     </div>
-</section>
+</div>

@@ -46,9 +46,7 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
-    <?php component('page_hero', ['title' => 'Profil dan Informasi Tentang Kami', 'variant' => 'primary']); ?>
-</div>
+<?php component('page_hero', ['title' => 'Profil dan Informasi Tentang Kami', 'variant' => 'primary']); ?>
 
 <!-- Section 1: Sejarah Singkat -->
 <?php component('widget/profile/profile_section', ['prakata' => $prakata ?? []]); ?>
@@ -56,33 +54,33 @@ ob_start();
 <!-- Section 2: Visi Misi -->
 <?php component('widget/profile/profile_visimisi'); ?>
 
-<!-- Section 3: Team -->
-<section class="container mx-auto px-5 mt-[80px]">
+<!-- Section 3: Team --><section class="container mx-auto px-5 mt-[80px]">
     <div class="flex justify-center">
         <?php component('badge', ['text' => 'Kenalan dengan Kami']); ?>
     </div>
     
-    <div class="mt-[32px] grid grid-cols-1 md:grid-cols-4 gap-[24px]">
-        <!-- Row 1-2, Col 1-2: Large Card (2x2) - Kepala Sekolah -->
+    <div class="mt-[32px] grid grid-cols-1 md:grid-cols-4 gap-[16px]">
+        <!-- Kepala Sekolah - 2x2 Grid (Desktop), Full Width (Mobile) -->
         <?php if ($kepalaSekolah): ?>
-            <?php component('widget/profile/profile_team', [
-                'teamImage' => getEmployeePhotoUrl($kepalaSekolah['photo'] ?? ''),
-                'teamName' => $kepalaSekolah['name'] ?? 'Belum ada data',
-                'teamRole' => 'Kepala Sekolah',
-                'teamLarge' => true
-            ]); ?>
+            <div class="md:col-span-2 md:row-span-2 h-[384px] md:h-[760px]">
+                <?php component('widget/profile/profile_team', [
+                    'teamImage' => getEmployeePhotoUrl($kepalaSekolah['photo'] ?? ''),
+                    'teamName' => $kepalaSekolah['name'] ?? 'Belum ada data',
+                    'teamRole' => 'Kepala Sekolah',
+                    'teamLarge' => true
+                ]); ?>
+            </div>
         <?php endif; ?>
         
         <!-- Karyawan Cards -->
         <?php 
-        // Limit to 11 karyawan (excluding kepala sekolah)
-        // Grid layout: after large card (2x2), we have 2 slots in row 1, 2 in row 2, and 4 in row 3, 4 in row 4 = 12 slots total
-        $maxKaryawan = 11;
+        // Display karyawan
+        $maxKaryawan = 12; // Show up to 12 karyawan
         $displayedKaryawan = array_slice($karyawan, 0, $maxKaryawan);
         
         foreach ($displayedKaryawan as $index => $k): 
         ?>
-            <div class="karyawan-item <?= $index >= 5 ? 'hidden md:block' : '' ?>" data-index="<?= $index ?>">
+            <div class="karyawan-item h-[234px] md:h-[372px] <?= $index >= 6 ? 'hidden md:block' : '' ?>" data-index="<?= $index ?>">
                 <?php component('widget/profile/profile_team', [
                     'teamImage' => getEmployeePhotoUrl($k['photo'] ?? ''),
                     'teamName' => $k['name'] ?? 'Nama Anggota',
@@ -93,7 +91,7 @@ ob_start();
     </div>
     
     <!-- Tampilkan Lebih Banyak/Sedikit Button (Mobile Only) -->
-    <?php if (count($displayedKaryawan) > 5): ?>
+    <?php if (count($displayedKaryawan) > 6): ?>
     <div class="flex justify-center mt-[32px] md:hidden">
         <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-karyawan']); ?>
     </div>
@@ -101,7 +99,7 @@ ob_start();
     
     <script>
     const totalKaryawan = <?= count($displayedKaryawan) ?>;
-    let currentVisibleKaryawan = 5;
+    let currentVisibleKaryawan = 6;
     
     document.addEventListener('DOMContentLoaded', function() {
         const btnToggle = document.getElementById('btn-toggle-karyawan');
@@ -129,14 +127,14 @@ ob_start();
                         btnToggle.textContent = 'Tampilkan Lebih Sedikit';
                     }
                 } else {
-                    // Show less - hide all except first 5 (kembali ke tampilan awal 6 data: 1 kepala sekolah + 5 karyawan)
-                    for (let i = 5; i < allItems.length; i++) {
+                    // Show less - hide all except first 6 (mobile view: 6 karyawan)
+                    for (let i = 6; i < allItems.length; i++) {
                         if (allItems[i]) {
                             allItems[i].classList.add('hidden');
                         }
                     }
                     
-                    currentVisibleKaryawan = 5;
+                    currentVisibleKaryawan = 6;
                     btnToggle.textContent = 'Tampilkan Lebih Banyak';
                 }
             });

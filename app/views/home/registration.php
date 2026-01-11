@@ -4,9 +4,7 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="mt-[40px] mb-[40px] md:mt-[52px] md:mb-[80px]">
-    <?php component('page_hero', ['title' => 'Pendaftaran Sekolah Zivana Montessori', 'variant' => 'primary']); ?>
-</div>
+<?php component('page_hero', ['title' => 'Pendaftaran Sekolah Zivana Montessori', 'variant' => 'primary']); ?>
 
 <!-- Form Section -->
 <section class="container mx-auto px-5 mb-[88px] relative">
@@ -14,7 +12,7 @@ ob_start();
     <img 
         src="<?= asset('images/vectors/vector_registration.png') ?>" 
         alt="" 
-        class="hidden md:block absolute top-[122px] -left-[calc((100vw-100%)/2)] w-[650px] h-[600px] pointer-events-none z-0"
+        class="hidden md:block absolute top-[174px] -left-[calc((100vw-100%)/2)] w-[50%] h-auto pointer-events-none z-0"
     >
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">

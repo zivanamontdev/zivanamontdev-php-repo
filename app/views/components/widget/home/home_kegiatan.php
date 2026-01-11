@@ -11,6 +11,7 @@
  * @param string $jam - Time range (e.g., "08:00 - 12:00")
  * @param string $tempat - Location
  * @param string $status - Event status ('public' or 'private')
+ * @param string $url - Event information URL (optional)
  */
 
 $tanggal = $tanggal ?? '20';
@@ -20,6 +21,7 @@ $nama_kegiatan = $nama_kegiatan ?? 'Nama Kegiatan';
 $jam = $jam ?? '08:00 - 12:00';
 $tempat = $tempat ?? 'Tempat Kegiatan';
 $status = $status ?? 'private';
+$url = $url ?? '#';
 ?>
 
 <div class="flex flex-col md:grid md:grid-cols-12 gap-[24px]">
@@ -75,8 +77,14 @@ $status = $status ?? 'private';
         </div>
         
         <!-- Button Text -->
-        <a href="#" class="mt-[16px] font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-primary hover:underline">
-            Lihat Informasi Kegiatan
-        </a>
+        <?php if (!empty($url) && $url !== '#'): ?>
+            <a href="<?= e($url) ?>" target="_blank" rel="noopener noreferrer" class="mt-[16px] font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-primary hover:underline">
+                Lihat Informasi Kegiatan
+            </a>
+        <?php else: ?>
+            <span class="mt-[16px] font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-white-soft">
+                Informasi kegiatan belum tersedia
+            </span>
+        <?php endif; ?>
     </div>
 </div>

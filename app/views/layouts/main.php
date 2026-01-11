@@ -88,7 +88,7 @@
             </div>
             <div class="flex-1">
                 <div id="page-content">
-                    <main class="pt-8">
+                    <main class="pt-[24px] md:pt-[46px]">
                         <?php if (flash('success')): ?>
                             <div class="container mx-auto px-4 pt-4">
                                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
@@ -124,7 +124,7 @@
         <?php endif; ?>
         <!-- Main Content Container -->
         <div id="page-content">
-            <main class="pt-20">
+            <main class="pt-[24px] md:pt-[46px]">
                 <?php if (flash('success')): ?>
                     <div class="container mx-auto px-4 pt-4">
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">

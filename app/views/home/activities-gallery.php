@@ -4,7 +4,7 @@ ob_start();
 ?>
 
 <!-- Page Header -->
-<div class="-mt-20">
+<div class="mt-0 md:-mt-20">
 <?php 
 $heroTitle = !empty($programData) ? 'Galeri ' . $programData['name'] : 'Galeri Aktivitas Sensori';
 component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']); 

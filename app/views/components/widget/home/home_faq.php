@@ -18,7 +18,7 @@ $faqs = $faqs ?? [];
                 @click="open = !open" 
                 class="w-full flex items-center justify-between cursor-pointer"
             >
-                <h3 class="font-bold text-[20px] leading-[32px] text-black-soft text-left">
+                <h3 class="font-bold text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] text-black-soft text-left">
                     <?= e($faq['question']) ?>
                 </h3>
                 <svg 
@@ -38,7 +38,7 @@ $faqs = $faqs ?? [];
                 x-collapse
                 class="mt-[16px]"
             >
-                <p class="font-normal text-[20px] leading-[32px] text-black-soft">
+                <p class="font-normal text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] text-black-soft">
                     <?= e($faq['answer']) ?>
                 </p>
             </div>

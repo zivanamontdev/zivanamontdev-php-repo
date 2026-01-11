@@ -30,12 +30,9 @@ if (!$showPlaceholder) {
     }
 }
 
-// Ukuran card
-$heightClass = $teamLarge ? 'h-[384px] md:h-[768px]' : 'h-[234px] md:h-[372px]';
-$colSpan = $teamLarge ? 'md:col-span-2 md:row-span-2' : '';
 ?>
 
-<div class="<?= $colSpan ?> rounded-[12px] <?= $heightClass ?> relative overflow-hidden group cursor-pointer team-card-mobile">
+<div class="w-full h-full rounded-[12px] relative overflow-hidden group cursor-pointer team-card-mobile">
     <?php if ($showPlaceholder): ?>
         <!-- Placeholder with Icon -->
         <div class="absolute inset-0 w-full h-full bg-gray-placeholder flex items-center justify-center">

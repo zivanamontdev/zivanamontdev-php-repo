@@ -97,6 +97,7 @@ $router->get('/admin/settings/highlight-programs/available', [SettingsController
 $router->post('/admin/settings/highlight-programs/{id}/replace', [SettingsController::class, 'replaceHighlightProgram']);
 $router->post('/admin/settings/highlight-programs/{id}/remove', [SettingsController::class, 'removeHighlightProgram']);
 $router->post('/admin/settings/highlight-programs/update-order', [SettingsController::class, 'updateHighlightProgramOrder']);
+$router->post('/admin/settings/highlight-programs/replace', [SettingsController::class, 'replaceProgram']);
 
 // Email Settings routes
 $router->get('/admin/settings/email', [SettingsController::class, 'emailSettings']);

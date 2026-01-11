@@ -8,8 +8,10 @@ class HighlightProgram extends Model {
     
     /**
      * Get all highlight programs with program details (max 3)
+     * If no highlights found, return first 3 active programs_tahun
      */
     public function getAll() {
+        // First, try to get highlight programs
         $query = "SELECT hp.id, hp.program_tahun_id, hp.display_order,
                          pt.name, pt.description, pt.image
                   FROM {$this->table} hp
@@ -17,7 +19,19 @@ class HighlightProgram extends Model {
                   WHERE pt.is_active = 1
                   ORDER BY hp.display_order ASC, hp.id ASC
                   LIMIT 3";
-        return $this->db->fetchAll($query);
+        $results = $this->db->fetchAll($query);
+        
+        // If no highlights found, get first 3 active programs_tahun as fallback
+        if (empty($results)) {
+            $query = "SELECT id, name, description, image
+                      FROM programs_tahun
+                      WHERE is_active = 1
+                      ORDER BY created_at DESC
+                      LIMIT 3";
+            $results = $this->db->fetchAll($query);
+        }
+        
+        return $results;
     }
     
     /**

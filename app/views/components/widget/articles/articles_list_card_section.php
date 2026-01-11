@@ -62,7 +62,7 @@ if (!function_exists('getArticleImageUrlList')) {
     }
 </style>
 
-<section class="container mx-auto mt-[52px]">
+<section class="container mx-auto mt-[52px] hidden md:block">
     <div class="flex flex-col gap-[24px]">
         <?php foreach ($listArticles as $article): ?>
         <div class="flex gap-[24px]">
