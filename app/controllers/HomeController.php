@@ -319,8 +319,16 @@ class HomeController extends Controller {
         track_visit('/articles');
         
         $page = $this->input('page', 1);
-        $pagination = $this->articleModel->paginate($page, 9, 'status = :status AND published_at <= NOW()', 
+        // Changed from 9 to 20 to ensure we show enough articles on first page
+        $pagination = $this->articleModel->paginate($page, 20, 'status = :status AND published_at <= NOW()', 
             ['status' => 'published'], 'published_at DESC');
+        
+        error_log("Articles Controller - Total articles fetched: " . count($pagination['data']));
+        error_log("Articles Controller - Pagination info: " . json_encode([
+            'total' => $pagination['total'],
+            'current_page' => $pagination['current_page'],
+            'last_page' => $pagination['last_page']
+        ]));
         
         $data = [
             'articles' => $pagination['data'],

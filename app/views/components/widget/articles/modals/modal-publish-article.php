@@ -11,7 +11,7 @@
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-[621px] px-[24px] py-[20px]">
         <!-- Header: Title and Close Button -->
         <div class="flex items-start justify-between mb-[32px]">
-            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft">Simpan Perubahan</h3>
+            <h3 id="modal-title" class="font-bold text-[20px] leading-[100%] text-black-soft">Publish Artikel</h3>
             <button type="button" id="close-modal-publish-article" class="text-black-highlight hover:text-black-soft transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
@@ -84,11 +84,11 @@
                     ]); ?>
                 </div>
                 
-                <!-- Save Changes Button -->
+                <!-- Publish/Save Button - Dynamic based on mode -->
                 <div id="publish-button-wrapper">
                     <?php component('button', [
-                        'text' => 'Simpan Perubahan',
-                        'variant' => '1',
+                        'text' => 'Publish Artikel',
+                        'variant' => '10',
                         'type' => 'submit',
                         'id' => 'submit-publish-btn'
                     ]); ?>
@@ -100,9 +100,38 @@
 
 <!-- Modal Script -->
 <script>
+// Track modal mode (create or edit)
+let isEditMode = false;
+
 // Function to open publish article modal
 window.openPublishArticleModal = function() {
     const modal = document.getElementById('modal-publish-article');
+    const articleId = document.getElementById('article-id');
+    
+    // Detect mode: edit if article-id exists, create otherwise
+    isEditMode = articleId && articleId.value;
+    
+    // Update modal title and button based on mode
+    const modalTitle = document.getElementById('modal-title');
+    if (modalTitle) {
+        modalTitle.textContent = isEditMode ? 'Simpan Perubahan' : 'Publish Artikel';
+    }
+    
+    // Update button for edit mode (always active)
+    if (isEditMode) {
+        const publishButtonWrapper = document.getElementById('publish-button-wrapper');
+        if (publishButtonWrapper) {
+            publishButtonWrapper.innerHTML = `
+                <button type="submit" id="submit-publish-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-6 rounded-xl bg-primary text-white font-bold text-base h-[52px] hover:opacity-90 active:scale-95 cursor-pointer">
+                    Simpan Perubahan
+                </button>
+            `.trim();
+        }
+    } else {
+        // Create mode: validate before enabling button
+        validateForm();
+    }
+    
     modal.classList.remove('hidden');
 };
 
@@ -181,6 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     showImagePreview(e.target.result);
+                    // Trigger validation in create mode after image uploaded
+                    if (!isEditMode) validateForm();
                 };
                 reader.onerror = function() {
                     showToast('Gagal membaca file gambar', 'error', 3000);
@@ -191,16 +222,53 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Form validation - Button always active for edit mode
+    // Form validation - Different logic for create vs edit mode
     function validateForm() {
-        // No validation needed - button is always active
-        // User can save changes anytime
+        // Skip validation in edit mode - button always active
+        if (isEditMode) {
+            return;
+        }
+        
+        // Create mode: validate author name and image
+        const authorName = document.getElementById('author-name').value.trim();
+        const hasImage = imageInput.files.length > 0;
+        
+        const allFilled = authorName && hasImage;
+        const publishButtonWrapper = document.getElementById('publish-button-wrapper');
+        
+        if (allFilled) {
+            // Enable button - variant 1 (primary red)
+            publishButtonWrapper.innerHTML = `
+                <button type="submit" id="submit-publish-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-6 rounded-xl bg-primary text-white font-bold text-base h-[52px] hover:opacity-90 active:scale-95 cursor-pointer">
+                    Publish Artikel
+                </button>
+            `.trim();
+        } else {
+            // Disable button - variant 10
+            publishButtonWrapper.innerHTML = `
+                <button type="submit" id="submit-publish-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
+                    Publish Artikel
+                </button>
+            `;
+        }
     }
     
     // Expose validateForm as global function for external calls
     window.validatePublishForm = validateForm;
     
-    // Input listeners removed - button is always active in edit mode
+    // Add input listeners for form validation in create mode
+    const authorInput = document.getElementById('author-name');
+    if (authorInput) {
+        authorInput.addEventListener('input', function() {
+            if (!isEditMode) validateForm();
+        });
+    }
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            if (!isEditMode) validateForm();
+        });
+    }
     
     // Save as draft button
     const saveDraftBtn = document.getElementById('save-draft-btn');

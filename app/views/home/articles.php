@@ -4,10 +4,16 @@ $pageTitle = 'Articles';
 // Get articles data from controller
 $articles = $articles ?? [];
 
+// Debug: Log article count
+error_log("Articles page - Total articles loaded: " . count($articles));
+error_log("Articles page - Articles IDs: " . implode(', ', array_column($articles, 'id')));
+
 // Split articles: first 3 for grid, next 4 for list, rest hidden initially
 $gridArticles = array_slice($articles, 0, 3);
 $listArticles = array_slice($articles, 3, 4);
 $hiddenArticles = array_slice($articles, 7);
+
+error_log("Articles page - Grid: " . count($gridArticles) . ", List: " . count($listArticles) . ", Hidden: " . count($hiddenArticles));
 
 // Helper function to format date in Indonesian
 function formatDate($dateString) {
@@ -147,6 +153,12 @@ ob_start();
 
 <!-- Page Header -->
 <?php component('page_hero', ['title' => 'Artikel dan Berita Terkini', 'variant' => 'primary']); ?>
+
+<!-- Debug Info -->
+<!-- Total Articles: <?= count($articles) ?> -->
+<!-- Grid Articles: <?= count($gridArticles) ?> -->
+<!-- List Articles: <?= count($listArticles) ?> -->
+<!-- Hidden Articles: <?= count($hiddenArticles) ?> -->
 
 <?php if (empty($articles)): ?>
     <!-- No Articles Message --><section class="container mx-auto px-5">
