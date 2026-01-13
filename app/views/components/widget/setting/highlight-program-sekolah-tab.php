@@ -4,18 +4,29 @@
  * Widget untuk tab highlight program sekolah
  */
 
-// Fetch first 3 programs from programs_tahun
+// Fetch first 3 programs from highlight_programs or programs_tahun
 try {
     $programModel = new Program();
     $db = Database::getInstance();
     
-    // Get first 3 programs from programs_tahun
-    $query = "SELECT id, name, description, image, is_active 
-              FROM programs_tahun 
-              WHERE is_active = 1
-              ORDER BY created_at DESC 
+    // First, try to get highlight programs with proper order
+    $query = "SELECT hp.id as highlight_id, hp.program_tahun_id as id, pt.name, pt.description, pt.image, pt.is_active, hp.display_order
+              FROM highlight_programs hp
+              INNER JOIN programs_tahun pt ON hp.program_tahun_id = pt.id
+              WHERE pt.is_active = 1
+              ORDER BY hp.display_order ASC
               LIMIT 3";
     $highlightPrograms = $db->fetchAll($query);
+    
+    // If no highlights found, get first 3 active programs from programs_tahun as fallback
+    if (empty($highlightPrograms)) {
+        $query = "SELECT id, name, description, image, is_active 
+                  FROM programs_tahun 
+                  WHERE is_active = 1
+                  ORDER BY created_at DESC 
+                  LIMIT 3";
+        $highlightPrograms = $db->fetchAll($query);
+    }
 } catch (Exception $e) {
     error_log("Error loading highlight programs: " . $e->getMessage());
     $highlightPrograms = [];
@@ -66,7 +77,8 @@ try {
         <?php else: ?>
             <?php foreach ($highlightPrograms as $index => $program): ?>
                 <div class="program-item rounded-[12px] py-[12px] px-[14px] flex items-center transition-all" 
-                     data-id="<?= $program['id'] ?>"
+                     data-id="<?= !empty($program['highlight_id']) ? $program['highlight_id'] : $program['id'] ?>"
+                     data-program-id="<?= $program['id'] ?>"
                      data-program-name="<?= e($program['name']) ?>"
                      data-order="<?= $index + 1 ?>"
                      style="background-color: <?= colors('card_bg_light') ?>">

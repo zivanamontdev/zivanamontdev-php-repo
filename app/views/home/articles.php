@@ -151,20 +151,24 @@ ob_start();
 <?php else: ?>
     <!-- Section Grid Berita - Desktop Only -->
     <?php if (!empty($gridArticles)): ?>
-        <?php component('widget/articles/articles_grid_section', ['articles' => $gridArticles]); ?>
+        <div class="desktop-only">
+            <?php component('widget/articles/articles_grid_section', ['articles' => $gridArticles]); ?>
+        </div>
     <?php endif; ?>
 
     <!-- Section List Card Berita - Desktop Only -->
     <?php if (!empty($listArticles)): ?>
-        <?php component('widget/articles/articles_list_card_section', ['articles' => $listArticles]); ?>
+        <div class="desktop-only">
+            <?php component('widget/articles/articles_list_card_section', ['articles' => $listArticles]); ?>
+        </div>
     <?php endif; ?>
 
     <!-- Load More Button - Desktop Only -->
-    <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1): ?>
-    <div class="hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
+    <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page']): ?>
+    <div class="desktop-only hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
         <?php 
         $nextPage = ($pagination['current_page'] ?? 1) + 1;
-        $href = $nextPage <= $pagination['last_page'] ? url('/articles?page=' . $nextPage) : '#';
+        $href = url('/articles?page=' . $nextPage);
         component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
         ?>
     </div>
@@ -226,7 +230,6 @@ ob_start();
                 ]); ?>
             </div>
             <?php endif; ?>
-        </div>
     </div>
 <?php endif; ?>
 
@@ -249,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             articleItems.forEach(function(item) {
                 item.classList.add('show');
             });
-            loadMoreBtn.innerText = 'Tampilkan Lebih Sedikit';
+            loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
             showingAll = true;
         } else {
             // Show only first 3
@@ -258,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('show');
                 }
             });
-            loadMoreBtn.innerText = 'Tampilkan Lebih Banyak';
+            loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
             showingAll = false;
             
             // Scroll to top of articles
