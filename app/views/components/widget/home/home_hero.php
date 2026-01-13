@@ -10,7 +10,7 @@
 <section class="w-full lg:container mx-auto px-5 mt-[24px] mb-[40px] md:mt-[52px] md:mb-[120px]">
     <div class="bg-primary rounded-[32px] h-auto min-h-[400px] md:h-[544px] py-[32px] px-[20px] md:py-[56px] md:px-[64px] relative overflow-hidden">
         <!-- Background mask with gradient opacity (right to left fade) -->
-        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);">
+        <div class="absolute inset-0 pointer-events-none" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.12) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.12) 100%);">
             <img 
                 src="<?= asset('images/mask_group.png') ?>" 
                 alt="" 
@@ -26,7 +26,7 @@
                 <img 
                     src="<?= asset('images/vectors/vector_hero_home.png') ?>" 
                     alt="" 
-                    class="absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[2px] w-[238px] h-[94px] md:left-auto md:translate-x-0 md:right-[200px] md:w-[504px] md:h-[120px] pointer-events-none"
+                    class="hidden md:block absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[2px] w-[238px] h-[94px] md:left-auto md:translate-x-0 md:right-[200px] md:w-[504px] md:h-[120px] pointer-events-none"
                 >
                 
                 <h1 class="text-white-neutral font-bold text-[32px] md:text-[68px] leading-[110%] md:leading-[140%] text-center md:text-left relative z-10">

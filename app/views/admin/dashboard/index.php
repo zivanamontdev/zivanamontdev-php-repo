@@ -89,6 +89,9 @@ ob_start();
             });
             
             closeDropdown();
+            
+            // Trigger filter change
+            filterDashboardData(value);
         }
         
         trigger.addEventListener('click', (e) => {
@@ -111,6 +114,161 @@ ob_start();
             }
         });
     })();
+    
+    // Filter dashboard data function
+    function filterDashboardData(period) {
+        // Show loading state (optional)
+        const statsCards = document.querySelectorAll('.grid > div');
+        
+        // Make AJAX request to fetch filtered data
+        fetch('<?= url('/admin/dashboard') ?>?period=' + period, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update stats cards
+            updateStatsCards(data);
+            
+            // Update popular pages
+            updatePopularPages(data.popularPages || []);
+            
+            // Update locations
+            updateLocations(data.locationStats || []);
+            
+            // Update hourly chart
+            updateHourlyChart(data.hourlyData || []);
+        })
+        .catch(error => {
+            console.error('Error filtering dashboard data:', error);
+        });
+    }
+    
+    function updateStatsCards(data) {
+        const cards = document.querySelectorAll('.grid.grid-cols-1.md\\:grid-cols-4 > div');
+        
+        // Update Total Pengunjung
+        if (cards[0]) {
+            cards[0].querySelector('.text-\\[24px\\]').textContent = numberFormat(data.totalViews || 0);
+            updateChangeText(cards[0], data.viewsChange || '+0%');
+        }
+        
+        // Update Pengunjung Unik
+        if (cards[1]) {
+            cards[1].querySelector('.text-\\[24px\\]').textContent = numberFormat(data.uniqueVisitors || 0);
+            updateChangeText(cards[1], data.visitorsChange || '+0%');
+        }
+        
+        // Update Total Pendaftar
+        if (cards[2]) {
+            cards[2].querySelector('.text-\\[24px\\]').textContent = numberFormat(data.totalRegistrations || 0);
+            updateChangeText(cards[2], data.registrationsChange || '+0%');
+        }
+        
+        // Update Total Pembaca Artikel
+        if (cards[3]) {
+            cards[3].querySelector('.text-\\[24px\\]').textContent = numberFormat(data.totalArticleReaders || 0);
+            updateChangeText(cards[3], data.articleReadersChange || '+0%');
+        }
+    }
+    
+    function updateChangeText(card, change) {
+        const changeSpan = card.querySelector('.text-\\[12px\\] span');
+        if (changeSpan) {
+            changeSpan.textContent = change;
+            changeSpan.className = change.startsWith('+') ? 'text-[#3EC441]' : 'text-[#C43E41]';
+        }
+    }
+    
+    function updatePopularPages(pages) {
+        const container = document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-2 > div:first-child .flex.flex-col.gap-\\[20px\\]');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (pages.length === 0) {
+            container.innerHTML = '<div class="text-center text-white-soft py-4">Belum ada data</div>';
+            return;
+        }
+        
+        const maxViews = Math.max(...pages.map(p => p.views));
+        
+        pages.forEach(page => {
+            const isHighest = page.views === maxViews;
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between';
+            div.innerHTML = `
+                <span class="text-[12px] font-bold leading-[21px] text-black-neutral">${escapeHtml(page.page)}</span>
+                <span class="text-[12px] leading-[21px] ${isHighest ? 'font-bold text-secondary' : 'font-normal text-black-highlight'}">${numberFormat(page.views)} views</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+    
+    function updateLocations(locations) {
+        const container = document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-2 > div:last-child .flex.flex-col.gap-\\[20px\\]');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (locations.length === 0) {
+            container.innerHTML = '<div class="text-center text-white-soft py-4">Belum ada data</div>';
+            return;
+        }
+        
+        const maxViews = Math.max(...locations.map(l => l.views));
+        
+        locations.forEach(loc => {
+            const isHighest = loc.views === maxViews;
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between';
+            div.innerHTML = `
+                <span class="text-[12px] font-bold leading-[21px] text-black-neutral">${escapeHtml(loc.location)}</span>
+                <span class="text-[12px] leading-[21px] ${isHighest ? 'font-bold text-secondary' : 'font-normal text-black-highlight'}">${numberFormat(loc.views)} views</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+    
+    function updateHourlyChart(hourlyData) {
+        const chartContainer = document.querySelector('.w-full.bg-white-neutral .flex-1.flex.items-end.justify-between');
+        if (!chartContainer) return;
+        
+        chartContainer.innerHTML = '';
+        
+        const maxViews = hourlyData.length > 0 ? Math.max(...hourlyData.map(d => d.views)) : 0;
+        const hasData = maxViews > 0;
+        const chartHeight = 156;
+        
+        hourlyData.forEach(data => {
+            const isHighest = hasData && (data.views === maxViews) && (data.views > 0);
+            const barHeight = hasData ? ((data.views / 80) * chartHeight) : 4;
+            const finalHeight = Math.max(barHeight, 4);
+            
+            const div = document.createElement('div');
+            div.className = 'flex-1 flex flex-col items-center';
+            div.innerHTML = `
+                <div class="flex flex-col items-center">
+                    ${isHighest ? `<span class="text-[11px] font-normal leading-[16px] text-secondary mb-[20px]">${data.views}</span>` : ''}
+                    <div class="w-[16px] rounded-full ${isHighest ? 'bg-secondary' : 'bg-black-neutral'}" style="height: ${finalHeight}px;"></div>
+                </div>
+                <span class="text-[11px] font-normal leading-[24px] text-black-highlight mt-[8px]">${data.hour}</span>
+            `;
+            chartContainer.appendChild(div);
+        });
+    }
+    
+    function numberFormat(num) {
+        return new Intl.NumberFormat('id-ID').format(num);
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
     </script>
 </div>
 

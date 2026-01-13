@@ -47,6 +47,15 @@ class DashboardController extends Controller {
             'currentPeriod' => $period
         ];
         
+        // Check if AJAX request
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            // Return JSON for AJAX requests
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            exit;
+        }
+        
         $this->view('admin/dashboard/index', $data);
     }
 }

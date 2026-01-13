@@ -48,10 +48,10 @@ $imageUrl3 = !empty($program3['image']) ?
         
         <!-- Content -->
         <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px]">
-            <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
+            <h3 class="font-bold text-[16px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
                 <?= e($program1['name']) ?>
             </h3>
-            <p class="font-normal text-[20px] leading-[32px] tracking-[0%] text-white-neutral">
+            <p class="font-normal text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
                 <?= e($program1['description']) ?>
             </p>
         </div>
@@ -81,7 +81,7 @@ $imageUrl3 = !empty($program3['image']) ?
             
             <!-- Content -->
             <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px] z-30">
-                <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
+                <h3 class="font-bold text-[16px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral mb-[12px] md:mb-[16px]">
                     <?= e($program2['name']) ?>
                 </h3>
                 <p class="font-normal text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
@@ -107,7 +107,7 @@ $imageUrl3 = !empty($program3['image']) ?
                 
                 <!-- Content -->
                 <div class="relative h-full flex flex-col justify-end p-[16px] md:p-[20px]">
-                    <h3 class="font-bold text-[20px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
+                    <h3 class="font-bold text-[16px] md:text-[24px] leading-[140%] md:leading-[32px] tracking-[0%] text-white-neutral">
                         <?= e($program3['name']) ?>
                     </h3>
                 </div>
@@ -115,7 +115,7 @@ $imageUrl3 = !empty($program3['image']) ?
             
             <!-- Right - Text & Button -->
             <div class="w-full md:flex-1 flex flex-col justify-center items-center">
-                <p class="font-bold text-[20px] md:text-[28px] leading-[140%] tracking-[0%] text-black-soft mb-[20px] md:mb-[26px] text-center">
+                <p class="font-bold text-[16px] md:text-[28px] leading-[140%] tracking-[0%] text-black-soft mb-[20px] md:mb-[26px] text-center">
                     Serta banyak program sekolah bermanfaat lainnya!
                 </p>
                 <?php component('button', [

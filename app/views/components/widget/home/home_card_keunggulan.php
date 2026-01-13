@@ -22,13 +22,9 @@ $isFirst = $isFirst ?? false;
 $variant = '2';
 $class = '';
 include VIEW_PATH . '/components/card.php';
-
-// Mobile alignment classes
-$mobileAlignClass = $isFirst ? 'items-center text-center' : 'items-start text-left';
-$desktopAlignClass = 'md:items-start md:text-left';
 ?>
 
-<div class="<?= $bgColor ?> <?= $variantClass ?> <?= $class ?> flex flex-col h-full <?= $mobileAlignClass ?> <?= $desktopAlignClass ?>">
+<div class="<?= $bgColor ?> <?= $variantClass ?> <?= $class ?> flex flex-col h-full items-center text-center md:items-start md:text-left">
     <!-- Image -->
     <?php 
     // Add cache busting parameter to force reload in production
