@@ -4,14 +4,6 @@ $pageTitle = 'Articles';
 // Get articles data from controller
 $articles = $articles ?? [];
 
-// Debug: Log article count and details
-error_log("DEBUG ARTICLES - Total articles from controller: " . count($articles));
-if (!empty($articles)) {
-    foreach ($articles as $idx => $art) {
-        error_log("DEBUG ARTICLES - Index $idx: ID={$art['id']}, Title={$art['title']}, Status={$art['status']}, Published={$art['published_at']}");
-    }
-}
-
 // Split articles: first 3 for grid, next 4 for list, rest hidden initially
 $gridArticles = array_slice($articles, 0, 3);
 $listArticles = array_slice($articles, 3, 4);

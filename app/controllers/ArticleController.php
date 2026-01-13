@@ -216,9 +216,14 @@ class ArticleController extends Controller {
                 'status' => $status,
             ];
             
-            // Set published_at if status changed to published
-            if ($status === 'published' && $article['status'] !== 'published') {
-                $data['published_at'] = date('Y-m-d H:i:s');
+            // Set published_at if status changed to published or if it's being published now
+            if ($status === 'published') {
+                if ($article['status'] !== 'published' || empty($article['published_at'])) {
+                    $data['published_at'] = date('Y-m-d H:i:s');
+                }
+            } elseif ($status === 'draft') {
+                // Clear published_at if changing to draft
+                $data['published_at'] = null;
             }
             
             $this->articleModel->update($id, $data);
