@@ -29,17 +29,17 @@
                     class="hidden md:block absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[2px] w-[238px] h-[94px] md:left-auto md:translate-x-0 md:right-[200px] md:w-[504px] md:h-[120px] pointer-events-none"
                 >
                 
-                <h1 class="text-white-neutral font-bold text-[32px] md:text-[68px] leading-[110%] md:leading-[140%] text-center md:text-left relative z-10">
-                    Sekolah Berbasis Montessori Islami<br>
-                    <span class="inline-block mt-[10px]">
+                <h1 class="text-white-neutral font-bold text-[32px] md:text-[68px] leading-[140%] text-center md:text-left relative z-10">
+                    Sekolah Berbasis Montessori Islami<br class="hidden md:inline">
+                    <span class="inline-block md:mt-[10px]">
                         Untuk Semua Anak
                     </span>
                 </h1>
                 
                 <!-- Description -->
-                <p class="text-white-neutral font-normal text-[16px] md:text-[24px] leading-[150%] md:leading-[38px] text-center md:text-left mt-6 md:mt-11 relative z-10">
-                    Mengembangkan potensi anak secara alami melalui<br>
-                    metode Montessori yang menumbuhkan kemandirian,<br>
+                <p class="text-white-neutral font-normal text-[16px] md:text-[24px] leading-[140%] md:leading-[38px] text-center md:text-left mt-6 md:mt-11 relative z-10">
+                    Mengembangkan potensi anak secara alami melalui<br class="hidden md:inline">
+                    metode Montessori yang menumbuhkan kemandirian,<br class="hidden md:inline">
                     rasa ingin tahu, dan kecintaan belajar.
                 </p>
             </div>
