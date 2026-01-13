@@ -318,6 +318,17 @@ class HomeController extends Controller {
     public function articles() {
         track_visit('/articles');
         
+        // DEBUG: Check all articles in DB
+        $db = Database::getInstance();
+        $allArticles = $db->query("SELECT id, title, status, published_at, DATE_FORMAT(published_at, '%Y-%m-%d %H:%i:%s') as formatted_date FROM articles ORDER BY id DESC")->fetchAll();
+        error_log("=== ALL ARTICLES IN DB ===");
+        error_log("Server NOW(): " . date('Y-m-d H:i:s'));
+        error_log("Database NOW(): " . $db->query("SELECT NOW() as now")->fetch()['now']);
+        foreach ($allArticles as $art) {
+            error_log("Article #{$art['id']}: {$art['title']} | Status: {$art['status']} | Published: {$art['formatted_date']}");
+        }
+        error_log("========================");
+        
         $page = $this->input('page', 1);
         // Changed from 9 to 20 to ensure we show enough articles on first page
         $pagination = $this->articleModel->paginate($page, 20, 'status = :status AND published_at <= NOW()', 

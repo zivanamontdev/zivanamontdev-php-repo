@@ -51,6 +51,9 @@ if (!$isAdminSubdomain && $isAdminRoute && !$isLocalhost) {
     exit;
 }
 
+// Set timezone to match local timezone (Indonesia/Makassar = UTC+8)
+date_default_timezone_set('Asia/Makassar');
+
 // Start session
 session_start();
 
