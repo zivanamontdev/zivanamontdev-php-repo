@@ -10,9 +10,9 @@ ob_start();
 
 <!-- Search Input and Filter (below Dashboard title) -->
 <div class="mb-[20px] flex items-center justify-between">
-    <!-- Search Input -->
-    <div class="relative w-[264px]">
-        <span class="absolute left-[12px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft pointer-events-none">
+    <!-- Feature Search Input -->
+    <div class="relative w-[320px]" id="admin-feature-search">
+        <span class="absolute left-[12px] top-1/2 -translate-y-1/2 w-4 h-4 text-white-soft pointer-events-none z-10">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M14 14L11.1 11.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -20,10 +20,16 @@ ob_start();
         </span>
         <input 
             type="text" 
-            name="search"
-            placeholder="Cari Pendaftar"
+            id="feature-search-input"
+            placeholder="Cari Fitur (contoh: Artikel, Karyawan, FAQ)"
+            autocomplete="off"
             class="w-full pl-[36px] pr-[12px] py-[10px] bg-white-neutral border border-[#E0E0E0] rounded-[12px] text-[12px] text-black-soft placeholder:text-white-soft focus:outline-none focus:border-primary transition-colors"
         >
+        
+        <!-- Search Results Dropdown -->
+        <div id="search-results" class="absolute top-full left-0 right-0 mt-2 bg-white-neutral border border-[#E0E0E0] rounded-[12px] shadow-lg z-50 hidden max-h-[400px] overflow-y-auto">
+            <!-- Results will be inserted here -->
+        </div>
     </div>
     
     <!-- Period Filter Dropdown -->
@@ -51,6 +57,234 @@ ob_start();
     </div>
     
     <script>
+    // Feature Search Functionality
+    (function() {
+        const searchContainer = document.getElementById('admin-feature-search');
+        const searchInput = document.getElementById('feature-search-input');
+        const resultsContainer = document.getElementById('search-results');
+        
+        if (!searchContainer || !searchInput || !resultsContainer) return;
+        
+        // Define all admin features with routes
+        const features = [
+            {
+                name: 'Riwayat Pendaftar',
+                category: 'Pendaftaran',
+                route: '<?= url('/admin/registrations') ?>',
+                keywords: ['pendaftar', 'registrasi', 'riwayat', 'daftar', 'siswa', 'murid']
+            },
+            {
+                name: 'Informasi Kelas',
+                category: 'Aktivitas Sekolah',
+                route: '<?= url('/admin/activities') ?>?tab=classes',
+                keywords: ['kelas', 'class', 'aktivitas', 'informasi']
+            },
+            {
+                name: 'Program Tahun Ajaran',
+                category: 'Aktivitas Sekolah',
+                route: '<?= url('/admin/activities') ?>?tab=programs-tahun',
+                keywords: ['program', 'tahun', 'ajaran', 'aktivitas']
+            },
+            {
+                name: 'Program Harian',
+                category: 'Aktivitas Sekolah',
+                route: '<?= url('/admin/activities') ?>?tab=programs-harian',
+                keywords: ['program', 'harian', 'aktivitas', 'kegiatan']
+            },
+            {
+                name: 'Artikel',
+                category: 'Konten',
+                route: '<?= url('/admin/articles') ?>',
+                keywords: ['artikel', 'article', 'berita', 'konten', 'blog']
+            },
+            {
+                name: 'Prakata',
+                category: 'Manajemen Sekolah',
+                route: '<?= url('/admin/management') ?>?tab=prakata',
+                keywords: ['prakata', 'sambutan', 'manajemen', 'kepala sekolah']
+            },
+            {
+                name: 'Karyawan',
+                category: 'Manajemen Sekolah',
+                route: '<?= url('/admin/management') ?>?tab=karyawan',
+                keywords: ['karyawan', 'staff', 'pegawai', 'guru', 'manajemen']
+            },
+            {
+                name: 'Fasilitas',
+                category: 'Manajemen Sekolah',
+                route: '<?= url('/admin/management') ?>?tab=fasilitas',
+                keywords: ['fasilitas', 'sarana', 'prasarana', 'manajemen']
+            },
+            {
+                name: 'Pengaturan Pendaftaran',
+                category: 'Pengaturan',
+                route: '<?= url('/admin/settings') ?>?tab=registration',
+                keywords: ['pendaftaran', 'setting', 'pengaturan', 'registrasi', 'form']
+            },
+            {
+                name: 'Highlight Program',
+                category: 'Pengaturan',
+                route: '<?= url('/admin/settings') ?>?tab=highlight-programs',
+                keywords: ['highlight', 'program', 'unggulan', 'pengaturan']
+            },
+            {
+                name: 'Testimoni',
+                category: 'Pengaturan',
+                route: '<?= url('/admin/settings') ?>?tab=testimonials',
+                keywords: ['testimoni', 'testimonial', 'ulasan', 'review', 'pengaturan']
+            },
+            {
+                name: 'Events',
+                category: 'Pengaturan',
+                route: '<?= url('/admin/settings') ?>?tab=events',
+                keywords: ['event', 'acara', 'kegiatan', 'pengaturan']
+            },
+            {
+                name: 'FAQ',
+                category: 'Pengaturan',
+                route: '<?= url('/admin/settings') ?>?tab=faqs',
+                keywords: ['faq', 'pertanyaan', 'tanya jawab', 'bantuan', 'pengaturan']
+            }
+        ];
+        
+        let selectedIndex = -1;
+        
+        // Search and filter features
+        function searchFeatures(query) {
+            if (!query || query.trim().length < 1) {
+                return [];
+            }
+            
+            query = query.toLowerCase().trim();
+            
+            return features.filter(feature => {
+                // Search in name
+                if (feature.name.toLowerCase().includes(query)) {
+                    return true;
+                }
+                
+                // Search in category
+                if (feature.category.toLowerCase().includes(query)) {
+                    return true;
+                }
+                
+                // Search in keywords
+                return feature.keywords.some(keyword => keyword.includes(query));
+            });
+        }
+        
+        // Render search results
+        function renderResults(results) {
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="px-4 py-3 text-[12px] text-white-soft text-center">
+                        Tidak ada fitur yang ditemukan
+                    </div>
+                `;
+                resultsContainer.classList.remove('hidden');
+                return;
+            }
+            
+            const html = results.map((feature, index) => `
+                <a href="${feature.route}" 
+                   class="block px-4 py-3 hover:bg-white-secondary transition-colors border-b border-border-light last:border-b-0 cursor-pointer search-result-item"
+                   data-index="${index}">
+                    <div class="text-[13px] font-semibold text-black-soft mb-1">${escapeHtml(feature.name)}</div>
+                    <div class="text-[11px] text-white-soft">${escapeHtml(feature.category)}</div>
+                </a>
+            `).join('');
+            
+            resultsContainer.innerHTML = html;
+            resultsContainer.classList.remove('hidden');
+            selectedIndex = -1;
+        }
+        
+        // Hide results
+        function hideResults() {
+            resultsContainer.classList.add('hidden');
+            resultsContainer.innerHTML = '';
+            selectedIndex = -1;
+        }
+        
+        // Handle keyboard navigation
+        function handleKeyboardNavigation(e) {
+            const items = resultsContainer.querySelectorAll('.search-result-item');
+            
+            if (items.length === 0) return;
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (selectedIndex >= 0 && items[selectedIndex]) {
+                    items[selectedIndex].click();
+                }
+            } else if (e.key === 'Escape') {
+                hideResults();
+                searchInput.blur();
+            }
+        }
+        
+        // Update selection highlight
+        function updateSelection(items) {
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('bg-white-secondary');
+                } else {
+                    item.classList.remove('bg-white-secondary');
+                }
+            });
+            
+            // Scroll into view if needed
+            if (selectedIndex >= 0 && items[selectedIndex]) {
+                items[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value;
+            
+            if (query.trim().length < 1) {
+                hideResults();
+                return;
+            }
+            
+            const results = searchFeatures(query);
+            renderResults(results);
+        });
+        
+        searchInput.addEventListener('keydown', handleKeyboardNavigation);
+        
+        searchInput.addEventListener('focus', function() {
+            if (searchInput.value.trim().length >= 1) {
+                const results = searchFeatures(searchInput.value);
+                renderResults(results);
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchContainer.contains(e.target)) {
+                hideResults();
+            }
+        });
+        
+        // Helper function
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    })();
+    
+    // Period Filter Dropdown
     (function() {
         const dropdown = document.getElementById('period-filter');
         if (!dropdown) return;

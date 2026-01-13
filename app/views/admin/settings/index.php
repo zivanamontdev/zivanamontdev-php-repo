@@ -80,8 +80,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedBg = '<?= colors("white_neutral") ?>';
     const selectedShadow = '0px 2px 5.5px 0px rgba(0,0,0,0.07)';
     
-    // Restore active tab from localStorage
-    const activeTabIndex = localStorage.getItem('activeSettingsTabIndex') || '0';
+    // Check URL parameter first, then localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTab = urlParams.get('tab');
+    let activeTabIndex = '0';
+    
+    // Map tab names to indices
+    const tabMap = {
+        'registration': '0',
+        'highlight-programs': '1',
+        'testimonials': '2',
+        'events': '3',
+        'faqs': '4'
+    };
+    
+    if (urlTab && tabMap[urlTab] !== undefined) {
+        activeTabIndex = tabMap[urlTab];
+        // Update localStorage with URL parameter
+        localStorage.setItem('activeSettingsTabIndex', activeTabIndex);
+        // Clean URL (remove tab parameter)
+        window.history.replaceState({}, '', window.location.pathname);
+    } else {
+        // Fallback to localStorage
+        activeTabIndex = localStorage.getItem('activeSettingsTabIndex') || '0';
+    }
     
     // Function to update tab button styles
     function updateTabButtons(activeIndex) {
@@ -107,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Initialize - show active tab from localStorage
+    // Initialize - show active tab
     showActiveTab(activeTabIndex);
     updateTabButtons(activeTabIndex);
     
