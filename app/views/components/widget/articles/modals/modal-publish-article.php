@@ -11,7 +11,7 @@
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-[621px] px-[24px] py-[20px]">
         <!-- Header: Title and Close Button -->
         <div class="flex items-start justify-between mb-[32px]">
-            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft">Publish Artikel</h3>
+            <h3 class="font-bold text-[20px] leading-[100%] text-black-soft">Simpan Perubahan</h3>
             <button type="button" id="close-modal-publish-article" class="text-black-highlight hover:text-black-soft transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
@@ -84,11 +84,11 @@
                     ]); ?>
                 </div>
                 
-                <!-- Publish Button -->
+                <!-- Save Changes Button -->
                 <div id="publish-button-wrapper">
                     <?php component('button', [
-                        'text' => 'Publish Artikel',
-                        'variant' => '10',
+                        'text' => 'Simpan Perubahan',
+                        'variant' => '1',
                         'type' => 'submit',
                         'id' => 'submit-publish-btn'
                     ]); ?>
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeBtn) {
         closeBtn.addEventListener('click', function() {
             modal.classList.add('hidden');
-            resetForm();
+            // Don't reset form in edit mode - keep existing data
         });
     }
     
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.classList.add('hidden');
-            resetForm();
+            // Don't reset form in edit mode - keep existing data
         }
     });
     
@@ -181,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     showImagePreview(e.target.result);
-                    validateForm(); // Re-validate after image upload
                 };
                 reader.onerror = function() {
                     showToast('Gagal membaca file gambar', 'error', 3000);
@@ -192,40 +191,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Form validation
+    // Form validation - Button always active for edit mode
     function validateForm() {
-        const authorName = document.getElementById('author-name').value.trim();
-        const hasImage = imageInput.files.length > 0;
-        
-        const allFilled = authorName && hasImage;
-        const publishButtonWrapper = document.getElementById('publish-button-wrapper');
-        
-        if (allFilled) {
-            // Change to variant 1 (primary red button)
-            publishButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-publish-btn" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-6 rounded-xl bg-primary text-white font-bold text-base h-[52px] hover:opacity-90 active:scale-95 cursor-pointer">
-                    Publish Artikel
-                </button>
-            `.trim();
-        } else {
-            // Change to variant 10 (disabled)
-            publishButtonWrapper.innerHTML = `
-                <button type="submit" id="submit-publish-btn" disabled class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-[12px] px-[24px] rounded-xl bg-white-secondary text-white-shadow font-normal text-base leading-[28px] border border-border-light h-[52px] opacity-50 cursor-not-allowed">
-                    Publish Artikel
-                </button>
-            `;
-        }
+        // No validation needed - button is always active
+        // User can save changes anytime
     }
     
-    // Add input listeners for form validation
-    const authorInput = document.getElementById('author-name');
-    if (authorInput) {
-        authorInput.addEventListener('input', validateForm);
-    }
+    // Expose validateForm as global function for external calls
+    window.validatePublishForm = validateForm;
     
-    if (imageInput) {
-        imageInput.addEventListener('change', validateForm);
-    }
+    // Input listeners removed - button is always active in edit mode
     
     // Save as draft button
     const saveDraftBtn = document.getElementById('save-draft-btn');

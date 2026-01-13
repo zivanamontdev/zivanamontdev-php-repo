@@ -52,10 +52,10 @@ ob_start();
             ]
         ]); ?>
         
-        <!-- Publish Button -->
+        <!-- Save Changes Button -->
         <?php component('button', [
             'variant' => '15',
-            'text' => 'Publish Artikel',
+            'text' => 'Simpan Perubahan',
             'type' => 'button',
             'id' => 'btn-publish-article',
             'attrs' => [
@@ -101,7 +101,45 @@ ob_start();
 <!-- Hidden input to store article ID -->
 <input type="hidden" id="article-id" value="<?= e($article['id'] ?? '') ?>">
 
+<!-- Hidden inputs to store original values for change detection -->
+<input type="hidden" id="original-title" value="<?= e($article['title'] ?? '') ?>">
+<input type="hidden" id="original-content" value="<?= e($article['content'] ?? '') ?>">
+
 <script>
+// Track if article has changes
+let hasArticleChanges = false;
+
+// Check if article has been modified
+function checkArticleChanges() {
+    const currentTitle = document.getElementById('article-title').value.trim();
+    const currentContent = document.getElementById('article-content').value.trim();
+    const originalTitle = document.getElementById('original-title').value;
+    const originalContent = document.getElementById('original-content').value;
+    
+    hasArticleChanges = (currentTitle !== originalTitle) || (currentContent !== originalContent);
+    
+    // Trigger validation in modal if it exists
+    if (typeof window.validatePublishForm === 'function') {
+        window.validatePublishForm();
+    }
+    
+    return hasArticleChanges;
+}
+
+// Add change listeners to title and content
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('article-title');
+    const contentTextarea = document.getElementById('article-content');
+    
+    if (titleInput) {
+        titleInput.addEventListener('input', checkArticleChanges);
+    }
+    
+    if (contentTextarea) {
+        contentTextarea.addEventListener('input', checkArticleChanges);
+    }
+});
+
 // Validation helper function
 function validateArticleForm() {
     const title = document.getElementById('article-title').value.trim();

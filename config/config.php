@@ -50,13 +50,21 @@ if (file_exists(ROOT_PATH . '/.env')) {
 
 // Try to detect production environment
 $isProduction = false;
+$isLocalDev = false;
 if (isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
     // Check if running on production domain
     if (strpos($host, 'sekolahzivanamontessori.sch.id') !== false) {
         $isProduction = true;
     }
+    // Check if running on localhost
+    if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false) {
+        $isLocalDev = true;
+    }
 }
+
+// Define local development mode for middleware bypass
+define('IS_LOCAL_DEV', $isLocalDev);
 
 // Database configuration
 // Use production credentials if on production domain and .env not loaded properly

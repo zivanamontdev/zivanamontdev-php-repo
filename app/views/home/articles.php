@@ -116,10 +116,17 @@ ob_start();
     
     .mobile-article-item {
         display: none;
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        margin: 0;
     }
     
     .mobile-article-item.show {
         display: block;
+        visibility: visible;
+        height: auto;
+        overflow: visible;
     }
     
     .mobile-load-more {
@@ -167,7 +174,10 @@ ob_start();
     <!-- Hidden Articles Section - Desktop Only -->
     <?php if (!empty($hiddenArticles)): ?>
         <div class="desktop-only hidden" id="desktop-hidden-articles">
-            <?php component('widget/articles/articles_list_card_section', ['articles' => $hiddenArticles]); ?>
+            <?php component('widget/articles/articles_list_card_section', [
+                'articles' => $hiddenArticles,
+                'removeTopMargin' => true
+            ]); ?>
         </div>
     <?php endif; ?>
 
@@ -189,7 +199,7 @@ ob_start();
     <!-- Mobile Version -->
     <div class="mobile-articles-container md:hidden">
             <?php foreach ($articles as $index => $article): ?>
-                <div class="mobile-article-item <?= ($index < 3) ? 'show' : '' ?>">
+                <div class="mobile-article-item <?= ($index < 3) ? 'show' : '' ?>" data-index="<?= $index ?>">
                     <div class="mobile-article-card">
                         <!-- Image -->
                         <div class="mobile-article-card-image">
@@ -234,12 +244,14 @@ ob_start();
             <!-- Load More Button -->
             <?php if (count($articles) > 3): ?>
             <div class="mobile-load-more">
-                <?php component('button', [
-                    'text' => 'Tampilkan Lebih Banyak', 
-                    'variant' => '5',
-                    'id' => 'loadMoreBtn',
-                    'type' => 'button'
-                ]); ?>
+                <button 
+                    type="button" 
+                    id="loadMoreBtn"
+                    onclick="toggleMobileArticles()"
+                    class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-2 px-6 rounded-xl bg-white-neutral text-black-soft font-normal text-base leading-[28px] opacity-50 hover:opacity-90 active:scale-95 cursor-pointer"
+                >
+                    Tampilkan Lebih Banyak
+                </button>
             </div>
             <?php endif; ?>
     </div>
@@ -248,46 +260,46 @@ ob_start();
 <?php component('footer', ['showCta' => true]); ?>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mobile Load More
+// Mobile Load More - Global function
+let showingAll = false;
+
+function toggleMobileArticles() {
+    const articleItems = document.querySelectorAll('.mobile-article-item');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (loadMoreBtn) {
-        let showingAll = false;
-        
-        loadMoreBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const articleItems = document.querySelectorAll('.mobile-article-item');
-            
-            if (!showingAll) {
-                // Show all articles
-                articleItems.forEach(function(item) {
-                    item.classList.add('show');
-                });
-                loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
-                showingAll = true;
-            } else {
-                // Show only first 3
-                articleItems.forEach(function(item, index) {
-                    if (index >= 3) {
-                        item.classList.remove('show');
-                    }
-                });
-                loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
-                showingAll = false;
-                
-                // Scroll to top of articles
-                const container = document.querySelector('.mobile-articles-container');
-                if (container) {
-                    container.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }
+    
+    if (!showingAll) {
+        // Show all articles
+        articleItems.forEach(function(item) {
+            item.classList.add('show');
+        });
+        if (loadMoreBtn) {
+            loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
+        }
+        showingAll = true;
+    } else {
+        // Show only first 3
+        articleItems.forEach(function(item, index) {
+            if (index >= 3) {
+                item.classList.remove('show');
             }
         });
+        if (loadMoreBtn) {
+            loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
+        }
+        showingAll = false;
+        
+        // Scroll to top of articles
+        const container = document.querySelector('.mobile-articles-container');
+        if (container) {
+            container.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
     }
-    
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     // Desktop Load More
     const desktopLoadMoreBtn = document.getElementById('desktopLoadMoreBtn');
     if (desktopLoadMoreBtn) {

@@ -12,6 +12,7 @@
 
 // Get articles from passed parameter
 $listArticles = $__component_data__['articles'] ?? [];
+$removeTopMargin = $__component_data__['removeTopMargin'] ?? false;
 
 // If no articles provided, return empty
 if (empty($listArticles)) {
@@ -62,7 +63,7 @@ if (!function_exists('getArticleImageUrlList')) {
     }
 </style>
 
-<section class="container mx-auto mt-[52px] hidden md:block">
+<section class="container mx-auto px-5 <?= $removeTopMargin ? '' : 'mt-[52px]' ?> hidden md:block">
     <div class="flex flex-col gap-[24px]">
         <?php foreach ($listArticles as $article): ?>
         <div class="flex gap-[24px]">

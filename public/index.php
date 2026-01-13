@@ -5,15 +5,21 @@
  */
 
 // CRITICAL: Block admin routes on main domain IMMEDIATELY before anything else
+// BUT allow on localhost for local development
 $host = $_SERVER['HTTP_HOST'] ?? '';
 $uri = $_SERVER['REQUEST_URI'] ?? '';
 $path = parse_url($uri, PHP_URL_PATH);
 
-// Check if NOT admin subdomain AND accessing admin route
+// Check if running on localhost
+$isLocalhost = (strpos($host, 'localhost') !== false || 
+                strpos($host, '127.0.0.1') !== false ||
+                defined('IS_LOCAL_DEV_SERVER'));
+
+// Check if NOT admin subdomain AND accessing admin route AND NOT localhost
 $isAdminSubdomain = (strpos($host, 'admin.') === 0 || defined('IS_ADMIN_SUBDOMAIN'));
 $isAdminRoute = (strpos($path, '/admin') === 0);
 
-if (!$isAdminSubdomain && $isAdminRoute) {
+if (!$isAdminSubdomain && $isAdminRoute && !$isLocalhost) {
     // Immediately return 404 without any processing
     http_response_code(404);
     header('Content-Type: text/html; charset=UTF-8');
@@ -81,17 +87,20 @@ spl_autoload_register(function ($class) {
 // Load helpers
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/helpers/geoip.php';
+require_once APP_PATH . '/helpers/Security.php';
 
 // Global error handler for security (prevent 500 on admin routes)
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     error_log("PHP Error [$errno]: $errstr in $errfile on line $errline");
     
-    // Check if this is admin route access attempt
+    // Check if this is admin route access attempt on production (not localhost)
     $uri = $_SERVER['REQUEST_URI'] ?? '';
     $path = parse_url($uri, PHP_URL_PATH);
     $path = rtrim($path, '/');
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $isLocalhost = (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false);
     
-    if (strpos($path, '/admin') === 0) {
+    if (strpos($path, '/admin') === 0 && !$isLocalhost) {
         http_response_code(404);
         echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404</title></head><body><h1>404 - Halaman Tidak Ditemukan</h1><p><a href="/">Kembali ke Beranda</a></p></body></html>';
         exit;
@@ -101,7 +110,14 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 });
 
 // Check subdomain and handle restrictions
-if (class_exists('SubdomainMiddleware')) {
+// Use LocalDevMiddleware for local development, SubdomainMiddleware for production
+$isLocalDev = (defined('IS_LOCAL_DEV_SERVER') && IS_LOCAL_DEV_SERVER) || 
+              (defined('IS_LOCAL_DEV') && IS_LOCAL_DEV) ||
+              (isset($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
+
+if ($isLocalDev && class_exists('LocalDevMiddleware')) {
+    LocalDevMiddleware::handle();
+} elseif (class_exists('SubdomainMiddleware')) {
     SubdomainMiddleware::handle();
 }
 
@@ -120,12 +136,14 @@ try {
     error_log("Application Error: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
     
-    // SECURITY: Check if this is admin route - always return 404, never 500
+    // SECURITY: Check if this is admin route on production (not localhost) - always return 404, never 500
     $uri = $_SERVER['REQUEST_URI'] ?? '';
     $path = parse_url($uri, PHP_URL_PATH);
     $path = rtrim($path, '/');
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $isLocalhost = (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false);
     
-    if (strpos($path, '/admin') === 0) {
+    if (strpos($path, '/admin') === 0 && !$isLocalhost) {
         http_response_code(404);
         echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>404</title><style>body{font-family:sans-serif;text-align:center;padding:50px;background:#f5f5f5;}h1{color:#C92C2F;font-size:72px;margin:0;}p{color:#666;font-size:18px;}a{color:#C92C2F;text-decoration:none;}</style></head><body><h1>404</h1><p>Halaman yang Anda cari tidak ditemukan.</p><p><a href="/">← Kembali ke Beranda</a></p></body></html>';
         exit;
