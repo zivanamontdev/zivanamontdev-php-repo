@@ -26,6 +26,9 @@ $pagination = $pagination ?? null;
             <div class="flex flex-col items-start">
                 <h3 class="font-bold text-[16px] leading-[21px] text-black-soft mb-[8px]">Daftar Artikel</h3>
                 <p class="font-normal text-[14px] leading-[21px] text-white-soft">Artikel yang telah dibuat akan muncul di sini</p>
+                <p class="font-normal text-[12px] leading-[18px] text-primary mt-[4px]">
+                    💡 Hanya artikel dengan status "Published" yang akan tampil di halaman publik
+                </p>
             </div>
             
             <!-- Add Article Button -->
