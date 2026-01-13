@@ -4,9 +4,10 @@ $pageTitle = 'Articles';
 // Get articles data from controller
 $articles = $articles ?? [];
 
-// Split articles: first 3 for grid, rest for list
+// Split articles: first 3 for grid, next 4 for list, rest hidden initially
 $gridArticles = array_slice($articles, 0, 3);
-$listArticles = array_slice($articles, 3);
+$listArticles = array_slice($articles, 3, 4);
+$hiddenArticles = array_slice($articles, 7);
 
 // Helper function to format date in Indonesian
 function formatDate($dateString) {
@@ -163,14 +164,25 @@ ob_start();
         </div>
     <?php endif; ?>
 
+    <!-- Hidden Articles Section - Desktop Only -->
+    <?php if (!empty($hiddenArticles)): ?>
+        <div class="desktop-only hidden" id="desktop-hidden-articles">
+            <?php component('widget/articles/articles_list_card_section', ['articles' => $hiddenArticles]); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Load More Button - Desktop Only -->
-    <?php if (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page']): ?>
+    <?php if (!empty($hiddenArticles) || (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page'])): ?>
     <div class="desktop-only hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
-        <?php 
-        $nextPage = ($pagination['current_page'] ?? 1) + 1;
-        $href = url('/articles?page=' . $nextPage);
-        component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
-        ?>
+        <?php if (!empty($hiddenArticles)): ?>
+            <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'id' => 'desktopLoadMoreBtn', 'type' => 'button']); ?>
+        <?php elseif (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page']): ?>
+            <?php 
+            $nextPage = ($pagination['current_page'] ?? 1) + 1;
+            $href = url('/articles?page=' . $nextPage);
+            component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
+            ?>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
     
@@ -237,43 +249,80 @@ ob_start();
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Load More
     const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (!loadMoreBtn) return;
-    
-    let showingAll = false;
-    
-    loadMoreBtn.addEventListener('click', function(e) {
-        e.preventDefault();
+    if (loadMoreBtn) {
+        let showingAll = false;
         
-        const articleItems = document.querySelectorAll('.mobile-article-item');
-        
-        if (!showingAll) {
-            // Show all articles
-            articleItems.forEach(function(item) {
-                item.classList.add('show');
-            });
-            loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
-            showingAll = true;
-        } else {
-            // Show only first 3
-            articleItems.forEach(function(item, index) {
-                if (index >= 3) {
-                    item.classList.remove('show');
-                }
-            });
-            loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
-            showingAll = false;
+        loadMoreBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            // Scroll to top of articles
-            const container = document.querySelector('.mobile-articles-container');
-            if (container) {
-                container.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
+            const articleItems = document.querySelectorAll('.mobile-article-item');
+            
+            if (!showingAll) {
+                // Show all articles
+                articleItems.forEach(function(item) {
+                    item.classList.add('show');
                 });
+                loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
+                showingAll = true;
+            } else {
+                // Show only first 3
+                articleItems.forEach(function(item, index) {
+                    if (index >= 3) {
+                        item.classList.remove('show');
+                    }
+                });
+                loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
+                showingAll = false;
+                
+                // Scroll to top of articles
+                const container = document.querySelector('.mobile-articles-container');
+                if (container) {
+                    container.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
             }
-        }
-    });
+        });
+    }
+    
+    // Desktop Load More
+    const desktopLoadMoreBtn = document.getElementById('desktopLoadMoreBtn');
+    if (desktopLoadMoreBtn) {
+        const hiddenSection = document.getElementById('desktop-hidden-articles');
+        let isShowing = false;
+        
+        desktopLoadMoreBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (!isShowing) {
+                // Show hidden articles
+                if (hiddenSection) {
+                    hiddenSection.classList.remove('hidden');
+                }
+                desktopLoadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
+                isShowing = true;
+            } else {
+                // Hide articles again
+                if (hiddenSection) {
+                    hiddenSection.classList.add('hidden');
+                }
+                desktopLoadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
+                isShowing = false;
+                
+                // Scroll to list section
+                const listSection = document.querySelector('.desktop-only');
+                if (listSection) {
+                    listSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }
+        });
+    }
 });
 </script>
 
