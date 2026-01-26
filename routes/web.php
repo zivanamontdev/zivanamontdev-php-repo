@@ -104,6 +104,11 @@ $router->get('/admin/settings/email', [SettingsController::class, 'emailSettings
 $router->post('/admin/settings/email/update', [SettingsController::class, 'updateEmailSettings']);
 $router->post('/admin/settings/email/test', [SettingsController::class, 'testEmail']);
 
+// User Management routes
+$router->post('/admin/settings/users/create', [SettingsController::class, 'createUser']);
+$router->post('/admin/settings/users/update', [SettingsController::class, 'updateUser']);
+$router->post('/admin/settings/users/delete', [SettingsController::class, 'deleteUser']);
+
 // Prakata routes
 $router->get('/admin/management/prakata/get', [ManagementController::class, 'getPrakata']);
 $router->post('/admin/management/prakata/update', [ManagementController::class, 'updatePrakata']);

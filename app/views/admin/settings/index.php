@@ -14,29 +14,20 @@ ob_start();
 <!-- Admin Navbar -->
 <?php component('admin-navbar', ['title' => 'Pengaturan']); ?>
 
-<!-- Tabs and Email Settings Button -->
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-    <!-- Tabs -->
-    <div style="flex: 1;">
-        <?php component('tabs', [
-            'tabs' => [
-                'Pendaftaran',
-                'Highlight Program',
-                'Testimoni',
-                'Events',
-                'FAQ'
-            ],
-            'active' => 0
-        ]); ?>
-    </div>
-    
-    <!-- Email Settings Button -->
-    <a href="<?= url('/admin/settings/email') ?>" 
-       style="display: inline-flex; align-items: center; padding: 10px 20px; background: <?= colors('primary') ?>; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: opacity 0.2s; margin-left: 16px; white-space: nowrap;"
-       onmouseover="this.style.opacity='0.9'" 
-       onmouseout="this.style.opacity='1'">
-        <span>Pengaturan Email</span>
-    </a>
+<!-- Tabs -->
+<div style="margin-bottom: 16px;">
+    <?php component('tabs', [
+        'tabs' => [
+            'Pendaftaran',
+            'Highlight Program',
+            'Testimoni',
+            'Events',
+            'FAQ',
+            'User Admin',
+            'Pengaturan Email'
+        ],
+        'active' => 0
+    ]); ?>
 </div>
 
 <!-- Tab Content Panels -->
@@ -65,6 +56,16 @@ ob_start();
     <div id="tab-panel-4" class="tab-panel hidden">
         <?php component('widget/setting/faq-tab'); ?>
     </div>
+    
+    <!-- Tab 6: User Admin -->
+    <div id="tab-panel-5" class="tab-panel hidden">
+        <?php component('widget/setting/user-management-tab'); ?>
+    </div>
+    
+    <!-- Tab 7: Pengaturan Email -->
+    <div id="tab-panel-6" class="tab-panel hidden">
+        <?php component('widget/setting/email-settings-tab'); ?>
+    </div>
 </div>
 
 <!-- SortableJS Library (Loaded once for all tabs) -->
@@ -91,7 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
         'highlight-programs': '1',
         'testimonials': '2',
         'events': '3',
-        'faqs': '4'
+        'faqs': '4',
+        'users': '5',
+        'email': '6'
     };
     
     if (urlTab && tabMap[urlTab] !== undefined) {

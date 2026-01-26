@@ -4,6 +4,7 @@
  * Handles school settings management
  */
 require_once APP_PATH . '/helpers/UploadManager.php';
+require_once APP_PATH . '/helpers/Security.php';
 
 class SettingsController extends Controller {
     private $settingModel;
@@ -14,6 +15,7 @@ class SettingsController extends Controller {
     private $testimonialModel;
     private $highlightProgramModel;
     private $emailSettingModel;
+    private $userModel;
     
     public function __construct() {
         parent::__construct();
@@ -26,6 +28,7 @@ class SettingsController extends Controller {
         $this->testimonialModel = new Testimonial();
         $this->highlightProgramModel = new HighlightProgram();
         $this->emailSettingModel = new EmailSetting();
+        $this->userModel = new User();
     }
     
     // Settings Index
@@ -851,6 +854,235 @@ class SettingsController extends Controller {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
-}
-
-
+    
+    // ==================== USER MANAGEMENT ====================
+    
+    public function createUser() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        // Verify CSRF token
+        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            return;
+        }
+        
+        try {
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $fullName = trim($_POST['full_name'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $passwordConfirm = $_POST['password_confirm'] ?? '';
+            $role = $_POST['role'] ?? 'admin';
+            $isActive = isset($_POST['is_active']) ? 1 : 0;
+            
+            // Validation
+            if (empty($username) || empty($email) || empty($fullName) || empty($password)) {
+                echo json_encode(['success' => false, 'message' => 'Semua field wajib diisi']);
+                return;
+            }
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Email tidak valid']);
+                return;
+            }
+            
+            if (strlen($password) < 8) {
+                echo json_encode(['success' => false, 'message' => 'Password minimal 8 karakter']);
+                return;
+            }
+            
+            if ($password !== $passwordConfirm) {
+                echo json_encode(['success' => false, 'message' => 'Password tidak cocok']);
+                return;
+            }
+            
+            // Check if username already exists
+            if ($this->userModel->whereOne('username = :username', ['username' => $username])) {
+                echo json_encode(['success' => false, 'message' => 'Username sudah digunakan']);
+                return;
+            }
+            
+            // Check if email already exists
+            if ($this->userModel->whereOne('email = :email', ['email' => $email])) {
+                echo json_encode(['success' => false, 'message' => 'Email sudah digunakan']);
+                return;
+            }
+            
+            // Create user
+            $data = [
+                'username' => $username,
+                'email' => $email,
+                'full_name' => $fullName,
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => $role,
+                'is_active' => $isActive
+            ];
+            
+            $result = $this->userModel->create($data);
+            
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'User berhasil ditambahkan']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal menambahkan user']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function updateUser() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        // Verify CSRF token
+        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            return;
+        }
+        
+        try {
+            $id = $_POST['id'] ?? 0;
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $fullName = trim($_POST['full_name'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $passwordConfirm = $_POST['password_confirm'] ?? '';
+            $role = $_POST['role'] ?? 'admin';
+            $isActive = isset($_POST['is_active']) ? 1 : 0;
+            
+            // Validation
+            if (empty($id) || empty($username) || empty($email) || empty($fullName)) {
+                echo json_encode(['success' => false, 'message' => 'Semua field wajib diisi']);
+                return;
+            }
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Email tidak valid']);
+                return;
+            }
+            
+            // Check if user exists
+            $existingUser = $this->userModel->find($id);
+            if (!$existingUser) {
+                echo json_encode(['success' => false, 'message' => 'User tidak ditemukan']);
+                return;
+            }
+            
+            // Check if username is taken by another user
+            $usernameCheck = $this->userModel->whereOne('username = :username AND id != :id', [
+                'username' => $username,
+                'id' => $id
+            ]);
+            if ($usernameCheck) {
+                echo json_encode(['success' => false, 'message' => 'Username sudah digunakan']);
+                return;
+            }
+            
+            // Check if email is taken by another user
+            $emailCheck = $this->userModel->whereOne('email = :email AND id != :id', [
+                'email' => $email,
+                'id' => $id
+            ]);
+            if ($emailCheck) {
+                echo json_encode(['success' => false, 'message' => 'Email sudah digunakan']);
+                return;
+            }
+            
+            // Update user data
+            $data = [
+                'username' => $username,
+                'email' => $email,
+                'full_name' => $fullName,
+                'role' => $role,
+                'is_active' => $isActive
+            ];
+            
+            // Update password if provided
+            if (!empty($password)) {
+                if (strlen($password) < 8) {
+                    echo json_encode(['success' => false, 'message' => 'Password minimal 8 karakter']);
+                    return;
+                }
+                
+                if ($password !== $passwordConfirm) {
+                    echo json_encode(['success' => false, 'message' => 'Password tidak cocok']);
+                    return;
+                }
+                
+                $data['password'] = password_hash($password, PASSWORD_DEFAULT);
+            }
+            
+            $result = $this->userModel->update($id, $data);
+            
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'User berhasil diupdate']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal mengupdate user']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function deleteUser() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        // Verify CSRF token
+        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            return;
+        }
+        
+        try {
+            $id = $_POST['id'] ?? 0;
+            
+            if (empty($id)) {
+                echo json_encode(['success' => false, 'message' => 'ID user tidak valid']);
+                return;
+            }
+            
+            // Check if user exists
+            $user = $this->userModel->find($id);
+            if (!$user) {
+                echo json_encode(['success' => false, 'message' => 'User tidak ditemukan']);
+                return;
+            }
+            
+            // Prevent deleting own account
+            if ($id == $_SESSION['user_id']) {
+                echo json_encode(['success' => false, 'message' => 'Tidak dapat menghapus akun sendiri']);
+                return;
+            }
+            
+            // Count total users
+            $totalUsers = $this->userModel->count();
+            if ($totalUsers <= 1) {
+                echo json_encode(['success' => false, 'message' => 'Tidak dapat menghapus user terakhir']);
+                return;
+            }
+            
+            $result = $this->userModel->delete($id);
+            
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'User berhasil dihapus']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal menghapus user']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }}
