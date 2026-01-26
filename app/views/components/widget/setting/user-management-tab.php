@@ -152,9 +152,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     `Apakah Anda yakin ingin menghapus user "${userName}"? Tindakan ini tidak dapat dibatalkan.`,
                     async function() {
                         try {
+                            // Get CSRF token from any form on the page
+                            const csrfToken = document.querySelector('input[name="csrf_token"]')?.value || '';
+                            
                             const formData = new FormData();
                             formData.append('id', userId);
-                            formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+                            formData.append('csrf_token', csrfToken);
                             
                             const response = await fetch('<?= url('/admin/settings/users/delete') ?>', {
                                 method: 'POST',

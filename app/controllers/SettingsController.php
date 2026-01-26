@@ -865,9 +865,25 @@ class SettingsController extends Controller {
             return;
         }
         
-        // Verify CSRF token
-        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
-            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+        // Verify CSRF token - simple validation without regeneration
+        $token = $_POST['csrf_token'] ?? '';
+        
+        // If no session token exists, there might be a session issue
+        if (!isset($_SESSION['csrf_token'])) {
+            error_log("CSRF token missing from session - possible session issue");
+            echo json_encode(['success' => false, 'message' => 'Session expired. Please refresh the page and try again.']);
+            return;
+        }
+        
+        if (empty($token)) {
+            error_log("CSRF token not sent from form");
+            echo json_encode(['success' => false, 'message' => 'CSRF token missing from request']);
+            return;
+        }
+        
+        if (!hash_equals($_SESSION['csrf_token'], $token)) {
+            error_log("CSRF token mismatch - Expected: " . substr($_SESSION['csrf_token'], 0, 10) . "..., Got: " . substr($token, 0, 10) . "...");
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token. Please refresh the page and try again.']);
             return;
         }
         
@@ -943,8 +959,9 @@ class SettingsController extends Controller {
             return;
         }
         
-        // Verify CSRF token
-        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+        // Verify CSRF token - simple validation without regeneration
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($token) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
             echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
             return;
         }
@@ -1041,8 +1058,9 @@ class SettingsController extends Controller {
             return;
         }
         
-        // Verify CSRF token
-        if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+        // Verify CSRF token - simple validation without regeneration
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($token) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
             echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
             return;
         }
