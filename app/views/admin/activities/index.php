@@ -45,6 +45,13 @@ ob_start();
             
             <!-- Class List -->
             <div class="mt-4 space-y-3">
+                <?php if (empty($kelasData)): ?>
+                    <div class="text-center py-8">
+                        <p class="font-normal text-[14px] leading-[21px] text-white-soft">
+                            Belum ada data kelas. Klik tombol "Tambah Kelas" untuk menambahkan kelas baru.
+                        </p>
+                    </div>
+                <?php else: ?>
                 <?php foreach ($kelasData as $index => $kelas): ?>
                 <div class="flex items-center py-[12px]">
                     <!-- Image -->
@@ -87,6 +94,7 @@ ob_start();
                     </div>
                 </div>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -115,6 +123,13 @@ ob_start();
             
             <!-- Program Tahun Ajaran Content -->
             <div class="mt-4 space-y-[24px]">
+                <?php if (empty($programsTahunData)): ?>
+                    <div class="text-center py-8">
+                        <p class="font-normal text-[14px] leading-[21px] text-white-soft">
+                            Belum ada program tahun ajaran. Klik tombol "Tambah Program" untuk menambahkan program baru.
+                        </p>
+                    </div>
+                <?php else: ?>
                 <?php foreach ($programsTahunData as $index => $program): ?>
                 <div>
                     <!-- Header with Title, Description and Edit Button -->
@@ -208,6 +223,7 @@ ob_start();
                     </div>
                 </div>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
