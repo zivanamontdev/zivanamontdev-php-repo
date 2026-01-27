@@ -161,8 +161,24 @@ ob_start();
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="col-span-1 md:col-span-2 text-center text-gray-500 py-8">
-                Belum ada data fasilitas
+            <!-- Empty State Placeholder -->
+            <div class="bg-white-neutral rounded-[24px] overflow-hidden opacity-60">
+                <!-- Image Placeholder -->
+                <div class="w-full h-[240px] bg-gray-placeholder flex items-center justify-center">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Content -->
+                <div class="p-[24px]">
+                    <h3 class="font-bold text-[20px] md:text-[24px] leading-[32px] text-gray-400 mb-[8px]">
+                        Belum Ada Data Fasilitas
+                    </h3>
+                    <p class="font-normal text-[16px] leading-[28px] text-gray-400">
+                        Informasi fasilitas sekolah akan ditampilkan di sini setelah data ditambahkan melalui halaman admin.
+                    </p>
+                </div>
             </div>
         <?php endif; ?>
     </div>
