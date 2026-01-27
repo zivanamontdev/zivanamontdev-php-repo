@@ -1147,12 +1147,12 @@ class SettingsController extends Controller {
                 return;
             }
             
-            // All tables that should be truncated (protected: users, settings, email_settings, form_fields, program_harian, program_harian_gallery, testimonials, prakata, registration_settings, registration_fields)
+            // All tables that should be truncated (protected: users, settings, email_settings, form_fields, programs_harian, programs_harian_gallery, testimonials, prakata, registration_settings, registration_fields, kepala_sekolah)
             $tablesToReset = [
                 'programs', 'images', 'articles', 'employees', 'schedules', 'awards',
                 'social_media', 'registrations', 'analytics', 'page_views',
                 'events', 'faqs', 
-                'highlight_programs', 'karyawan', 'kepala_sekolah',
+                'highlight_programs', 'karyawan',
                 'fasilitas', 'fasilitas_images', 'password_resets',
                 'remember_tokens', 'classes', 'programs_tahun', 'program_tahun_images',
                 'class_daily_images'

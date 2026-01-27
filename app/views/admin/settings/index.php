@@ -108,6 +108,7 @@ ob_start();
                     <li>Program harian & galerinya</li>
                     <li>Testimoni</li>
                     <li>Prakata</li>
+                    <li>Kepala sekolah</li>
                 </ul>
                 <p class="text-red-800 font-bold text-sm mt-3">Tindakan ini TIDAK DAPAT DIBATALKAN!</p>
             </div>
