@@ -161,11 +161,56 @@ ob_start();
 <!-- Hidden Articles: <?= count($hiddenArticles) ?> -->
 
 <?php if (empty($articles)): ?>
-    <!-- No Articles Message --><section class="container mx-auto px-5">
-        <div class="bg-white-neutral rounded-[24px] p-[40px] text-center">
-            <p class="font-normal text-[20px] leading-[150%] text-black-highlight">
-                Belum ada artikel yang dipublikasikan. Silakan tambah artikel melalui halaman admin.
-            </p>
+    <!-- Empty State Placeholder -->
+    <section class="container mx-auto px-5">
+        <!-- Desktop Placeholder -->
+        <div class="hidden md:block">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] mt-[40px]">
+                <div class="bg-white-neutral rounded-[24px] overflow-hidden opacity-60">
+                    <!-- Image Placeholder -->
+                    <div class="w-full h-[240px] bg-gray-placeholder flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-[24px]">
+                        <div class="text-gray-400 text-[14px] mb-[12px]">-- --- ----</div>
+                        <h3 class="font-bold text-[20px] md:text-[24px] leading-[32px] text-gray-400 mb-[8px]">
+                            Belum Ada Artikel
+                        </h3>
+                        <div class="text-gray-400 text-[14px] mb-[12px]">Admin</div>
+                        <p class="font-normal text-[16px] leading-[28px] text-gray-400">
+                            Artikel dan berita terkini akan ditampilkan di sini setelah dipublikasikan melalui halaman admin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Placeholder -->
+        <div class="md:hidden mobile-articles-container">
+            <div class="mobile-article-card opacity-60">
+                <!-- Image Placeholder -->
+                <div class="mobile-article-card-image bg-gray-placeholder">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Content -->
+                <div class="mobile-article-card-content">
+                    <div class="mobile-article-date">-- --- ----</div>
+                    <h3 class="mobile-article-title text-gray-400">
+                        Belum Ada Artikel
+                    </h3>
+                    <div class="mobile-article-author">Admin</div>
+                    <div class="mobile-article-excerpt text-gray-400">
+                        Artikel dan berita terkini akan ditampilkan di sini setelah dipublikasikan melalui halaman admin.
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 <?php else: ?>

@@ -98,7 +98,31 @@ $keunggulanItems = [
         
         <!-- Program Grid -->
         <div class="mt-[32px]">
-            <?php component('widget/home/home_program', ['highlightPrograms' => $highlightPrograms ?? []]); ?>
+            <?php if (!empty($highlightPrograms)): ?>
+                <?php component('widget/home/home_program', ['highlightPrograms' => $highlightPrograms]); ?>
+            <?php else: ?>
+                <!-- Empty State Placeholder -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+                    <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full opacity-60">
+                        <!-- Image Placeholder -->
+                        <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative flex items-center justify-center">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-gray-400 mb-[16px]">
+                            Belum Ada Program Sekolah
+                        </h3>
+                        
+                        <!-- Description -->
+                        <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-gray-400 flex-grow">
+                            Program sekolah akan ditampilkan di sini setelah data ditambahkan.
+                        </p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -130,8 +154,24 @@ $keunggulanItems = [
             
             if (empty($displayEvents)): 
             ?>
-                <div class="text-center py-8 text-white-soft">
-                    <p>Belum ada kegiatan yang dijadwalkan</p>
+                <!-- Empty State Placeholder -->
+                <div class="bg-white-neutral p-[24px] rounded-[20px] flex items-start gap-[24px] opacity-60">
+                    <!-- Date Section Placeholder -->
+                    <div class="flex-shrink-0 flex flex-col items-center justify-center w-[96px] h-[112px] rounded-[12px] bg-gray-placeholder">
+                        <span class="text-gray-400 font-bold text-[32px] leading-[40px]">--</span>
+                        <span class="text-gray-400 font-bold text-[14px] leading-[20px] mt-1">---</span>
+                        <span class="text-gray-400 font-normal text-[12px] leading-[16px]">----</span>
+                    </div>
+                    
+                    <!-- Content Section Placeholder -->
+                    <div class="flex-grow">
+                        <h3 class="font-bold text-[20px] md:text-[24px] leading-[32px] md:leading-[38px] text-gray-400 mb-[12px]">
+                            Belum Ada Kegiatan Dijadwalkan
+                        </h3>
+                        <p class="font-normal text-[16px] md:text-[18px] leading-[28px] text-gray-400">
+                            Kegiatan sekolah akan ditampilkan di sini setelah data ditambahkan.
+                        </p>
+                    </div>
                 </div>
             <?php else: ?>
                 <?php foreach ($displayEvents as $event): 
@@ -173,9 +213,31 @@ $keunggulanItems = [
         </div>
         
         <div class="mt-[32px]">
-            <?php component('widget/home/home_faq', [
-                'faqs' => $faqs ?? []
-            ]); ?>
+            <?php if (!empty($faqs)): ?>
+                <?php component('widget/home/home_faq', ['faqs' => $faqs]); ?>
+            <?php else: ?>
+                <!-- Empty State Placeholder -->
+                <div class="bg-white-neutral rounded-[20px] p-[24px] opacity-60">
+                    <div class="flex items-start gap-[16px]">
+                        <!-- Question Icon Placeholder -->
+                        <div class="flex-shrink-0 w-[32px] h-[32px] rounded-full bg-gray-placeholder flex items-center justify-center">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-[18px] md:text-[20px] leading-[28px] md:leading-[32px] text-gray-400 mb-[8px]">
+                                Belum Ada FAQ
+                            </h3>
+                            <p class="font-normal text-[14px] md:text-[16px] leading-[24px] md:leading-[28px] text-gray-400">
+                                Pertanyaan yang sering diajukan akan ditampilkan di sini setelah data ditambahkan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>

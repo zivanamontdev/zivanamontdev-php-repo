@@ -109,6 +109,9 @@ $router->post('/admin/settings/users/create', [SettingsController::class, 'creat
 $router->post('/admin/settings/users/update', [SettingsController::class, 'updateUser']);
 $router->post('/admin/settings/users/delete', [SettingsController::class, 'deleteUser']);
 
+// Database Reset route
+$router->post('/admin/settings/database/reset', [SettingsController::class, 'resetDatabase']);
+
 // Prakata routes
 $router->get('/admin/management/prakata/get', [ManagementController::class, 'getPrakata']);
 $router->post('/admin/management/prakata/update', [ManagementController::class, 'updatePrakata']);

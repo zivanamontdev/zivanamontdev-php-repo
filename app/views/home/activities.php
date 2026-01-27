@@ -21,7 +21,31 @@ ob_start();
         <?php component('badge', ['text' => 'Kelas-kelas']); ?>
     </div>
     
-    <?php component('widget/activities/activities_kelas', ['kelas' => $kelasData]); ?>
+    <?php if (!empty($kelasData)): ?>
+        <?php component('widget/activities/activities_kelas', ['kelas' => $kelasData]); ?>
+    <?php else: ?>
+        <!-- Empty State Placeholder -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full opacity-60">
+                <!-- Image Placeholder -->
+                <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative flex items-center justify-center">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-gray-400 mb-[16px]">
+                    Belum Ada Data Kelas
+                </h3>
+                
+                <!-- Description -->
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-gray-400 flex-grow">
+                    Informasi kelas akan ditampilkan di sini setelah data ditambahkan.
+                </p>
+            </div>
+        </div>
+    <?php endif; ?>
 </section>
 
 <!-- Program Tahun Ajaran Section -->
@@ -31,6 +55,7 @@ ob_start();
     </div>
     
     <div class="relative">
+        <?php if (!empty($programsTahunData)): ?>
         <!-- Floating Vector -->
         <img 
             src="<?= asset('images/vectors/vector_highlight_program_tahun.png') ?>" 
@@ -71,6 +96,29 @@ ob_start();
             </div>
             <?php endforeach; ?>
         </div>
+        <?php else: ?>
+        <!-- Empty State Placeholder -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full opacity-60">
+                <!-- Image Placeholder -->
+                <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative flex items-center justify-center">
+                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="font-bold text-[20px] leading-[32px] md:text-[24px] md:leading-[38px] text-gray-400 mb-[16px]">
+                    Belum Ada Program Tahun Ajaran
+                </h3>
+                
+                <!-- Description -->
+                <p class="font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] text-gray-400 flex-grow">
+                    Program tahun ajaran akan ditampilkan di sini setelah data ditambahkan.
+                </p>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
     
     <!-- Tampilkan Lebih Banyak/Sedikit Button -->

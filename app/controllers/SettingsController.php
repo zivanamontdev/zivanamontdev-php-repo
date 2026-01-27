@@ -1103,4 +1103,92 @@ class SettingsController extends Controller {
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
-    }}
+    }
+    
+    // ==================== DATABASE RESET ====================
+    
+    public function resetDatabase() {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            return;
+        }
+        
+        // Verify CSRF token
+        $token = $_POST['csrf_token'] ?? '';
+        if (empty($token) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            return;
+        }
+        
+        try {
+            $password = $_POST['password'] ?? '';
+            $confirmation = $_POST['confirmation'] ?? '';
+            
+            // Validate confirmation text
+            if ($confirmation !== 'RESET DATABASE') {
+                echo json_encode(['success' => false, 'message' => 'Konfirmasi text tidak sesuai']);
+                return;
+            }
+            
+            // Verify admin password
+            $userId = $_SESSION['user_id'] ?? 0;
+            $currentUser = $this->userModel->find($userId);
+            
+            if (!$currentUser || !password_verify($password, $currentUser['password'])) {
+                echo json_encode(['success' => false, 'message' => 'Password salah']);
+                return;
+            }
+            
+            // Check if user is super admin
+            if ($currentUser['role'] !== 'super_admin') {
+                echo json_encode(['success' => false, 'message' => 'Hanya Super Admin yang dapat mereset database']);
+                return;
+            }
+            
+            // All tables that should be truncated (protected: users, settings, email_settings, form_fields, program_harian, program_harian_gallery, testimonials, prakata, registration_settings, registration_fields)
+            $tablesToReset = [
+                'programs', 'images', 'articles', 'employees', 'schedules', 'awards',
+                'social_media', 'registrations', 'analytics', 'page_views',
+                'events', 'faqs', 
+                'highlight_programs', 'karyawan', 'kepala_sekolah',
+                'fasilitas', 'fasilitas_images', 'password_resets',
+                'remember_tokens', 'classes', 'programs_tahun', 'program_tahun_images',
+                'class_daily_images'
+            ];
+            
+            // Disable foreign key checks
+            $this->db->query('SET FOREIGN_KEY_CHECKS = 0');
+            
+            $successCount = 0;
+            $failedTables = [];
+            
+            // Truncate each table
+            foreach ($tablesToReset as $table) {
+                try {
+                    $this->db->query("TRUNCATE TABLE `{$table}`");
+                    $successCount++;
+                } catch (Exception $e) {
+                    $failedTables[] = $table;
+                    error_log("Failed to truncate {$table}: " . $e->getMessage());
+                }
+            }
+            
+            // Re-enable foreign key checks
+            $this->db->query('SET FOREIGN_KEY_CHECKS = 1');
+            
+            // Log action
+            error_log("DB reset by user {$userId} ({$currentUser['username']})");
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => "Database berhasil direset! {$successCount} tabel dibersihkan."
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Database reset error: " . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        }
+    }
+}
