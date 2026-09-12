@@ -385,6 +385,141 @@ function sanitize($data) {
 }
 
 /**
+ * Sanitize article HTML while preserving simple blog formatting.
+ */
+function sanitize_article_content($html) {
+    $html = trim((string) $html);
+    if ($html === '') {
+        return '';
+    }
+
+    $allowedTags = [
+        'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
+        'ul', 'ol', 'li', 'blockquote', 'h2', 'h3', 'h4', 'a'
+    ];
+    $blockedTagsWithContent = ['script', 'style', 'iframe', 'object', 'embed'];
+
+    if (!class_exists('DOMDocument')) {
+        $html = preg_replace('#<(script|style|iframe|object|embed)[^>]*>.*?</\1>#is', '', $html);
+        $html = strip_tags($html, '<' . implode('><', $allowedTags) . '>');
+        $html = preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+        $html = preg_replace('/\s+(style|class|id)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+        $html = preg_replace('/href\s*=\s*("[^"]*javascript:[^"]*"|\'[^\']*javascript:[^\']*\')/i', 'href="#"', $html);
+        return trim($html);
+    }
+
+    $previousUseErrors = libxml_use_internal_errors(true);
+    $dom = new DOMDocument('1.0', 'UTF-8');
+    $dom->loadHTML(
+        '<?xml encoding="UTF-8"><div id="article-content-root">' . $html . '</div>',
+        LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previousUseErrors);
+
+    $root = $dom->getElementById('article-content-root');
+    if (!$root) {
+        return '';
+    }
+
+    $sanitizeNode = function ($node) use (&$sanitizeNode, $allowedTags, $blockedTagsWithContent, $dom) {
+        if ($node->nodeType === XML_COMMENT_NODE) {
+            $node->parentNode->removeChild($node);
+            return;
+        }
+
+        if ($node->nodeType !== XML_ELEMENT_NODE) {
+            return;
+        }
+
+        $tag = strtolower($node->nodeName);
+        if (in_array($tag, $blockedTagsWithContent, true)) {
+            $node->parentNode->removeChild($node);
+            return;
+        }
+
+        $children = [];
+        foreach ($node->childNodes as $child) {
+            $children[] = $child;
+        }
+
+        foreach ($children as $child) {
+            $sanitizeNode($child);
+        }
+
+        if (!in_array($tag, $allowedTags, true) && $node->getAttribute('id') !== 'article-content-root') {
+            while ($node->firstChild) {
+                $node->parentNode->insertBefore($node->firstChild, $node);
+            }
+            $node->parentNode->removeChild($node);
+            return;
+        }
+
+        if ($node->hasAttributes()) {
+            $attributesToRemove = [];
+            foreach ($node->attributes as $attribute) {
+                $name = strtolower($attribute->name);
+                $value = trim($attribute->value);
+
+                if ($tag !== 'a' || !in_array($name, ['href', 'target', 'rel'], true)) {
+                    if (!($node->getAttribute('id') === 'article-content-root' && $name === 'id')) {
+                        $attributesToRemove[] = $attribute->name;
+                    }
+                    continue;
+                }
+
+                if ($name === 'href') {
+                    $isSafeHref = preg_match('/^(https?:\/\/|mailto:|tel:|\/|#)/i', $value);
+                    if (!$isSafeHref) {
+                        $attributesToRemove[] = $attribute->name;
+                    }
+                }
+
+                if ($name === 'target' && $value !== '_blank') {
+                    $attributesToRemove[] = $attribute->name;
+                }
+            }
+
+            foreach ($attributesToRemove as $attributeName) {
+                $node->removeAttribute($attributeName);
+            }
+        }
+
+        if ($tag === 'a' && $node->getAttribute('target') === '_blank') {
+            $node->setAttribute('rel', 'noopener noreferrer');
+        }
+    };
+
+    $sanitizeNode($root);
+
+    $output = '';
+    foreach ($root->childNodes as $child) {
+        $output .= $dom->saveHTML($child);
+    }
+
+    return trim($output);
+}
+
+/**
+ * Get readable plain text from article content for validation/excerpts.
+ */
+function article_plain_text($content) {
+    return trim(str_replace("\xc2\xa0", ' ', html_entity_decode(strip_tags((string) $content), ENT_QUOTES, 'UTF-8')));
+}
+
+/**
+ * Render article content. Plain legacy content keeps line breaks; rich content renders sanitized HTML.
+ */
+function render_article_content($content) {
+    $content = (string) $content;
+    if ($content === strip_tags($content)) {
+        return nl2br(e($content));
+    }
+
+    return sanitize_article_content($content);
+}
+
+/**
  * Validate email
  */
 function is_email($email) {

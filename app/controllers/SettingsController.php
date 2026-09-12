@@ -206,7 +206,8 @@ class SettingsController extends Controller {
                 'event_time' => $_POST['event_time'] ?? '',
                 'event_name' => $_POST['event_name'] ?? '',
                 'event_place' => $_POST['event_place'] ?? '',
-                'event_url' => $_POST['event_url'] ?? ''
+                'event_url' => $_POST['event_url'] ?? '',
+                'is_public' => isset($_POST['is_public']) ? $_POST['is_public'] : null
             ];
             
             // Validate required fields

@@ -75,6 +75,10 @@ ob_start();
 
 <!-- Main Card Container for Article Editing -->
 <div class="mx-32 mb-6">
+    <?php component('widget/articles/article-rich-editor', [
+        'part' => 'toolbar'
+    ]); ?>
+
     <div class="border border-border-soft rounded-2xl p-6 bg-white-neutral h-[800px] flex flex-col">
         <!-- Title Input with existing data -->
         <div class="mb-8">
@@ -88,13 +92,9 @@ ob_start();
         </div>
         
         <!-- Content Editor with existing data -->
-        <div class="flex-1 overflow-y-auto mb-5">
-            <textarea 
-                id="article-content" 
-                placeholder="Mulai menulis artikel..." 
-                class="w-full h-full font-normal text-[16px] text-black-soft placeholder:font-normal placeholder:text-[16px] placeholder-white-soft bg-transparent border-none outline-none focus:ring-0 resize-none"
-            ><?= e($article['content'] ?? '') ?></textarea>
-        </div>
+        <?php component('widget/articles/article-rich-editor', [
+            'content' => $article['content'] ?? ''
+        ]); ?>
     </div>
 </div>
 
@@ -103,7 +103,7 @@ ob_start();
 
 <!-- Hidden inputs to store original values for change detection -->
 <input type="hidden" id="original-title" value="<?= e($article['title'] ?? '') ?>">
-<input type="hidden" id="original-content" value="<?= e($article['content'] ?? '') ?>">
+<input type="hidden" id="original-content" value="<?= e(render_article_content($article['content'] ?? '')) ?>">
 
 <script>
 // Track if article has changes
@@ -111,6 +111,10 @@ let hasArticleChanges = false;
 
 // Check if article has been modified
 function checkArticleChanges() {
+    if (typeof window.syncArticleEditorContent === 'function') {
+        window.syncArticleEditorContent();
+    }
+
     const currentTitle = document.getElementById('article-title').value.trim();
     const currentContent = document.getElementById('article-content').value.trim();
     const originalTitle = document.getElementById('original-title').value;
@@ -142,6 +146,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Validation helper function
 function validateArticleForm() {
+    if (typeof window.syncArticleEditorContent === 'function') {
+        window.syncArticleEditorContent();
+    }
+
     const title = document.getElementById('article-title').value.trim();
     const content = document.getElementById('article-content').value.trim();
     

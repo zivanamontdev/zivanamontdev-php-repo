@@ -12,6 +12,25 @@ try {
     error_log("Error loading testimonials: " . $e->getMessage());
     $highlightTestimonials = [];
 }
+
+if (!function_exists('testimonialAdminImageUrl')) {
+    function testimonialAdminImageUrl(?string $image): string
+    {
+        if (empty($image)) {
+            return '';
+        }
+
+        if (preg_match('/^https?:\/\//i', $image)) {
+            return $image;
+        }
+
+        if (strpos($image, 'uploads/') === 0) {
+            return asset($image);
+        }
+
+        return asset('uploads/testimonials/' . $image);
+    }
+}
 ?>
 
 <!-- Toast Notification -->
@@ -43,7 +62,8 @@ try {
                      data-child-name="<?= e($testimonial['child_name']) ?>"
                      data-testimonial="<?= e($testimonial['testimonial_text']) ?>"
                      data-highlight="<?= e($testimonial['highlight_text']) ?>"
-                     data-image="<?= !empty($testimonial['image']) ? '/uploads/testimonials/' . e($testimonial['image']) : '' ?>"
+                     data-image="<?= e(testimonialAdminImageUrl($testimonial['image'] ?? '')) ?>"
+                     onclick="event.stopPropagation(); openEditTestimoniModalFromItem(this)"
                      style="background-color: <?= colors('card_bg_light') ?>">
                     <!-- Left Section: Drag Handle + Content -->
                     <div class="flex items-center flex-1 min-w-0">
@@ -75,20 +95,85 @@ try {
 </div>
 
 <script>
+window.openEditTestimoniModalFromItem = function(testimonialItem) {
+    if (!testimonialItem) {
+        return;
+    }
+
+    const testimonialData = {
+        id: testimonialItem.dataset.id,
+        parentName: testimonialItem.dataset.parentName,
+        childName: testimonialItem.dataset.childName,
+        testimonial: testimonialItem.dataset.testimonial,
+        highlight: testimonialItem.dataset.highlight,
+        image: testimonialItem.dataset.image
+    };
+
+    if (typeof window.openEditTestimoniModal === 'function') {
+        window.openEditTestimoniModal(testimonialData);
+        return;
+    }
+
+    const modal = document.getElementById('modal-edit-testimoni');
+    if (!modal) {
+        return;
+    }
+
+    const setValue = function(id, value) {
+        const field = document.getElementById(id);
+        if (field) {
+            field.value = value || '';
+        }
+    };
+
+    setValue('testimoni-id-edit', testimonialData.id);
+    setValue('parent-name-edit', testimonialData.parentName);
+    setValue('child-name-edit', testimonialData.childName);
+    setValue('testimonial-text-edit', testimonialData.testimonial);
+    setValue('highlight-text-edit', testimonialData.highlight);
+
+    const previewImage = document.getElementById('preview-image-edit-testimoni');
+    const placeholderIcon = document.getElementById('placeholder-icon-edit-testimoni');
+
+    if (testimonialData.image && previewImage && placeholderIcon) {
+        previewImage.src = testimonialData.image;
+        previewImage.style.display = 'block';
+        previewImage.classList.remove('hidden');
+        placeholderIcon.classList.add('hidden');
+    } else {
+        if (previewImage) {
+            previewImage.src = '';
+            previewImage.classList.add('hidden');
+        }
+
+        if (placeholderIcon) {
+            placeholderIcon.classList.remove('hidden');
+        }
+    }
+
+    modal.classList.remove('hidden');
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Sortable for drag & drop
     const sortableTestimonials = document.getElementById('sortable-testimonials');
-    const sortable = Sortable.create(sortableTestimonials, {
-        animation: 150,
-        handle: '.drag-handle',
-        onEnd: function() {
-            // Auto save order on drag
-            updateTestimonialOrder();
-        }
-    });
+    if (sortableTestimonials && typeof Sortable !== 'undefined') {
+        Sortable.create(sortableTestimonials, {
+            animation: 150,
+            handle: '.drag-handle',
+            onEnd: function() {
+                // Auto save order on drag
+                updateTestimonialOrder();
+            }
+        });
+    }
     
     // Update testimonial order
     function updateTestimonialOrder() {
+        if (!sortableTestimonials) {
+            return;
+        }
+
         const orders = {};
         const items = sortableTestimonials.querySelectorAll('.testimonial-item');
         items.forEach((item, index) => {
@@ -122,20 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         const testimonialItem = e.target.closest('.testimonial-item');
         if (testimonialItem && !e.target.closest('.drag-handle')) {
-            // Get data from data attributes
-            const testimonialData = {
-                id: testimonialItem.dataset.id,
-                parentName: testimonialItem.dataset.parentName,
-                childName: testimonialItem.dataset.childName,
-                testimonial: testimonialItem.dataset.testimonial,
-                highlight: testimonialItem.dataset.highlight,
-                image: testimonialItem.dataset.image
-            };
-            
-            // Open modal with testimonial data
-            if (typeof openEditTestimoniModal === 'function') {
-                openEditTestimoniModal(testimonialData);
-            }
+            openEditTestimoniModalFromItem(testimonialItem);
         }
     });
 });

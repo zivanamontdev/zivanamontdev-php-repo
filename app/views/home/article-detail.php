@@ -219,16 +219,68 @@ ob_start();
         
         <!-- Description/Content -->
         <div class="font-normal text-[20px] leading-[150%] text-black-highlight mobile-article-content article-content">
-            <?= nl2br(e($article['content'])) ?>
+            <?= render_article_content($article['content']) ?>
         </div>
     </div>
 </section>
 
 <style>
+.article-content p,
+.article-content ul,
+.article-content ol,
+.article-content blockquote,
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+    margin-bottom: 1em;
+}
+
 .article-content br {
     content: "";
     display: block;
     margin-bottom: 0.5em;
+}
+
+.article-content h2 {
+    font-size: 28px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: <?= colors('black_soft') ?>;
+}
+
+.article-content h3 {
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: <?= colors('black_soft') ?>;
+}
+
+.article-content h4 {
+    font-size: 20px;
+    line-height: 1.45;
+    font-weight: 700;
+    color: <?= colors('black_soft') ?>;
+}
+
+.article-content ul {
+    list-style: disc;
+    padding-left: 28px;
+}
+
+.article-content ol {
+    list-style: decimal;
+    padding-left: 28px;
+}
+
+.article-content blockquote {
+    border-left: 4px solid <?= colors('primary') ?>;
+    padding-left: 18px;
+    color: <?= colors('black_highlight') ?>;
+}
+
+.article-content a {
+    color: <?= colors('primary') ?>;
+    text-decoration: underline;
 }
 </style>
 

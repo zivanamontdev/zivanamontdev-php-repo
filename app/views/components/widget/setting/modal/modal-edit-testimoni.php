@@ -139,13 +139,69 @@
 
 <!-- Modal Script -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initEditTestimoniModal() {
     const modal = document.getElementById('modal-edit-testimoni');
     const closeBtn = document.getElementById('close-modal-edit-testimoni');
     const imageInput = document.getElementById('testimoni-image-input-edit');
     const previewImage = document.getElementById('preview-image-edit-testimoni');
     const placeholderIcon = document.getElementById('placeholder-icon-edit-testimoni');
     const deleteImageBtn = document.getElementById('delete-image-btn-edit-testimoni');
+
+    if (!modal || modal.dataset.initialized === 'true') {
+        return;
+    }
+
+    modal.dataset.initialized = 'true';
+
+    // Expose modal opener early so testimonial row clicks still work even if
+    // another optional modal handler fails later during initialization.
+    window.openEditTestimoniModal = function(testimoniData) {
+        resetForm();
+
+        document.getElementById('testimoni-id-edit').value = testimoniData.id || '';
+        document.getElementById('parent-name-edit').value = testimoniData.parentName || '';
+        document.getElementById('child-name-edit').value = testimoniData.childName || '';
+        document.getElementById('testimonial-text-edit').value = testimoniData.testimonial || '';
+        document.getElementById('highlight-text-edit').value = testimoniData.highlight || '';
+
+        if (testimoniData.image) {
+            const currentPreviewImage = document.getElementById('preview-image-edit-testimoni');
+            const currentPlaceholderIcon = document.getElementById('placeholder-icon-edit-testimoni');
+
+            if (currentPreviewImage && currentPlaceholderIcon) {
+                currentPreviewImage.src = testimoniData.image;
+                currentPreviewImage.style.display = 'block';
+                currentPreviewImage.classList.remove('hidden');
+                currentPlaceholderIcon.classList.add('hidden');
+            }
+
+            const deleteButtonWrapper = document.getElementById('delete-button-wrapper-edit-testimoni');
+            if (deleteButtonWrapper) {
+                deleteButtonWrapper.innerHTML = `
+                    <button type="button" id="delete-image-btn-edit-testimoni" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
+                        Hapus Gambar
+                    </button>
+                `;
+
+                const newDeleteBtn = document.getElementById('delete-image-btn-edit-testimoni');
+                if (newDeleteBtn) {
+                    newDeleteBtn.addEventListener('click', deleteImage);
+                }
+            }
+        } else {
+            if (previewImage) {
+                previewImage.src = '';
+                previewImage.classList.add('hidden');
+            }
+
+            if (placeholderIcon) {
+                placeholderIcon.classList.remove('hidden');
+            }
+        }
+
+        validateForm();
+        modal.classList.remove('hidden');
+    };
     
     // Close modal
     if (closeBtn) {
@@ -222,10 +278,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delete image function
     function deleteImage() {
         const cautionText = document.getElementById('caution-text-edit-testimoni');
-        imageInput.value = '';
-        previewImage.src = '';
-        previewImage.classList.add('hidden');
-        placeholderIcon.classList.remove('hidden');
+        if (imageInput) imageInput.value = '';
+        if (previewImage) {
+            previewImage.src = '';
+            previewImage.classList.add('hidden');
+        }
+        if (placeholderIcon) placeholderIcon.classList.remove('hidden');
         
         // Reset caution text
         if (cautionText) {
@@ -371,50 +429,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to open modal with data (to be called from outside)
-    window.openEditTestimoniModal = function(testimoniData) {
-        // Set testimoni ID
-        document.getElementById('testimoni-id-edit').value = testimoniData.id || '';
-        
-        // Populate form with existing data
-        document.getElementById('parent-name-edit').value = testimoniData.parentName || '';
-        document.getElementById('child-name-edit').value = testimoniData.childName || '';
-        document.getElementById('testimonial-text-edit').value = testimoniData.testimonial || '';
-        document.getElementById('highlight-text-edit').value = testimoniData.highlight || '';
-        
-        // Set image if exists
-        if (testimoniData.image) {
-            const previewImage = document.getElementById('preview-image-edit-testimoni');
-            const placeholderIcon = document.getElementById('placeholder-icon-edit-testimoni');
-            
-            if (previewImage && placeholderIcon) {
-                previewImage.src = testimoniData.image;
-                previewImage.style.display = 'block';
-                previewImage.classList.remove('hidden');
-                placeholderIcon.classList.add('hidden');
-            }
-            
-            // Change delete button to variant 11
-            const deleteButtonWrapper = document.getElementById('delete-button-wrapper-edit-testimoni');
-            if (deleteButtonWrapper) {
-                deleteButtonWrapper.innerHTML = `
-                    <button type="button" id="delete-image-btn-edit-testimoni" class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-3 px-6 rounded-xl bg-white-neutral text-primary font-normal text-base leading-[28px] border border-border-light hover:bg-white-secondary cursor-pointer">
-                        Hapus Gambar
-                    </button>
-                `;
-                
-                const newDeleteBtn = document.getElementById('delete-image-btn-edit-testimoni');
-                if (newDeleteBtn) {
-                    newDeleteBtn.addEventListener('click', deleteImage);
-                }
-            }
-        }
-        
-        // Validate form to enable submit button
-        validateForm();
-        
-        // Show modal
-        modal.classList.remove('hidden');
-    };
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEditTestimoniModal);
+} else {
+    initEditTestimoniModal();
+}
 </script>

@@ -316,8 +316,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to save article
     function saveArticle(status) {
+        if (typeof window.syncArticleEditorContent === 'function') {
+            window.syncArticleEditorContent();
+        }
+
         const title = document.getElementById('article-title').value.trim();
-        const content = document.getElementById('article-content').value.trim();
+        const content = typeof window.getArticleEditorContent === 'function'
+            ? window.getArticleEditorContent().trim()
+            : document.getElementById('article-content').value.trim();
         const authorName = document.getElementById('author-name').value.trim();
         const imageFile = imageInput.files[0];
         const articleId = document.getElementById('article-id') ? document.getElementById('article-id').value : null;

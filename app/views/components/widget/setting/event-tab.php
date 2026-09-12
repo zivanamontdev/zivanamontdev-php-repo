@@ -42,6 +42,21 @@ ob_start();
         </div>
     <?php else: ?>
         <?php foreach ($events as $index => $event): ?>
+            <?php
+            $editEventPayload = [
+                'id' => (int) $event['id'],
+                'date' => $event['date_raw'],
+                'time' => $event['start_time'] . ' - ' . $event['end_time'],
+                'name' => $event['name'],
+                'place' => $event['place'],
+                'url' => $event['link'],
+                'is_public' => !empty($event['is_public'])
+            ];
+            $editEventPayloadJson = json_encode(
+                $editEventPayload,
+                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE
+            );
+            ?>
             <div class="rounded-xl border border-[<?= colors('border_gray') ?>] bg-[<?= colors('bg_light_gray') ?>] py-2 px-3 flex items-center justify-between <?= $index > 0 ? 'mt-3' : '' ?>">
                 <!-- Event Info -->
                 <div class="flex-1">
@@ -69,15 +84,7 @@ ob_start();
                 <!-- Edit Button -->
                 <div class="ml-3">
                     <button type="button" 
-                        onclick="openEditEventModal({
-                            id: <?= $event['id'] ?>,
-                            date: '<?= e($event['date_raw']) ?>',
-                            time: '<?= e($event['start_time']) ?> - <?= e($event['end_time']) ?>',
-                            name: '<?= e($event['name']) ?>',
-                            place: '<?= e($event['place']) ?>',
-                            url: '<?= e($event['link']) ?>',
-                            is_public: <?= !empty($event['is_public']) ? 'true' : 'false' ?>
-                        })"
+                        onclick='openEditEventModal(<?= e($editEventPayloadJson) ?>)'
                         class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 p-[10px] rounded-xl bg-white-secondary text-black-highlight hover:opacity-80 active:scale-95 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                     </button>

@@ -38,11 +38,11 @@ class ArticleController extends Controller {
         
         try {
             $title = sanitize($this->input('title'));
-            $content = $this->input('content'); // Allow HTML
+            $content = sanitize_article_content($this->input('content')); // Allow safe blog HTML
             $authorName = sanitize($this->input('author_name'));
             $status = $this->input('status', 'draft');
             
-            if (empty($title) || empty($content) || empty($authorName)) {
+            if (empty($title) || article_plain_text($content) === '' || empty($authorName)) {
                 echo json_encode(['success' => false, 'message' => 'Judul, konten, dan nama penulis harus diisi']);
                 return;
             }
@@ -86,7 +86,7 @@ class ArticleController extends Controller {
             }
             
             // Generate excerpt from content if not provided
-            $excerpt = strip_tags($content);
+            $excerpt = article_plain_text($content);
             $excerpt = mb_substr($excerpt, 0, 200);
             
             $data = [
@@ -142,11 +142,11 @@ class ArticleController extends Controller {
             }
             
             $title = sanitize($this->input('title'));
-            $content = $this->input('content');
+            $content = sanitize_article_content($this->input('content'));
             $authorName = sanitize($this->input('author_name'));
             $status = $this->input('status', 'draft');
             
-            if (empty($title) || empty($content) || empty($authorName)) {
+            if (empty($title) || article_plain_text($content) === '' || empty($authorName)) {
                 echo json_encode(['success' => false, 'message' => 'Judul, konten, dan nama penulis harus diisi']);
                 return;
             }
@@ -203,7 +203,7 @@ class ArticleController extends Controller {
             }
             
             // Generate excerpt from content
-            $excerpt = strip_tags($content);
+            $excerpt = article_plain_text($content);
             $excerpt = mb_substr($excerpt, 0, 200);
             
             $data = [

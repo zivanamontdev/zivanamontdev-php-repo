@@ -49,6 +49,10 @@ ob_start();
 
 <!-- Main Card Container for Article Creation -->
 <div class="mx-32 mb-6">
+    <?php component('widget/articles/article-rich-editor', [
+        'part' => 'toolbar'
+    ]); ?>
+
     <div class="border border-border-soft rounded-2xl p-6 bg-white-neutral h-[800px] flex flex-col">
         <!-- Title Input Placeholder -->
         <div class="mb-8">
@@ -60,20 +64,18 @@ ob_start();
             />
         </div>
         
-        <!-- Content Editor Placeholder -->
-        <div class="flex-1 overflow-y-auto mb-5">
-            <textarea 
-                id="article-content" 
-                placeholder="Mulai menulis artikel..." 
-                class="w-full h-full font-normal text-[16px] text-black-soft placeholder:font-normal placeholder:text-[16px] placeholder-white-soft bg-transparent border-none outline-none focus:ring-0 resize-none"
-            ></textarea>
-        </div>
+        <!-- Content Editor -->
+        <?php component('widget/articles/article-rich-editor'); ?>
     </div>
 </div>
 
 <script>
 // Validation helper function (can be used if needed)
 function validateArticleForm() {
+    if (typeof window.syncArticleEditorContent === 'function') {
+        window.syncArticleEditorContent();
+    }
+
     const title = document.getElementById('article-title').value.trim();
     const content = document.getElementById('article-content').value.trim();
     
