@@ -104,10 +104,16 @@ console.log('Modal script loaded');
 
 // Track modal mode (create or edit)
 let isEditMode = false;
+let isSavingArticle = false;
+let articleModalIntent = 'published';
 
 // Define validateForm first before it's used
 function validateForm() {
     console.log('validateForm called, isEditMode:', isEditMode);
+
+    if (isSavingArticle) {
+        return;
+    }
     
     // Skip validation in edit mode - button always active
     if (isEditMode) {
@@ -152,7 +158,7 @@ function validateForm() {
 window.validatePublishForm = validateForm;
 
 // Function to open publish article modal
-window.openPublishArticleModal = function() {
+window.openPublishArticleModal = function(intent = 'published') {
     console.log('openPublishArticleModal called');
     
     try {
@@ -161,6 +167,8 @@ window.openPublishArticleModal = function() {
             console.error('Modal element not found!');
             return;
         }
+
+        articleModalIntent = intent === 'draft' ? 'draft' : 'published';
         
         const articleId = document.getElementById('article-id');
         
@@ -171,7 +179,9 @@ window.openPublishArticleModal = function() {
         // Update modal title and button based on mode
         const modalTitle = document.getElementById('modal-title');
         if (modalTitle) {
-            modalTitle.textContent = isEditMode ? 'Simpan Perubahan' : 'Publish Artikel';
+            modalTitle.textContent = isEditMode
+                ? 'Simpan Perubahan'
+                : (articleModalIntent === 'draft' ? 'Simpan Draft' : 'Publish Artikel');
         }
         
         // Update button for edit mode (always active)
@@ -313,9 +323,64 @@ document.addEventListener('DOMContentLoaded', function() {
             saveArticle('published');
         });
     }
+
+    function setArticleSavingState(isSaving, status) {
+        const submitBtn = document.getElementById('submit-publish-btn');
+        const draftBtn = document.getElementById('save-draft-btn');
+
+        const setLoadingButton = function(button, loadingText) {
+            if (!button) {
+                return;
+            }
+
+            if (!button.dataset.originalText) {
+                button.dataset.originalText = button.textContent.trim();
+            }
+
+            button.disabled = true;
+            button.textContent = loadingText;
+            button.setAttribute('aria-busy', 'true');
+            button.classList.add('opacity-70', 'cursor-not-allowed');
+            button.classList.remove('active:scale-95');
+        };
+
+        const resetButton = function(button) {
+            if (!button) {
+                return;
+            }
+
+            if (button.dataset.originalText) {
+                button.textContent = button.dataset.originalText;
+                delete button.dataset.originalText;
+            }
+
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+            button.classList.remove('opacity-70', 'cursor-not-allowed');
+            button.classList.add('active:scale-95');
+        };
+
+        if (isSaving) {
+            const publishText = isEditMode ? 'Menyimpan...' : 'Mem-publish...';
+            setLoadingButton(submitBtn, status === 'published' ? publishText : (submitBtn ? submitBtn.textContent.trim() : 'Publish Artikel'));
+            setLoadingButton(draftBtn, status === 'draft' ? 'Menyimpan Draft...' : (draftBtn ? draftBtn.textContent.trim() : 'Simpan di Draft'));
+            return;
+        }
+
+        resetButton(submitBtn);
+        resetButton(draftBtn);
+
+        if (!isEditMode) {
+            validateForm();
+        }
+    }
     
     // Function to save article
     function saveArticle(status) {
+        if (isSavingArticle) {
+            return;
+        }
+
         if (typeof window.syncArticleEditorContent === 'function') {
             window.syncArticleEditorContent();
         }
@@ -367,10 +432,8 @@ document.addEventListener('DOMContentLoaded', function() {
             : '<?= url('/admin/articles/store') ?>';
         
         // Show loading state
-        const submitBtn = document.getElementById('submit-publish-btn');
-        const draftBtn = document.getElementById('save-draft-btn');
-        if (submitBtn) submitBtn.disabled = true;
-        if (draftBtn) draftBtn.disabled = true;
+        isSavingArticle = true;
+        setArticleSavingState(true, status);
         
         // Send AJAX request
         fetch(url, {
@@ -389,14 +452,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => window.location.href = '<?= url('/admin/articles') ?>', 1000);
             } else {
                 showToast(data.message, 'error', 3000);
-                if (submitBtn) submitBtn.disabled = false;
-                if (draftBtn) draftBtn.disabled = false;
+                isSavingArticle = false;
+                setArticleSavingState(false, status);
             }
         })
         .catch(error => {
             showToast('Terjadi kesalahan saat menyimpan artikel', 'error', 3000);
-            if (submitBtn) submitBtn.disabled = false;
-            if (draftBtn) draftBtn.disabled = false;
+            isSavingArticle = false;
+            setArticleSavingState(false, status);
         });
     }
     

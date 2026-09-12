@@ -401,6 +401,10 @@ function sanitize_article_content($html) {
 
     if (!class_exists('DOMDocument')) {
         $html = preg_replace('#<(script|style|iframe|object|embed)[^>]*>.*?</\1>#is', '', $html);
+        $html = preg_replace('/<span\b[^>]*style\s*=\s*("|\')[^"\']*font-weight\s*:\s*(bold|[6-9]00)[^"\']*\1[^>]*>(.*?)<\/span>/is', '<strong>$3</strong>', $html);
+        $html = preg_replace('/<span\b[^>]*style\s*=\s*("|\')[^"\']*font-style\s*:\s*italic[^"\']*\1[^>]*>(.*?)<\/span>/is', '<em>$2</em>', $html);
+        $html = preg_replace('/<span\b[^>]*style\s*=\s*("|\')[^"\']*text-decoration[^"\']*underline[^"\']*\1[^>]*>(.*?)<\/span>/is', '<u>$2</u>', $html);
+        $html = preg_replace('/<span\b[^>]*style\s*=\s*("|\')[^"\']*text-decoration[^"\']*(line-through|strike)[^"\']*\1[^>]*>(.*?)<\/span>/is', '<s>$3</s>', $html);
         $html = strip_tags($html, '<' . implode('><', $allowedTags) . '>');
         $html = preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
         $html = preg_replace('/\s+(style|class|id)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
@@ -436,6 +440,50 @@ function sanitize_article_content($html) {
         if (in_array($tag, $blockedTagsWithContent, true)) {
             $node->parentNode->removeChild($node);
             return;
+        }
+
+        if ($node->hasAttribute('style') && $node->hasChildNodes()) {
+            $style = strtolower($node->getAttribute('style'));
+            $semanticTags = [];
+
+            if (preg_match('/font-weight\s*:\s*(bold|[6-9]00)/i', $style)) {
+                $semanticTags[] = 'strong';
+            }
+
+            if (preg_match('/font-style\s*:\s*italic/i', $style)) {
+                $semanticTags[] = 'em';
+            }
+
+            if (preg_match('/text-decoration[^;]*underline/i', $style)) {
+                $semanticTags[] = 'u';
+            }
+
+            if (preg_match('/text-decoration[^;]*(line-through|strike)/i', $style)) {
+                $semanticTags[] = 's';
+            }
+
+            if (!empty($semanticTags)) {
+                $outerWrapper = null;
+                $innerWrapper = null;
+
+                foreach ($semanticTags as $semanticTag) {
+                    $wrapper = $dom->createElement($semanticTag);
+
+                    if ($innerWrapper) {
+                        $innerWrapper->appendChild($wrapper);
+                    } else {
+                        $outerWrapper = $wrapper;
+                    }
+
+                    $innerWrapper = $wrapper;
+                }
+
+                while ($node->firstChild) {
+                    $innerWrapper->appendChild($node->firstChild);
+                }
+
+                $node->appendChild($outerWrapper);
+            }
         }
 
         $children = [];

@@ -15,6 +15,17 @@ $articles = $articles ?? [];
 $pagination = $pagination ?? null;
 ?>
 
+<style>
+.article-status-tooltip-bubble {
+    display: none;
+}
+
+.article-status-tooltip:hover .article-status-tooltip-bubble,
+.article-status-tooltip:focus-within .article-status-tooltip-bubble {
+    display: block;
+}
+</style>
+
 <!-- Admin Navbar -->
 <?php component('admin-navbar', ['title' => 'Artikel']); ?>
 
@@ -25,8 +36,23 @@ $pagination = $pagination ?? null;
             <!-- Title and Description -->
             <div class="flex flex-col items-start">
                 <h3 class="font-bold text-[16px] leading-[21px] text-black-soft mb-[8px]">Daftar Artikel</h3>
-                <p class="font-normal text-[14px] leading-[21px] text-white-soft">Artikel yang telah dibuat akan muncul di sini</p>
-                <p class="font-normal text-[12px] leading-[18px] text-primary mt-[4px]">
+                <div class="flex items-center gap-2">
+                    <p class="font-normal text-[14px] leading-[21px] text-white-soft">Artikel yang telah dibuat akan muncul di sini</p>
+                    <div class="article-status-tooltip relative flex items-center">
+                        <button
+                            type="button"
+                            aria-label='Hanya artikel dengan status "Published" yang akan tampil di halaman publik'
+                            class="w-[18px] h-[18px] rounded-full border border-primary/30 bg-primary/10 text-primary text-[11px] leading-none font-bold flex items-center justify-center cursor-help focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        >
+                            i
+                        </button>
+                        <div class="article-status-tooltip-bubble pointer-events-none absolute left-1/2 top-[28px] z-20 w-[260px] -translate-x-1/2 rounded-xl border border-border-light bg-white-neutral px-4 py-3 text-[12px] font-normal leading-[18px] text-black-soft shadow-lg">
+                            <span class="absolute left-1/2 top-[-6px] h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-border-light bg-white-neutral"></span>
+                            Hanya artikel dengan status "Published" yang akan tampil di halaman publik
+                        </div>
+                    </div>
+                </div>
+                <p style="display: none;">
                     💡 Hanya artikel dengan status "Published" yang akan tampil di halaman publik
                 </p>
             </div>
