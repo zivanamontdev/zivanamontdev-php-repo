@@ -80,27 +80,10 @@
             
             <!-- Jabatan Karyawan (Dropdown) -->
             <div>
-                <label for="karyawan-role-edit" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
+                <label for="karyawan-role-edit-dropdown-trigger" class="block font-normal text-[12px] leading-[21px] text-black-highlight mb-[8px]">
                     Jabatan Karyawan
                 </label>
-                <div class="relative">
-                    <select 
-                        id="karyawan-role-edit" 
-                        name="karyawan_role"
-                        class="w-full h-[52px] px-[24px] py-[12px] bg-white-neutral border border-border-light rounded-xl text-[16px] leading-[28px] text-black-soft focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
-                    >
-                        <option value="">Isi jabatan karyawan</option>
-                        <option value="Guru Kelas">Guru Kelas</option>
-                        <option value="Guru Pendamping">Guru Pendamping</option>
-                        <option value="Staff Administrasi">Staff Administrasi</option>
-                        <option value="Staff Kebersihan">Staff Kebersihan</option>
-                        <option value="Penjaga Sekolah">Penjaga Sekolah</option>
-                    </select>
-                    <!-- Dropdown Icon -->
-                    <svg class="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-black-highlight pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
+                <?php component('widget/management/karyawan-role-dropdown', ['inputId' => 'karyawan-role-edit']); ?>
             </div>
             
             <!-- Action Buttons -->
@@ -177,6 +160,7 @@ window.openEditKaryawanModal = function(karyawanData) {
     document.getElementById('karyawan-id-edit').value = karyawanData.id;
     document.getElementById('karyawan-name-edit').value = karyawanData.name;
     document.getElementById('karyawan-role-edit').value = karyawanData.role;
+    document.getElementById('karyawan-role-edit').dispatchEvent(new Event('change', {bubbles: true}));
     
     if (karyawanData.photo) {
         previewImage.src = karyawanData.photo;

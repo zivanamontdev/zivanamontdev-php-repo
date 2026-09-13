@@ -77,6 +77,7 @@ class Analytics extends Model {
         ");
         $locations = [];
         foreach ($rows as $row) {
+            if (GeoIP::isAutomatedVisitor($row['user_agent'] ?? '')) continue;
             // Dashboard rendering never waits on external GeoIP requests.
             $details = GeoIP::getDetails($row['ip_address'], false);
             if (!GeoIP::isIndonesianVisitor($details, $row['user_agent'] ?? '')) continue;

@@ -32,7 +32,6 @@ $router->get('/admin', function() {
     Router::redirect('/admin/dashboard');
 });
 $router->get('/admin/dashboard', [DashboardController::class, 'index']);
-$router->post('/admin/dashboard/locations/refresh', [DashboardController::class, 'refreshLocations']);
 
 // Admin programs
 $router->get('/admin/programs', [ProgramController::class, 'index']);

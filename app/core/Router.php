@@ -116,10 +116,11 @@ class Router {
             $ipAddress = GeoIP::getClientIP();
             $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
             
-            // Get location (this will use cache if available)
-            $location = GeoIP::getLocation($ipAddress);
+            // Automated traffic does not need a location lookup. Human visits enrich
+            // the cache normally; the dashboard reads only verified Indonesian cities.
+            $location = GeoIP::isAutomatedVisitor($userAgent) ? 'Unknown' : GeoIP::getLocation($ipAddress);
             
-            // Track asynchronously to avoid blocking
+            // Preserve overall visit metrics independently of the location filter.
             $analyticsModel = new Analytics();
             $analyticsModel->trackPageView($pageUrl, $ipAddress, $userAgent, $location);
             

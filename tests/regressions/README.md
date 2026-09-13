@@ -4,11 +4,6 @@ Run `php tests/regressions/run.php` for pagination ranges, invalid pages, search
 page-size limits, visitor classification and location aggregation. The doubles use
 synthetic data and never load `.env` or connect to MySQL, SMTP or R2.
 
-Run `php tests/regressions/location-refresh.php` for bounded batches, cursor
-retries, CSRF rotation/replay and request-method validation. Run
-`node tests/regressions/location-refresh-client.cjs` for duplicate-click
-protection, token forwarding, selected-period refresh and failure recovery.
-
 For browser verification, from the repository root run:
 
 ```sh
@@ -35,38 +30,30 @@ to exercise boundaries:
   Verify the button wrapper has a 32px top margin on desktop and mobile.
 - `/`: open/close testimonial, navigate to Activities, return Home, open/close
   again; repeat with browser back/forward and Escape.
-- `/admin/dashboard`: click **Perbarui** in Locations twice sequentially. Both
-  runs must finish successfully and re-enable the button. This fixture uses an
-  empty visit history and makes no external GeoIP requests.
+- `/admin/dashboard`: no location refresh control or background batch requests.
+  Switching periods still updates the location panel.
+- `/admin/management`: open Karyawan, then Tambah Karyawan. The role dropdown
+  uses the application theme and includes Guru Daycare. Select it, close/reopen
+  the modal, and verify the placeholder resets. Edit Guru Uji and verify Guru
+  Daycare is preselected; changing the role must update the submitted field.
+  Verify keyboard arrows/Enter/Escape and the existing compact dropdowns.
 
 Stop the fixture server when finished. It is only for local development.
 
-## Applying the location filter in production
+## Location filtering in production
 
-Deploy the changed files, including the dashboard controller, route, view,
-`app/helpers/LocationCacheWarmer.php`, `app/helpers/geoip.php` and
-`public/assets/js/admin-location-refresh.js`. No SSH or database migration is required.
+Deploy the changed files; no SSH command or database migration is required.
+The Locations panel directly uses cached country, city and hosting metadata.
+It includes only identified Indonesian cities with non-hosting visitor traffic,
+excluding recognized automated user agents. Cached results from earlier refreshes
+remain usable. Unresolved and legacy city-only entries are excluded, rather than
+launching a long historical lookup when the dashboard opens.
 
-Sign in to Admin, open Dashboard, then click **Perbarui** beside the location icon
-in the **Lokasi** panel. Keep the page open until completion. Requests process up
-to 25 cached entries and at most one external lookup at a time, with a shared
-provider cooldown across admin tabs, visitors and CLI workers. The button is
-immediately disabled while running; progress and retry delays appear in the panel.
-POST requests require the existing admin login and a rotating CSRF token.
+Normal new visits populate location metadata, within the existing provider limit.
+Recognized bots skip location lookup. Dashboard loading and period changes never
+call the GeoIP provider; overall visit metrics are preserved. The removed refresh
+endpoint and JavaScript are no longer used. The optional CLI maintenance script
+remains CLI-only and is not required for admin operation.
 
-The process reads historical visit IPs and enriches the existing cache. It never
-changes/deletes visit rows. Reopening the page and clicking again reuses completed
-entries and retries unresolved ones. The `storage/cache` directory must be writable.
-Do not expose the CLI script at a public URL; it remains CLI-only. The optional
-`php scripts/warm-location-cache.php` command remains available for SSH users.
-
-New visits populate the metadata through normal tracking. The Locations panel
-includes only resolved Indonesian cities, excludes identified hosting IPs and
-recognized automated user agents, then sums eligible visits and ranks cities.
-Unknown/legacy string-only cache entries are excluded until enriched. Ordinary dashboard loading
-does no outbound GeoIP requests; only the explicit refresh does, and its other metrics remain unchanged.
-
-GeoIP and user-agent classification are estimates; undetected bots, VPNs, mobile
-IP routing and stale IP allocations can still affect location accuracy. The filter
-does not prove that every included visitor is human. API fields and rate limits:
-https://ip-api.com/docs/api:json
+GeoIP and user-agent classification are estimates; this filter cannot prove that
+every included visitor is human. The storage/cache directory must stay writable.

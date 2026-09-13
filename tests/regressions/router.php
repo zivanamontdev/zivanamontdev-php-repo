@@ -6,9 +6,16 @@ if (preg_match('#^/(images|assets)/#', $path) && is_file(dirname(__DIR__, 2) . '
 session_start();
 require __DIR__ . '/bootstrap.php';
 require_once APP_PATH . '/helpers/Security.php';
-if ($path === '/admin/dashboard/locations/refresh') {
-    require APP_PATH . '/controllers/DashboardController.php';
-    (new DashboardController())->refreshLocations();
+if ($path === '/admin/management/karyawan/1/get') {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => ['id' => 1, 'name' => 'Guru Uji', 'role' => 'Guru Daycare', 'photo' => '']]);
+    return;
+}
+if ($path === '/admin/management') {
+    $prakata = ['title' => 'Sekolah Uji', 'description' => 'Profil pengujian', 'image' => '', 'updated_at' => '2026-09-13'];
+    $karyawan = [['id' => 1, 'name' => 'Guru Uji', 'role' => 'Guru Daycare', 'photo' => '']];
+    $fasilitas = [];
+    require VIEW_PATH . '/admin/management/index.php';
     return;
 }
 if ($path === '/admin/dashboard') {

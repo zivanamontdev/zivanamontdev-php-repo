@@ -45,7 +45,8 @@ check(!GeoIP::isIndonesianVisitor(array_merge($id, ['countryCode' => 'US']), 'Mo
 check(!GeoIP::isIndonesianVisitor(array_merge($id, ['hosting' => true]), 'Mozilla/5.0'), 'Exclude hosting');
 check(!GeoIP::isIndonesianVisitor(['city' => 'Makassar'], 'Mozilla/5.0'), 'Do not infer country from a city name');
 $cache = new ReflectionProperty(GeoIP::class, 'cache');
-$cache->setValue(null, ['8.8.8.8' => $id, '1.1.1.1' => array_merge($id, ['countryCode' => 'US'])]);
+$cache->setValue(null, ['8.8.8.8' => $id, '1.1.1.1' => array_merge($id, ['countryCode' => 'US']),
+    '8.8.4.4' => array_merge($id, ['hosting' => true]), '9.9.9.9' => 'Makassar']);
 $cacheFile = new ReflectionProperty(GeoIP::class, 'cacheFile');
 $cacheFile->setValue(null, STORAGE_PATH . '/unused.json');
 Database::$visits = [
@@ -53,7 +54,11 @@ Database::$visits = [
     ['ip_address' => '8.8.8.8', 'user_agent' => 'Mozilla/5.0 Mobile', 'views' => 3],
     ['ip_address' => '8.8.8.8', 'user_agent' => 'Googlebot', 'views' => 100],
     ['ip_address' => '1.1.1.1', 'user_agent' => 'Mozilla/5.0', 'views' => 500],
+    ['ip_address' => '8.8.4.4', 'user_agent' => 'Mozilla/5.0', 'views' => 200],
+    ['ip_address' => '9.9.9.9', 'user_agent' => 'Mozilla/5.0', 'views' => 900],
+    ['ip_address' => '9.9.9.10', 'user_agent' => 'Mozilla/5.0', 'views' => 900],
 ];
 check((new Analytics())->getTopLocations() === [['location' => 'Makassar', 'views' => 7]], 'Aggregate only eligible visits before ranking');
 check(GeoIP::getDetails('9.9.9.9', false)['countryCode'] === '', 'Cache-only lookup stays unresolved');
+check(!is_file(STORAGE_PATH . '/unused.json'), 'Dashboard does not warm unresolved IPs or write cache');
 echo "Passed {$checks} regression checks.\n";
