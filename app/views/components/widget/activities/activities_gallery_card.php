@@ -29,7 +29,7 @@ if (!function_exists('getActivityGalleryImageUrl')) {
 }
 ?>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" data-reveal-grid x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
     <?php foreach ($items as $index => $item): ?>
     <div 
         data-reveal-item <?= $index >= 9 ? 'hidden' : '' ?>

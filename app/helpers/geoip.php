@@ -7,6 +7,7 @@
 class GeoIP {
     private static $cache = [];
     private static $cacheFile = null;
+    private static $lookupRetryAfter = 0;
     
     /**
      * Initialize cache file path
@@ -32,17 +33,20 @@ class GeoIP {
     /**
      * Save cache to file
      */
-    private static function saveCache() {
+    private static function saveCache($updates = null) {
         self::initCache();
         // Merge while holding the lock so parallel visits do not erase each other's metadata.
         $handle = fopen(self::$cacheFile, 'c+');
-        if (!$handle) return;
+        if (!$handle) throw new RuntimeException('GeoIP cache is not writable');
         if (flock($handle, LOCK_EX)) {
             $stored = json_decode(stream_get_contents($handle), true) ?: [];
-            $merged = array_replace($stored, self::$cache);
+            $merged = array_replace($stored, $updates ?? self::$cache);
             ftruncate($handle, 0);
             rewind($handle);
-            fwrite($handle, json_encode($merged));
+            if (fwrite($handle, json_encode($merged)) === false) {
+                fclose($handle);
+                throw new RuntimeException('Could not save GeoIP cache');
+            }
             fflush($handle);
             flock($handle, LOCK_UN);
         }
@@ -72,7 +76,7 @@ class GeoIP {
         $details = self::fetchFromAPI($ip);
         if ($details !== null) {
             self::$cache[$ip] = $details;
-            self::saveCache();
+            self::saveCache([$ip => $details]);
             return array_merge($unknown, $details);
         }
         return $unknown;
@@ -92,10 +96,44 @@ class GeoIP {
         );
     }
 
+    public static function getLookupRetryAfter() {
+        return self::$lookupRetryAfter;
+    }
+
     private static function fetchFromAPI($ip) {
+        self::$lookupRetryAfter = 0;
+        // Coordinate all visitors/admin tabs/CLI workers against the same provider budget.
+        $handle = fopen(STORAGE_PATH . '/cache/geoip_lookup.lock', 'c+');
+        if (!$handle) throw new RuntimeException('GeoIP cache is not writable');
+        if (!flock($handle, LOCK_EX | LOCK_NB)) {
+            fclose($handle);
+            self::$lookupRetryAfter = 2;
+            return null;
+        }
+        try {
+            $nextLookup = (float)stream_get_contents($handle);
+            if ($nextLookup > microtime(true)) {
+                self::$lookupRetryAfter = (int)ceil($nextLookup - microtime(true));
+                return null;
+            }
+            $result = self::requestFromAPI($ip);
+            rewind($handle);
+            ftruncate($handle, 0);
+            fwrite($handle, (string)max(microtime(true) + 1.5, self::$cache['_retry_after'] ?? 0));
+            return $result;
+        } finally {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+        }
+    }
+
+    private static function requestFromAPI($ip) {
         // Share the provider rate-limit window across requests and the cache warm-up command.
         $retryAfter = self::$cache['_retry_after'] ?? 0;
-        if ($retryAfter > time()) return null;
+        if ($retryAfter > time()) {
+            self::$lookupRetryAfter = $retryAfter - time();
+            return null;
+        }
         $url = "http://ip-api.com/json/" . rawurlencode($ip) . "?fields=status,city,regionName,country,countryCode,hosting";
         $context = stream_context_create(['http' => ['timeout' => 2, 'ignore_errors' => true]]);
         $response = @file_get_contents($url, false, $context);
@@ -108,7 +146,8 @@ class GeoIP {
         }
         if ($remaining === 0 || preg_match('/\s429\s/', $headers[0] ?? '')) {
             self::$cache['_retry_after'] = time() + max(1, $ttl);
-            self::saveCache();
+            self::$lookupRetryAfter = max(1, $ttl);
+            self::saveCache(['_retry_after' => self::$cache['_retry_after']]);
         }
         $data = $response === false ? null : json_decode($response, true);
         if (!is_array($data) || ($data['status'] ?? '') !== 'success'

@@ -17,7 +17,7 @@ component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']);
 </section>
 
 <!-- Gallery Content -->
-<section class="container mx-auto px-5" data-reveal data-initial="9" data-step="9">
+<section class="container mx-auto px-5" data-reveal data-initial="9">
     
     <!-- Gallery Cards -->
     <?php if (!empty($galleryData)): ?>

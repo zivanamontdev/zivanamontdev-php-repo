@@ -16,7 +16,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
-    <script defer src="<?= asset('assets/js/public-interactions.js') ?>?v=20260913"></script>
+    <script defer src="<?= asset('assets/js/public-interactions.js') ?>?v=20260913-2"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     
@@ -30,7 +30,7 @@
     
     <!-- Custom Styles -->
     <style>
-        [data-reveal-item][hidden], [data-reveal-more][hidden], #loadMoreBtn[hidden], #desktopLoadMoreBtn[hidden] { display: none !important; }
+        [data-reveal-item][hidden], [data-reveal-more][hidden], [data-reveal-content][hidden] { display: none !important; }
         @media (max-width: 767px) { .reveal-desktop-only { display: none !important; } }
         @media (min-width: 768px) { .reveal-mobile-only { display: none !important; } }
         * {

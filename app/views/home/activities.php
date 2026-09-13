@@ -49,7 +49,7 @@ ob_start();
 </section>
 
 <!-- Program Tahun Ajaran Section -->
-<section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6" data-step="3">
+<section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6">
     <div class="flex justify-center mb-[24px]">
         <?php component('badge', ['text' => 'Program Tahun Ajaran']); ?>
     </div>
@@ -63,7 +63,7 @@ ob_start();
             class="hidden md:block absolute -right-[52px] -top-[55px] w-[64px] h-[70px] z-10 pointer-events-none"
         >
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" id="program-tahun-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" id="program-tahun-grid" data-reveal-grid>
             <?php foreach ($programsTahunData as $index => $program): ?>
             <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full program-tahun-item" data-reveal-item <?= $index >= 6 ? 'hidden' : '' ?> data-index="<?= $index ?>">
                 <!-- Image -->

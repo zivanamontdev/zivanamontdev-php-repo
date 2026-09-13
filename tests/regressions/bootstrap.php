@@ -12,7 +12,7 @@ define('R2_ENABLED', false);
 define('R2_PUBLIC_URL', 'https://cdn.example.test');
 define('CSRF_TOKEN_NAME', 'csrf_token');
 define('STORAGE_PATH', sys_get_temp_dir() . '/zivana-regression-cache');
-$_SESSION = ['user_id' => 1, 'user_data' => ['full_name' => 'Test Admin', 'email' => 'admin@example.test']];
+$_SESSION = array_merge($_SESSION ?? [], ['user_id' => 1, 'user_data' => ['full_name' => 'Test Admin', 'email' => 'admin@example.test']]);
 require APP_PATH . '/helpers/functions.php';
 require APP_PATH . '/helpers/geoip.php';
 class Database {

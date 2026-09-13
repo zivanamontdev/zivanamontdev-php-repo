@@ -614,12 +614,20 @@ if (empty($locationStats)) {
                 <h3 class="text-[16px] font-bold text-black-highlight mb-[8px]">Lokasi</h3>
                 <p class="text-[14px] font-normal leading-[21px] text-white-soft">Kota di Indonesia dengan kunjungan terbanyak</p>
             </div>
+            <button type="button" id="refresh-locations"
+                title="Perbarui data lokasi pengunjung" aria-label="Perbarui lokasi"
+                data-endpoint="<?= e(url('/admin/dashboard/locations/refresh')) ?>"
+                data-dashboard="<?= e(url('/admin/dashboard')) ?>" data-csrf-token="<?= e(getCsrfToken()) ?>"
+                class="inline-flex items-center gap-2 ml-3 p-2 rounded-[8px] text-primary hover:bg-white-secondary disabled:opacity-50 disabled:cursor-not-allowed">
             <!-- Maps Outline Icon -->
             <svg class="w-5 h-5 text-white-soft flex-shrink-0" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.5 8.33333C17.5 14.1667 10 19.1667 10 19.1667C10 19.1667 2.5 14.1667 2.5 8.33333C2.5 6.34421 3.29018 4.43655 4.6967 3.03003C6.10322 1.6235 8.01088 0.833328 10 0.833328C11.9891 0.833328 13.8968 1.6235 15.3033 3.03003C16.7098 4.43655 17.5 6.34421 17.5 8.33333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M10 10.8333C11.3807 10.8333 12.5 9.71404 12.5 8.33333C12.5 6.95262 11.3807 5.83333 10 5.83333C8.61929 5.83333 7.5 6.95262 7.5 8.33333C7.5 9.71404 8.61929 10.8333 10 10.8333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+                <span data-refresh-label class="text-[12px]">Perbarui</span>
+            </button>
         </div>
+        <p id="location-refresh-status" role="status" aria-live="polite" hidden class="text-[12px] text-black-highlight mb-4"></p>
         <!-- Location List -->
         <div class="flex flex-col gap-[20px]">
             <?php 
@@ -710,7 +718,9 @@ $yAxisValues = [80, 64, 48, 32, 16, 0];
 </div>
 </div>
 
-<?php 
+<script src="<?= asset('assets/js/admin-location-refresh.js') ?>?v=20260913"></script>
+
+<?php
 $content = ob_get_clean();
 require VIEW_PATH . '/layouts/admin.php';
 ?>

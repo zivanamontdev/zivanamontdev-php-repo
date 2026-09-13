@@ -7,15 +7,20 @@
         const button = section.querySelector('[data-reveal-more]');
         const configured = desktop.matches ? (section.dataset.desktopInitial || section.dataset.initial) : section.dataset.initial;
         const initial = configured === 'all' ? items.length : Number(configured);
-        const visible = reset ? initial : Math.max(initial, Number(section.dataset.visible || initial));
+        const visible = Math.min(items.length, reset ? initial : Math.max(initial, Number(section.dataset.visible ?? initial)));
+        section.dataset.revealInitial = String(initial);
         section.dataset.visible = String(visible);
         items.forEach((item, index) => {
             item.classList.remove('reveal-desktop-only');
             item.hidden = index >= visible;
         });
+        const content = section.querySelector('[data-reveal-content]');
+        if (content) content.hidden = visible === 0;
         if (button) {
             button.classList.remove('reveal-mobile-only');
-            button.hidden = visible >= items.length;
+            button.hidden = items.length <= initial;
+            button.textContent = visible >= items.length ? 'Tampilkan Lebih Sedikit' : 'Tampilkan Lebih Banyak';
+            button.setAttribute('aria-expanded', String(visible > initial));
         }
     }
 
@@ -36,7 +41,13 @@
         if (more) {
             const section = more.closest('[data-reveal]');
             if (!section) return;
-            section.dataset.visible = String(Number(section.dataset.visible) + Number(section.dataset.step || 3));
+            const total = section.querySelectorAll('[data-reveal-item]').length;
+            const grid = section.querySelector('[data-reveal-grid]');
+            // Use the rendered columns so each click reveals one row at every breakpoint.
+            const columns = grid ? window.getComputedStyle(grid).gridTemplateColumns : 'none';
+            const step = columns && columns !== 'none' ? columns.trim().split(/\s+/).length : 1;
+            const visible = Number(section.dataset.visible);
+            section.dataset.visible = String(visible >= total ? Number(section.dataset.revealInitial) : visible + step);
             updateReveal(section);
             return;
         }
@@ -58,16 +69,6 @@
             modal.querySelector('#close-modal-testimoni-detail').focus();
         } else if (event.target.closest('#close-modal-testimoni-detail') || (modal && event.target === modal)) {
             closeTestimonial();
-        }
-        // Article lists also survive AJAX navigation without stale page scripts.
-        const articleMore = event.target.closest('#loadMoreBtn, #desktopLoadMoreBtn');
-        if (articleMore) {
-            if (articleMore.id === 'loadMoreBtn') {
-                document.querySelectorAll('.mobile-article-item').forEach(item => item.classList.add('show'));
-            } else {
-                document.getElementById('desktop-hidden-articles')?.classList.remove('hidden');
-            }
-            articleMore.hidden = true;
         }
     });
     document.addEventListener('keydown', event => {

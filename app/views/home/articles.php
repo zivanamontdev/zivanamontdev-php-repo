@@ -63,8 +63,11 @@ ob_start();
         background: #FCFCFD;
         border-radius: 24px;
         overflow: hidden;
-        margin-bottom: 16px;
         position: relative;
+    }
+
+    .mobile-article-item:not([hidden]) ~ .mobile-article-item:not([hidden]) {
+        margin-top: 16px;
     }
     
     .mobile-article-card-image {
@@ -120,25 +123,10 @@ ob_start();
         overflow: hidden;
     }
     
-    .mobile-article-item {
-        display: none;
-        visibility: hidden;
-        height: 0;
-        overflow: hidden;
-        margin: 0;
-    }
-    
-    .mobile-article-item.show {
-        display: block;
-        visibility: visible;
-        height: auto;
-        overflow: visible;
-    }
-    
     .mobile-load-more {
         display: flex;
         justify-content: center;
-        margin-top: 24px;
+        margin-top: 32px;
         margin-bottom: 40px;
         position: relative;
     }
@@ -230,25 +218,26 @@ ob_start();
 
     <!-- Hidden Articles Section - Desktop Only -->
     <?php if (!empty($hiddenArticles)): ?>
-        <div class="desktop-only hidden" id="desktop-hidden-articles">
+    <!-- The first seven articles above stay visible; reveal the extra list one row at a time. -->
+    <div class="desktop-only" data-reveal data-initial="0">
+        <div class="desktop-only pt-[24px]" id="desktop-hidden-articles" data-reveal-content hidden>
             <?php component('widget/articles/articles_list_card_section', [
                 'articles' => $hiddenArticles,
-                'removeTopMargin' => true
+                'removeTopMargin' => true,
+                'revealItems' => true
             ]); ?>
         </div>
-    <?php endif; ?>
-
     <!-- Load More Button - Desktop Only -->
-    <?php if (!empty($hiddenArticles)): ?>
     <div class="desktop-only hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
-            <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'id' => 'desktopLoadMoreBtn', 'type' => 'button']); ?>
+            <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'id' => 'desktopLoadMoreBtn', 'type' => 'button', 'attrs' => ['data-reveal-more' => '']]); ?>
+    </div>
     </div>
     <?php endif; ?>
     
     <!-- Mobile Version -->
-    <div class="mobile-articles-container md:hidden">
+    <div class="mobile-articles-container md:hidden" data-reveal data-initial="3">
             <?php foreach ($articles as $index => $article): ?>
-                <div class="mobile-article-item <?= ($index < 3) ? 'show' : '' ?>" data-index="<?= $index ?>">
+                <div class="mobile-article-item" data-reveal-item <?= $index >= 3 ? 'hidden' : '' ?> data-index="<?= $index ?>">
                     <div class="mobile-article-card">
                         <!-- Image -->
                         <div class="mobile-article-card-image">
@@ -296,6 +285,7 @@ ob_start();
                 <button 
                     type="button" 
                     id="loadMoreBtn"
+                    data-reveal-more
                     class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-2 px-6 rounded-xl bg-white-neutral text-black-soft font-normal text-base leading-[28px] opacity-50 hover:opacity-90 active:scale-95 cursor-pointer"
                 >
                     Tampilkan Lebih Banyak

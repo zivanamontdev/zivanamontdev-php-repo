@@ -13,6 +13,7 @@
 // Get articles from passed parameter
 $listArticles = $__component_data__['articles'] ?? [];
 $removeTopMargin = $__component_data__['removeTopMargin'] ?? false;
+$revealItems = $__component_data__['revealItems'] ?? false;
 
 // If no articles provided, return empty
 if (empty($listArticles)) {
@@ -66,7 +67,7 @@ if (!function_exists('getArticleImageUrlList')) {
 <section class="container mx-auto px-5 <?= $removeTopMargin ? '' : 'mt-[52px]' ?> hidden md:block">
     <div class="flex flex-col gap-[24px]">
         <?php foreach ($listArticles as $article): ?>
-        <div class="flex gap-[24px]">
+        <div class="flex gap-[24px]" <?= $revealItems ? 'data-reveal-item hidden' : '' ?>>
             <!-- Section 1: Image (1/8 width) -->
             <div class="w-1/8 flex-shrink-0" style="width: 12.5%;">
                 <div class="h-[224px] rounded-[24px] overflow-hidden bg-gray-100 flex items-center justify-center">

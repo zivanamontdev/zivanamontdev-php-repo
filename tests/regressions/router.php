@@ -3,7 +3,23 @@
 if (PHP_SAPI !== 'cli-server') { http_response_code(404); exit; }
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 if (preg_match('#^/(images|assets)/#', $path) && is_file(dirname(__DIR__, 2) . '/public' . $path)) return false;
+session_start();
 require __DIR__ . '/bootstrap.php';
+require_once APP_PATH . '/helpers/Security.php';
+if ($path === '/admin/dashboard/locations/refresh') {
+    require APP_PATH . '/controllers/DashboardController.php';
+    (new DashboardController())->refreshLocations();
+    return;
+}
+if ($path === '/admin/dashboard') {
+    if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['locationStats' => []]);
+        return;
+    }
+    require VIEW_PATH . '/admin/dashboard/index.php';
+    return;
+}
 $count = max(0, min(50, (int)($_GET['count'] ?? 15)));
 $settings = [];
 $socialMedia = [];
@@ -15,6 +31,7 @@ if ($path === '/admin/registrations') {
 $views = ['/' => 'index', '/profile' => 'profile', '/activities' => 'activities', '/activities-gallery' => 'activities-gallery', '/articles' => 'articles'];
 if (!isset($views[$path])) { http_response_code(404); exit; }
 $kepalaSekolah = ['name' => 'Kepala Sekolah Uji'];
+$prakata = ['title' => 'Sekolah Uji', 'description' => 'Profil sekolah untuk pengujian.', 'image' => ''];
 $karyawan = $fasilitas = $galleryData = $programsTahunData = $articles = [];
 $kelasData = $programsHarianData = $schedules = [];
 $programData = ['name' => 'Program Uji'];
@@ -25,4 +42,7 @@ for ($i = 1; $i <= $count; $i++) {
     $articles[] = ['id' => $i, 'title' => "Artikel Uji {$i}", 'slug' => "artikel-{$i}", 'content' => 'Isi artikel', 'excerpt' => 'Isi artikel', 'author_name' => 'Penulis Uji', 'featured_image' => '', 'published_at' => '2026-09-13'];
 }
 $testimonials = [['parent_name' => 'Orang Tua Uji', 'child_name' => 'Anak Uji', 'testimonial_text' => 'Testimoni untuk pengujian navigasi berulang.', 'highlight_text' => 'Testimoni Uji']];
+for ($i = 1; $i <= max(0, min(50, (int)($_GET['facilities'] ?? 0))); $i++) {
+    $fasilitas[] = ['id' => $i, 'name' => "Fasilitas Uji {$i}", 'image' => ''];
+}
 require VIEW_PATH . '/home/' . $views[$path] . '.php';

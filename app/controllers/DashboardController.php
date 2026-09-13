@@ -58,4 +58,29 @@ class DashboardController extends Controller {
         
         $this->view('admin/dashboard/index', $data);
     }
+
+    public function refreshLocations() {
+        if (!$this->isPost()) {
+            $this->json(['success' => false, 'message' => 'Metode tidak diizinkan'], 405);
+            return;
+        }
+        $token = $_POST['csrf_token'] ?? null;
+        if (!is_string($token) || !validateCsrfToken($token)) {
+            $this->json(['success' => false, 'message' => 'Sesi kedaluwarsa. Muat ulang halaman lalu coba lagi.'], 403);
+            return;
+        }
+        $cursor = $_POST['cursor'] ?? '';
+        if (!is_string($cursor) || strlen($cursor) > 45) {
+            $this->json(['success' => false, 'message' => 'Permintaan tidak valid', 'csrf_token' => getCsrfToken()], 400);
+            return;
+        }
+        try {
+            require_once APP_PATH . '/helpers/LocationCacheWarmer.php';
+            $result = (new LocationCacheWarmer($this->db))->batch($cursor);
+            $this->json(array_merge($result, ['success' => true, 'csrf_token' => getCsrfToken()]));
+        } catch (Exception $e) {
+            $this->json(['success' => false, 'csrf_token' => getCsrfToken(),
+                'message' => sanitize_error($e, 'Lokasi belum berhasil diperbarui. Silakan coba lagi.')], 500);
+        }
+    }
 }

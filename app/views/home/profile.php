@@ -54,12 +54,12 @@ ob_start();
 <!-- Section 2: Visi Misi -->
 <?php component('widget/profile/profile_visimisi'); ?>
 
-<!-- Section 3: Team --><section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6" data-desktop-initial="12" data-step="6">
+<!-- Section 3: Team --><section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6" data-desktop-initial="12">
     <div class="flex justify-center">
         <?php component('badge', ['text' => 'Kenalan dengan Kami']); ?>
     </div>
     
-    <div class="mt-[32px] grid grid-cols-1 md:grid-cols-4 gap-[16px]">
+    <div class="mt-[32px] grid grid-cols-1 md:grid-cols-4 gap-[16px]" data-reveal-grid>
         <!-- Kepala Sekolah - 2x2 Grid (Desktop), Full Width (Mobile) -->
         <?php if ($kepalaSekolah): ?>
             <div class="md:col-span-2 md:row-span-2 h-[384px] md:h-[760px]">
@@ -89,7 +89,7 @@ ob_start();
         <?php endforeach; ?>
     </div>
     
-    <!-- Tampilkan Lebih Banyak/Sedikit Button (Mobile Only) -->
+    <!-- Tampilkan Lebih Banyak/Sedikit sesuai batas awal tiap layar -->
     <?php if (count($displayedKaryawan) > 6): ?>
     <div class="flex justify-center mt-[32px]">
         <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-karyawan', 'class' => count($karyawan) <= 12 ? 'reveal-mobile-only' : '', 'attrs' => ['data-reveal-more' => '']]); ?>
@@ -100,12 +100,12 @@ ob_start();
 </section>
 
 <!-- Section 4: Fasilitas Sekolah -->
-<section class="container mx-auto px-5 mt-[84px]" data-reveal data-initial="5" data-desktop-initial="all" data-step="3">
+<section class="container mx-auto px-5 mt-[84px]" data-reveal data-initial="5" data-desktop-initial="all">
     <div class="flex justify-center">
         <?php component('badge', ['text' => 'Fasilitas Sekolah']); ?>
     </div>
     
-    <div class="mt-[16px] grid grid-cols-1 md:grid-cols-2 gap-[24px]">
+    <div class="mt-[16px] grid grid-cols-1 md:grid-cols-2 gap-[24px]" data-reveal-grid>
         <?php if (!empty($fasilitas)): ?>
             <?php foreach ($fasilitas as $index => $item): ?>
                 <div class="fasilitas-item <?= $index >= 5 ? 'reveal-desktop-only' : '' ?>" data-reveal-item data-index="<?= $index ?>">
