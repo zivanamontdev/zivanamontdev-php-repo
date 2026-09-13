@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 $pageTitle = 'Articles';
 
 // Get articles data from controller
@@ -48,7 +48,7 @@ ob_start();
 ?>
 
 <style>
-@media (max-width: 640px) {
+@media (max-width: 767px) {
     .desktop-only {
         display: none;
     }
@@ -144,7 +144,7 @@ ob_start();
     }
 }
 
-@media (min-width: 641px) {
+@media (min-width: 768px) {
     .mobile-only {
         display: none;
     }
@@ -239,17 +239,9 @@ ob_start();
     <?php endif; ?>
 
     <!-- Load More Button - Desktop Only -->
-    <?php if (!empty($hiddenArticles) || (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page'])): ?>
+    <?php if (!empty($hiddenArticles)): ?>
     <div class="desktop-only hidden md:flex container mx-auto px-5 mt-[32px] justify-end">
-        <?php if (!empty($hiddenArticles)): ?>
             <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'id' => 'desktopLoadMoreBtn', 'type' => 'button']); ?>
-        <?php elseif (!empty($pagination) && isset($pagination['last_page']) && $pagination['last_page'] > 1 && ($pagination['current_page'] ?? 1) < $pagination['last_page']): ?>
-            <?php 
-            $nextPage = ($pagination['current_page'] ?? 1) + 1;
-            $href = url('/articles?page=' . $nextPage);
-            component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '5', 'href' => $href]); 
-            ?>
-        <?php endif; ?>
     </div>
     <?php endif; ?>
     
@@ -304,7 +296,6 @@ ob_start();
                 <button 
                     type="button" 
                     id="loadMoreBtn"
-                    onclick="toggleMobileArticles()"
                     class="btn-component inline-flex items-center justify-center font-bold transition-all duration-200 py-2 px-6 rounded-xl bg-white-neutral text-black-soft font-normal text-base leading-[28px] opacity-50 hover:opacity-90 active:scale-95 cursor-pointer"
                 >
                     Tampilkan Lebih Banyak
@@ -314,86 +305,20 @@ ob_start();
     </div>
 <?php endif; ?>
 
+<?php if (($pagination['last_page'] ?? 1) > 1): ?>
+<nav aria-label="Halaman artikel" class="container mx-auto px-5 mt-8 flex justify-center gap-4">
+    <?php if (($pagination['current_page'] ?? 1) > 1): ?>
+        <?php component('button', ['text' => 'Artikel Sebelumnya', 'variant' => '3', 'href' => url('/articles?page=' . ($pagination['current_page'] - 1))]); ?>
+    <?php endif; ?>
+    <?php if (($pagination['current_page'] ?? 1) < $pagination['last_page']): ?>
+        <?php component('button', ['text' => 'Artikel Berikutnya', 'variant' => '3', 'href' => url('/articles?page=' . ($pagination['current_page'] + 1))]); ?>
+    <?php endif; ?>
+</nav>
+<?php endif; ?>
+
 <?php component('footer', ['showCta' => true]); ?>
 
-<script>
-// Mobile Load More - Global function
-let showingAll = false;
 
-function toggleMobileArticles() {
-    const articleItems = document.querySelectorAll('.mobile-article-item');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    
-    if (!showingAll) {
-        // Show all articles
-        articleItems.forEach(function(item) {
-            item.classList.add('show');
-        });
-        if (loadMoreBtn) {
-            loadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
-        }
-        showingAll = true;
-    } else {
-        // Show only first 3
-        articleItems.forEach(function(item, index) {
-            if (index >= 3) {
-                item.classList.remove('show');
-            }
-        });
-        if (loadMoreBtn) {
-            loadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
-        }
-        showingAll = false;
-        
-        // Scroll to top of articles
-        const container = document.querySelector('.mobile-articles-container');
-        if (container) {
-            container.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-        }
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Desktop Load More
-    const desktopLoadMoreBtn = document.getElementById('desktopLoadMoreBtn');
-    if (desktopLoadMoreBtn) {
-        const hiddenSection = document.getElementById('desktop-hidden-articles');
-        let isShowing = false;
-        
-        desktopLoadMoreBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (!isShowing) {
-                // Show hidden articles
-                if (hiddenSection) {
-                    hiddenSection.classList.remove('hidden');
-                }
-                desktopLoadMoreBtn.textContent = 'Tampilkan Lebih Sedikit';
-                isShowing = true;
-            } else {
-                // Hide articles again
-                if (hiddenSection) {
-                    hiddenSection.classList.add('hidden');
-                }
-                desktopLoadMoreBtn.textContent = 'Tampilkan Lebih Banyak';
-                isShowing = false;
-                
-                // Scroll to list section
-                const listSection = document.querySelector('.desktop-only');
-                if (listSection) {
-                    listSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }
-            }
-        });
-    }
-});
-</script>
 
 <?php 
 $content = ob_get_clean();

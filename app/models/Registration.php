@@ -11,6 +11,8 @@ class Registration extends Model {
     }
     
     public function getPaginated($page = 1, $perPage = 10, $search = '') {
+        $page = max(1, (int)$page);
+        $perPage = max(1, min(10, (int)$perPage));
         $offset = ($page - 1) * $perPage;
         
         $sql = "SELECT * FROM {$this->table}";
@@ -24,7 +26,7 @@ class Registration extends Model {
             $params['search3'] = "%{$search}%";
         }
         
-        $sql .= " ORDER BY created_at DESC LIMIT {$perPage} OFFSET {$offset}";
+        $sql .= " ORDER BY created_at DESC, id DESC LIMIT {$perPage} OFFSET {$offset}";
         
         return $this->db->fetchAll($sql, $params);
     }

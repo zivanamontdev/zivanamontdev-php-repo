@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 $pageTitle = 'School Activities';
 ob_start(); 
 ?>
@@ -49,7 +49,7 @@ ob_start();
 </section>
 
 <!-- Program Tahun Ajaran Section -->
-<section class="container mx-auto px-5 mt-[80px]">
+<section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6" data-step="3">
     <div class="flex justify-center mb-[24px]">
         <?php component('badge', ['text' => 'Program Tahun Ajaran']); ?>
     </div>
@@ -65,7 +65,7 @@ ob_start();
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" id="program-tahun-grid">
             <?php foreach ($programsTahunData as $index => $program): ?>
-            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full program-tahun-item <?= $index >= 6 ? 'hidden' : '' ?>" data-index="<?= $index ?>">
+            <div class="bg-white-neutral p-[16px] rounded-[20px] flex flex-col h-full program-tahun-item" data-reveal-item <?= $index >= 6 ? 'hidden' : '' ?> data-index="<?= $index ?>">
                 <!-- Image -->
                 <div class="w-full h-[184px] rounded-[16px] overflow-hidden mb-[16px] flex-shrink-0 bg-gray-placeholder relative">
                     <img 
@@ -124,52 +124,13 @@ ob_start();
     <!-- Tampilkan Lebih Banyak/Sedikit Button -->
     <?php if (count($programsTahunData) > 6): ?>
     <div class="flex justify-center mt-[32px] mb-[80px]">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-tahun']); ?>
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-tahun', 'attrs' => ['data-reveal-more' => '']]); ?>
     </div>
     <?php else: ?>
     <div class="mb-[80px]"></div>
     <?php endif; ?>
     
-    <script>
-    const totalProgramsTahun = <?= count($programsTahunData) ?>;
-    let currentVisibleCount = 6;
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnToggle = document.getElementById('btn-toggle-tahun');
-        const allItems = document.querySelectorAll('.program-tahun-item');
-        
-        if (btnToggle) {
-            btnToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (currentVisibleCount < totalProgramsTahun) {
-                    // Show more
-                    const nextCount = Math.min(currentVisibleCount + 3, totalProgramsTahun);
-                    
-                    // Show items from currentVisibleCount to nextCount
-                    for (let i = currentVisibleCount; i < nextCount; i++) {
-                        allItems[i].classList.remove('hidden');
-                    }
-                    
-                    currentVisibleCount = nextCount;
-                    
-                    // Update button text if all shown
-                    if (currentVisibleCount >= totalProgramsTahun) {
-                        btnToggle.textContent = 'Tampilkan Lebih Sedikit';
-                    }
-                } else {
-                    // Show less - hide all except first 6
-                    for (let i = 6; i < totalProgramsTahun; i++) {
-                        allItems[i].classList.add('hidden');
-                    }
-                    
-                    currentVisibleCount = 6;
-                    btnToggle.textContent = 'Tampilkan Lebih Banyak';
-                }
-            });
-        }
-    });
-    </script>
+
     
     <!-- Program Harian Sekolah Badge -->
     <div class="flex justify-center md:justify-start mb-[32px]">

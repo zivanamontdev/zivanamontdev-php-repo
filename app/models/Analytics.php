@@ -67,21 +67,28 @@ class Analytics extends Model {
         $db = Database::getInstance();
         $dateCondition = $this->getDateCondition($period);
         
-        $result = $db->query("
-            SELECT 
-                location,
-                COUNT(*) as views
+        $rows = $db->fetchAll("
+            SELECT ip_address, user_agent, COUNT(*) AS views
             FROM page_views
             WHERE visited_at >= {$dateCondition}
-                AND location IS NOT NULL
-                AND location != 'Unknown'
-                AND location != ''
-            GROUP BY location
-            ORDER BY views DESC
-            LIMIT ?
-        ", [$limit]);
-        
-        return $result->fetchAll();
+                AND page_url NOT LIKE '/admin%'
+                AND page_url NOT LIKE '/api%'
+            GROUP BY ip_address, user_agent
+        ");
+        $locations = [];
+        foreach ($rows as $row) {
+            // Dashboard rendering never waits on external GeoIP requests.
+            $details = GeoIP::getDetails($row['ip_address'], false);
+            if (!GeoIP::isIndonesianVisitor($details, $row['user_agent'] ?? '')) continue;
+            $city = trim($details['city']);
+            $locations[$city] = ($locations[$city] ?? 0) + (int)$row['views'];
+        }
+        arsort($locations);
+        $result = [];
+        foreach (array_slice($locations, 0, max(1, (int)$limit), true) as $city => $views) {
+            $result[] = ['location' => $city, 'views' => $views];
+        }
+        return $result;
     }
     
     /**

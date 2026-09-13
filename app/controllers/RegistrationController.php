@@ -12,17 +12,21 @@ class RegistrationController extends Controller {
     }
     
     public function index() {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = max(1, (int)($_GET['page'] ?? 1));
         $perPage = 10;
         $search = $_GET['search'] ?? '';
         
-        $registrations = $this->registrationModel->getPaginated($page, $perPage, $search);
         $total = $this->registrationModel->countRegistrations($search);
-        $totalPages = ceil($total / $perPage);
+        $totalPages = max(1, (int)ceil($total / $perPage));
+        $page = min($page, $totalPages);
+        $registrations = $this->registrationModel->getPaginated($page, $perPage, $search);
         
         $data = [
             'registrations' => $registrations,
-            'currentPage' => $page,
+            'registrationPage' => $page,
+            'perPage' => $perPage,
+            'firstRecord' => $total > 0 ? ($page - 1) * $perPage + 1 : 0,
+            'lastRecord' => min($page * $perPage, $total),
             'totalPages' => $totalPages,
             'total' => $total,
             'search' => $search,

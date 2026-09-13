@@ -34,7 +34,19 @@ class GeoIP {
      */
     private static function saveCache() {
         self::initCache();
-        file_put_contents(self::$cacheFile, json_encode(self::$cache));
+        // Merge while holding the lock so parallel visits do not erase each other's metadata.
+        $handle = fopen(self::$cacheFile, 'c+');
+        if (!$handle) return;
+        if (flock($handle, LOCK_EX)) {
+            $stored = json_decode(stream_get_contents($handle), true) ?: [];
+            $merged = array_replace($stored, self::$cache);
+            ftruncate($handle, 0);
+            rewind($handle);
+            fwrite($handle, json_encode($merged));
+            fflush($handle);
+            flock($handle, LOCK_UN);
+        }
+        fclose($handle);
     }
     
     /**
@@ -44,110 +56,70 @@ class GeoIP {
      * @return string Location (City name) or 'Unknown'
      */
     public static function getLocation($ip) {
-        // Skip localhost/private IPs
-        if (self::isPrivateIP($ip)) {
-            return 'Local';
-        }
-        
+        $details = self::getDetails($ip);
+        return $details['city'] ?: ($details['regionName'] ?: ($details['country'] ?: 'Unknown'));
+    }
+
+    /** Country and hosting metadata are kept in the existing cache, not guessed from city names. */
+    public static function getDetails($ip, $lookup = true) {
+        $unknown = ['city' => '', 'regionName' => '', 'country' => '', 'countryCode' => '', 'hosting' => null];
+        if (self::isPrivateIP($ip)) return $unknown;
         self::initCache();
-        
-        // Check cache first
-        if (isset(self::$cache[$ip])) {
-            return self::$cache[$ip];
+        $cached = self::$cache[$ip] ?? null;
+        // Old cache entries are strings and cannot establish the country or hosting status.
+        if (is_array($cached) && isset($cached['countryCode'], $cached['hosting'])) return array_merge($unknown, $cached);
+        if (!$lookup) return $unknown;
+        $details = self::fetchFromAPI($ip);
+        if ($details !== null) {
+            self::$cache[$ip] = $details;
+            self::saveCache();
+            return array_merge($unknown, $details);
         }
-        
-        // Try to get location from API
-        $location = self::fetchFromAPI($ip);
-        
-        // Cache the result
-        self::$cache[$ip] = $location;
-        self::saveCache();
-        
-        return $location;
+        return $unknown;
     }
-    
-    /**
-     * Fetch location from ip-api.com
-     * 
-     * @param string $ip IP address
-     * @return string Location or 'Unknown'
-     */
+
+    public static function isIndonesianVisitor($details, $userAgent) {
+        return ($details['countryCode'] ?? '') === 'ID'
+            && ($details['hosting'] ?? null) === false
+            && trim($details['city'] ?? '') !== ''
+            && !self::isAutomatedVisitor($userAgent);
+    }
+
+    public static function isAutomatedVisitor($userAgent) {
+        return trim($userAgent) === '' || (bool)preg_match(
+            '/bot|crawler|spider|slurp|preview|headless|lighthouse|pagespeed|pingdom|uptime|monitor|curl|wget|python|scrapy|httpclient|go-http-client|facebookexternalhit/i',
+            $userAgent
+        );
+    }
+
     private static function fetchFromAPI($ip) {
-        try {
-            // Use ip-api.com (free, no API key required)
-            // Limit: 45 requests per minute
-            $url = "http://ip-api.com/json/{$ip}?fields=status,city,regionName,country";
-            
-            // Set timeout to avoid blocking
-            $context = stream_context_create([
-                'http' => [
-                    'timeout' => 2, // 2 seconds timeout
-                    'ignore_errors' => true
-                ]
-            ]);
-            
-            $response = @file_get_contents($url, false, $context);
-            
-            if ($response === false) {
-                return 'Unknown';
-            }
-            
-            $data = json_decode($response, true);
-            
-            if (!$data || $data['status'] !== 'success') {
-                return 'Unknown';
-            }
-            
-            // Return city if available, otherwise region, otherwise country
-            if (!empty($data['city'])) {
-                return $data['city'];
-            } elseif (!empty($data['regionName'])) {
-                return $data['regionName'];
-            } elseif (!empty($data['country'])) {
-                return $data['country'];
-            }
-            
-            return 'Unknown';
-            
-        } catch (Exception $e) {
-            error_log("GeoIP Error: " . $e->getMessage());
-            return 'Unknown';
+        // Share the provider rate-limit window across requests and the cache warm-up command.
+        $retryAfter = self::$cache['_retry_after'] ?? 0;
+        if ($retryAfter > time()) return null;
+        $url = "http://ip-api.com/json/" . rawurlencode($ip) . "?fields=status,city,regionName,country,countryCode,hosting";
+        $context = stream_context_create(['http' => ['timeout' => 2, 'ignore_errors' => true]]);
+        $response = @file_get_contents($url, false, $context);
+        $headers = $http_response_header ?? [];
+        $remaining = null;
+        $ttl = 60;
+        foreach ($headers as $header) {
+            if (preg_match('/^X-Rl:\s*(\d+)/i', $header, $match)) $remaining = (int)$match[1];
+            if (preg_match('/^X-Ttl:\s*(\d+)/i', $header, $match)) $ttl = (int)$match[1];
         }
+        if ($remaining === 0 || preg_match('/\s429\s/', $headers[0] ?? '')) {
+            self::$cache['_retry_after'] = time() + max(1, $ttl);
+            self::saveCache();
+        }
+        $data = $response === false ? null : json_decode($response, true);
+        if (!is_array($data) || ($data['status'] ?? '') !== 'success'
+            || !isset($data['countryCode']) || !is_bool($data['hosting'] ?? null)) return null;
+        return $data;
     }
-    
-    /**
-     * Check if IP is private/local
-     * 
-     * @param string $ip IP address
-     * @return bool
-     */
+
     private static function isPrivateIP($ip) {
-        // Localhost
-        if ($ip === '127.0.0.1' || $ip === '::1' || $ip === 'localhost') {
-            return true;
-        }
-        
-        // Private IP ranges
-        $privateRanges = [
-            '10.0.0.0' => '10.255.255.255',
-            '172.16.0.0' => '172.31.255.255',
-            '192.168.0.0' => '192.168.255.255',
-        ];
-        
-        $ipLong = ip2long($ip);
-        if ($ipLong === false) {
-            return true; // Invalid IP
-        }
-        
-        foreach ($privateRanges as $start => $end) {
-            if ($ipLong >= ip2long($start) && $ipLong <= ip2long($end)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
     }
-    
+
     /**
      * Get client IP address (considering proxies)
      * 

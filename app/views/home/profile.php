@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 $pageTitle = 'Tentang Kami';
 
 // Get data from controller
@@ -54,7 +54,7 @@ ob_start();
 <!-- Section 2: Visi Misi -->
 <?php component('widget/profile/profile_visimisi'); ?>
 
-<!-- Section 3: Team --><section class="container mx-auto px-5 mt-[80px]">
+<!-- Section 3: Team --><section class="container mx-auto px-5 mt-[80px]" data-reveal data-initial="6" data-desktop-initial="12" data-step="6">
     <div class="flex justify-center">
         <?php component('badge', ['text' => 'Kenalan dengan Kami']); ?>
     </div>
@@ -75,12 +75,11 @@ ob_start();
         <!-- Karyawan Cards -->
         <?php 
         // Display karyawan
-        $maxKaryawan = 12; // Show up to 12 karyawan
-        $displayedKaryawan = array_slice($karyawan, 0, $maxKaryawan);
+        $displayedKaryawan = $karyawan; // Keep all staff available, preserving the existing order.
         
         foreach ($displayedKaryawan as $index => $k): 
         ?>
-            <div class="karyawan-item h-[234px] md:h-[372px] <?= $index >= 6 ? 'hidden md:block' : '' ?>" data-index="<?= $index ?>">
+            <div class="karyawan-item h-[234px] md:h-[372px] <?= $index >= 6 && $index < 12 ? 'reveal-desktop-only' : '' ?>" data-reveal-item <?= $index >= 12 ? 'hidden' : '' ?> data-index="<?= $index ?>">
                 <?php component('widget/profile/profile_team', [
                     'teamImage' => getEmployeePhotoUrl($k['photo'] ?? ''),
                     'teamName' => $k['name'] ?? 'Nama Anggota',
@@ -92,59 +91,16 @@ ob_start();
     
     <!-- Tampilkan Lebih Banyak/Sedikit Button (Mobile Only) -->
     <?php if (count($displayedKaryawan) > 6): ?>
-    <div class="flex justify-center mt-[32px] md:hidden">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-karyawan']); ?>
+    <div class="flex justify-center mt-[32px]">
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-karyawan', 'class' => count($karyawan) <= 12 ? 'reveal-mobile-only' : '', 'attrs' => ['data-reveal-more' => '']]); ?>
     </div>
     <?php endif; ?>
     
-    <script>
-    const totalKaryawan = <?= count($displayedKaryawan) ?>;
-    let currentVisibleKaryawan = 6;
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnToggle = document.getElementById('btn-toggle-karyawan');
-        const allItems = document.querySelectorAll('.karyawan-item');
-        
-        if (btnToggle) {
-            btnToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (currentVisibleKaryawan < totalKaryawan) {
-                    // Show more
-                    const nextCount = Math.min(currentVisibleKaryawan + 3, totalKaryawan);
-                    
-                    // Show items from currentVisibleKaryawan to nextCount
-                    for (let i = currentVisibleKaryawan; i < nextCount; i++) {
-                        if (allItems[i]) {
-                            allItems[i].classList.remove('hidden');
-                        }
-                    }
-                    
-                    currentVisibleKaryawan = nextCount;
-                    
-                    // Update button text if all shown
-                    if (currentVisibleKaryawan >= totalKaryawan) {
-                        btnToggle.textContent = 'Tampilkan Lebih Sedikit';
-                    }
-                } else {
-                    // Show less - hide all except first 6 (mobile view: 6 karyawan)
-                    for (let i = 6; i < allItems.length; i++) {
-                        if (allItems[i]) {
-                            allItems[i].classList.add('hidden');
-                        }
-                    }
-                    
-                    currentVisibleKaryawan = 6;
-                    btnToggle.textContent = 'Tampilkan Lebih Banyak';
-                }
-            });
-        }
-    });
-    </script>
+
 </section>
 
 <!-- Section 4: Fasilitas Sekolah -->
-<section class="container mx-auto px-5 mt-[84px]">
+<section class="container mx-auto px-5 mt-[84px]" data-reveal data-initial="5" data-desktop-initial="all" data-step="3">
     <div class="flex justify-center">
         <?php component('badge', ['text' => 'Fasilitas Sekolah']); ?>
     </div>
@@ -152,7 +108,7 @@ ob_start();
     <div class="mt-[16px] grid grid-cols-1 md:grid-cols-2 gap-[24px]">
         <?php if (!empty($fasilitas)): ?>
             <?php foreach ($fasilitas as $index => $item): ?>
-                <div class="fasilitas-item <?= $index >= 5 ? 'hidden md:block' : '' ?>" data-index="<?= $index ?>">
+                <div class="fasilitas-item <?= $index >= 5 ? 'reveal-desktop-only' : '' ?>" data-reveal-item data-index="<?= $index ?>">
                     <?php component('widget/profile/profile_fasilitas', [
                         'fasilitasTitle' => $item['name'],
                         'fasilitasImage' => getFasilitasCoverImage($item['image']),
@@ -186,54 +142,11 @@ ob_start();
     <!-- Tampilkan Lebih Banyak/Sedikit Button (Mobile Only) -->
     <?php if (!empty($fasilitas) && count($fasilitas) > 5): ?>
     <div class="flex justify-center mt-[32px] md:hidden">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-fasilitas']); ?>
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'id' => 'btn-toggle-fasilitas', 'attrs' => ['data-reveal-more' => '']]); ?>
     </div>
     <?php endif; ?>
     
-    <script>
-    const totalFasilitas = <?= !empty($fasilitas) ? count($fasilitas) : 0 ?>;
-    let currentVisibleFasilitas = 5;
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnToggle = document.getElementById('btn-toggle-fasilitas');
-        const allItems = document.querySelectorAll('.fasilitas-item');
-        
-        if (btnToggle) {
-            btnToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (currentVisibleFasilitas < totalFasilitas) {
-                    // Show more
-                    const nextCount = Math.min(currentVisibleFasilitas + 3, totalFasilitas);
-                    
-                    // Show items from currentVisibleFasilitas to nextCount
-                    for (let i = currentVisibleFasilitas; i < nextCount; i++) {
-                        if (allItems[i]) {
-                            allItems[i].classList.remove('hidden');
-                        }
-                    }
-                    
-                    currentVisibleFasilitas = nextCount;
-                    
-                    // Update button text if all shown
-                    if (currentVisibleFasilitas >= totalFasilitas) {
-                        btnToggle.textContent = 'Tampilkan Lebih Sedikit';
-                    }
-                } else {
-                    // Show less - hide all except first 5
-                    for (let i = 5; i < allItems.length; i++) {
-                        if (allItems[i]) {
-                            allItems[i].classList.add('hidden');
-                        }
-                    }
-                    
-                    currentVisibleFasilitas = 5;
-                    btnToggle.textContent = 'Tampilkan Lebih Banyak';
-                }
-            });
-        }
-    });
-    </script>
+
 </section>
 
 <?php component('footer', ['showCta' => true]); ?>

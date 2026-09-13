@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 $pageTitle = 'Galeri Aktivitas';
 ob_start(); 
 ?>
@@ -17,7 +17,7 @@ component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']);
 </section>
 
 <!-- Gallery Content -->
-<section class="container mx-auto px-5">
+<section class="container mx-auto px-5" data-reveal data-initial="9" data-step="9">
     
     <!-- Gallery Cards -->
     <?php if (!empty($galleryData)): ?>
@@ -29,9 +29,9 @@ component('page_hero', ['title' => $heroTitle, 'variant' => 'secondary']);
     <?php endif; ?>
     
     <!-- Tampilkan Lebih Banyak Button -->
-    <?php if (!empty($galleryData) && count($galleryData) > 6): ?>
+    <?php if (!empty($galleryData) && count($galleryData) > 9): ?>
     <div class="flex justify-center mt-[32px] mb-[88px]">
-        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button']); ?>
+        <?php component('button', ['text' => 'Tampilkan Lebih Banyak', 'variant' => '3', 'type' => 'button', 'attrs' => ['data-reveal-more' => '']]); ?>
     </div>
     <?php else: ?>
     <div class="mb-[88px]"></div>

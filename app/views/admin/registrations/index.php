@@ -82,18 +82,18 @@ ob_start();
 <?php if (($totalPages ?? 0) > 1): ?>
 <div class="mt-6 flex items-center justify-between">
     <p class="text-[12px] text-white-soft">
-        Menampilkan <?= ((int)($currentPage ?? 1) - 1) * 10 + 1 ?> - <?= min((int)($currentPage ?? 1) * 10, $total) ?> dari <?= $total ?> data
+        Menampilkan <?= $firstRecord ?> - <?= $lastRecord ?> dari <?= $total ?> data
     </p>
     <div class="flex items-center gap-2">
-        <?php if ((int)($currentPage ?? 1) > 1): ?>
-        <a href="?page=<?= (int)($currentPage ?? 1) - 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
+        <?php if ($registrationPage > 1): ?>
+        <a href="?page=<?= $registrationPage - 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>"
             class="px-3 py-2 text-[12px] text-black-highlight bg-white-neutral border border-border-soft rounded-[8px] hover:bg-white-secondary transition-colors">
             Sebelumnya
         </a>
         <?php endif; ?>
         
-        <?php if ((int)($currentPage ?? 1) < $totalPages): ?>
-        <a href="?page=<?= (int)($currentPage ?? 1) + 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
+        <?php if ($registrationPage < $totalPages): ?>
+        <a href="?page=<?= $registrationPage + 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?>"
             class="px-3 py-2 text-[12px] text-white-neutral bg-primary rounded-[8px] hover:bg-opacity-90 transition-colors">
             Selanjutnya
         </a>

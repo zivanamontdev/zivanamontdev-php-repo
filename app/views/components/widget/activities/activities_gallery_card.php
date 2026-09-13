@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Gallery Card Widget Component
  * 
@@ -32,6 +32,7 @@ if (!function_exists('getActivityGalleryImageUrl')) {
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]" x-data="{ showModal: false, currentImage: '', currentDescription: '' }">
     <?php foreach ($items as $index => $item): ?>
     <div 
+        data-reveal-item <?= $index >= 9 ? 'hidden' : '' ?>
         class="bg-white-neutral p-[16px] rounded-[20px] cursor-pointer hover:shadow-lg transition-shadow duration-200"
         @click="showModal = true; currentImage = <?= htmlspecialchars(json_encode(getActivityGalleryImageUrl($item['image'] ?? '')), ENT_QUOTES, 'UTF-8') ?>; currentDescription = <?= htmlspecialchars(json_encode($item['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
     >

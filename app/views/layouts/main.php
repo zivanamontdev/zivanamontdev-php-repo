@@ -16,6 +16,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
+    <script defer src="<?= asset('assets/js/public-interactions.js') ?>?v=20260913"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     
@@ -29,6 +30,9 @@
     
     <!-- Custom Styles -->
     <style>
+        [data-reveal-item][hidden], [data-reveal-more][hidden], #loadMoreBtn[hidden], #desktopLoadMoreBtn[hidden] { display: none !important; }
+        @media (max-width: 767px) { .reveal-desktop-only { display: none !important; } }
+        @media (min-width: 768px) { .reveal-mobile-only { display: none !important; } }
         * {
             font-family: 'Onest', sans-serif;
         }
@@ -161,6 +165,7 @@
                 
                 // Skip if not a link or external/admin link
                 if (!link) return;
+                if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
                 if (link.target === '_blank') return;
                 if (link.href.includes('/admin')) return;
                 if (link.href.includes('#')) return;
@@ -195,6 +200,7 @@
                     const response = await fetch(url, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     });
+                    if (!response.ok) { window.location.href = url; return; }
                     const html = await response.text();
                     
                     // Parse the response
@@ -207,7 +213,9 @@
                     
                     if (newContent) {
                         // Update content
+                        document.dispatchEvent(new Event('page:before-replace'));
                         pageContent.innerHTML = newContent.innerHTML;
+                        document.dispatchEvent(new Event('page:loaded'));
                         
                         // Update title
                         if (newTitle) {
@@ -224,6 +232,8 @@
                         
                         // Scroll to top
                         window.scrollTo({ top: 0, behavior: 'instant' });
+                    } else {
+                        window.location.href = url;
                     }
                 } catch (error) {
                     // Fallback to normal navigation on error

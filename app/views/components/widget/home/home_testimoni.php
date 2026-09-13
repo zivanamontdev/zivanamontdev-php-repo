@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Home Testimoni Widget
  * 
@@ -199,13 +199,13 @@ $testimonialCards = [
 </div>
 
 <!-- Modal Backdrop -->
-<div id="modal-testimoni-detail" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5">
+<div id="modal-testimoni-detail" role="dialog" aria-modal="true" aria-label="Testimoni Orang Tua Siswa" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-5">
     <!-- Modal Container -->
     <div class="bg-white-neutral border border-border-soft rounded-[16px] w-full max-w-[621px] px-[24px] py-[20px] max-h-[85vh] overflow-y-auto">
         <!-- Header: Title and Close Button -->
         <div class="flex items-start justify-between mb-[32px]">
             <h3 class="font-bold text-[20px] leading-[140%] text-black-soft">Testimoni Orang Tua Siswa</h3>
-            <button type="button" id="close-modal-testimoni-detail" class="text-black-highlight hover:text-black-soft transition-colors ml-2">
+            <button type="button" id="close-modal-testimoni-detail" aria-label="Tutup testimoni" class="text-black-highlight hover:text-black-soft transition-colors ml-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -232,57 +232,3 @@ $testimonialCards = [
         </div>
     </div>
 </div>
-
-<script>
-(function() {
-    const modal = document.getElementById('modal-testimoni-detail');
-    const closeBtn = document.getElementById('close-modal-testimoni-detail');
-    const textEl = document.getElementById('modal-testimoni-text');
-    const parentEl = document.getElementById('modal-testimoni-parent');
-    const childEl = document.getElementById('modal-testimoni-child');
-    const imageEl = document.getElementById('modal-testimoni-image');
-    const fallbackImage = '<?= asset('images/image_testi.jpg') ?>';
-
-    function closeModal() {
-        modal.classList.add('hidden');
-        document.body.classList.remove('testimoni-modal-open');
-    }
-
-    document.querySelectorAll('.testimoni-read-more').forEach(function(button) {
-        button.addEventListener('click', function() {
-            const data = JSON.parse(button.dataset.testimoni || '{}');
-
-            textEl.textContent = data.testimonial_text || '';
-            parentEl.textContent = data.parent_name || '';
-            childEl.textContent = data.child_name ? 'Orang Tua dari ' + data.child_name : '';
-            imageEl.src = button.dataset.image || fallbackImage;
-            imageEl.alt = data.parent_name || 'Testimoni';
-            imageEl.onerror = function() {
-                imageEl.onerror = null;
-                imageEl.src = fallbackImage;
-            };
-
-            modal.classList.remove('hidden');
-            document.body.classList.add('testimoni-modal-open');
-        });
-    });
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeModal);
-    }
-
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-})();
-</script>
