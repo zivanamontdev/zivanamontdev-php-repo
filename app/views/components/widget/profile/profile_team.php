@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Profile Team Widget Component
  * 
