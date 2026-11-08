@@ -25,16 +25,12 @@ $primaryUrl = 'https://primary.sekolahzivanamontessori.sch.id/id/';
         >
 
         <div class="flex flex-col items-start gap-4 md:flex-1">
-            <span class="inline-block bg-white-neutral text-black-soft rounded-[32px] py-2 px-[14px] md:px-5 text-[12px] leading-[20px] md:text-[16px] md:leading-[28px]">
-                Zivana Montessori School - Primary
-            </span>
-
             <h2 class="text-black-soft font-bold text-[24px] leading-[38px] md:text-[32px] md:leading-[52px]">
-                Pendaftaran SD Zivana Montessori Sudah Dibuka
+                Pendaftaran Zivana Montessori School - Primary Sudah Dibuka!
             </h2>
 
             <p class="text-black-highlight font-normal text-[16px] leading-[28px] md:text-[20px] md:leading-[32px] max-w-[788px]">
-                Lanjutkan perjalanan Montessori si kecil ke jenjang sekolah dasar. Kami membuka satu kelas 1 untuk tahun ajaran 2027/2028 dengan kuota terbatas.
+                Lanjutkan perjalanan Montessori si kecil ke jenjang selanjutnya. Kami membuka kelas untuk tahun ajaran 2027/2028 dengan kuota terbatas.
             </p>
 
             <?php component('button', [
