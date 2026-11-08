@@ -13,7 +13,7 @@ $iconPosition = $iconPosition ?? 'left'; // left or right
 $customPadding = $customPadding ?? null; // custom padding override
 
 // Base styles (shared)
-$baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200';
+$baseStyles = 'inline-flex items-center justify-center font-bold transition-[opacity,transform,background-color,color,box-shadow] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]';
 
 // Variant styles
 $variants = [
@@ -25,7 +25,7 @@ $variants = [
         'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-base',     // 700, 16px
         'height' => 'h-[52px]',              // 52px fixed height
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 2: Small accent button
@@ -35,7 +35,7 @@ $variants = [
         'bg' => 'bg-pale-accent',            // #FEDBA9
         'text' => '!text-[#59360F]',         // #59360F (forced with !)
         'font' => 'font-normal text-base',   // 400, 16px
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 3: Normal weight button
@@ -45,7 +45,7 @@ $variants = [
         'bg' => 'bg-pale-accent',            // #FEDBA9
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base',   // 400, 16px
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 4: Back button with arrow icon
@@ -56,7 +56,7 @@ $variants = [
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base',   // 400, 16px
         'icon' => 'arrow_left',
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 5: Disabled-style button with 50% opacity
@@ -67,7 +67,7 @@ $variants = [
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
         'opacity' => 'opacity-50',
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 6: White neutral button
@@ -78,7 +78,7 @@ $variants = [
         'text' => 'text-black-soft',         // #151419
         'font' => 'font-normal text-base leading-[28px]', // 400, 16px, line-height 28px
         'border' => 'border border-border-light', // 1px border with border_light
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 7: Text button with chevron right
@@ -102,7 +102,7 @@ $variants = [
         'font' => 'font-normal text-[12px] leading-[140%]', // 400, 12px, line-height 140%
         'icon' => 'right',                   // icon on right side (customizable)
         'gap' => 'gap-2',                    // 8px gap
-        'hover' => 'hover:opacity-80 active:scale-95',
+        'hover' => 'hover:opacity-80 active:scale-[0.97]',
     ],
     
     // Variant 9: Icon only button (edit, etc)
@@ -113,7 +113,7 @@ $variants = [
         'text' => 'text-black-highlight',    // black_highlight
         'font' => '',                        // no text, icon only
         'iconOnly' => true,
-        'hover' => 'hover:opacity-80 active:scale-95',
+        'hover' => 'hover:opacity-80 active:scale-[0.97]',
     ],
     
     // Variant 10: Disabled button
@@ -147,7 +147,7 @@ $variants = [
         'bg' => 'bg-secondary',              // #F39C12
         'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-base',     // 700, 16px
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 13: Text button with left icon (variant 7 style without chevron)
@@ -173,7 +173,7 @@ $variants = [
         'icon' => 'arrow_left',              // arrow left icon
         'gap' => 'gap-2',                    // 8px gap between icon and text
         'border' => 'border border-border-light', // 1px border with border_light
-        'hover' => 'hover:bg-white-secondary active:scale-95',
+        'hover' => 'hover:bg-white-secondary active:scale-[0.97]',
     ],
     
     // Variant 15: Primary button with smaller text (12px)
@@ -183,7 +183,7 @@ $variants = [
         'bg' => 'bg-primary',                // #C92C2F
         'text' => '!text-white',             // #FFFFFF (forced with !)
         'font' => 'font-bold text-[12px]',   // 700, 12px
-        'hover' => 'hover:opacity-90 active:scale-95',
+        'hover' => 'hover:opacity-90 active:scale-[0.97]',
     ],
     
     // Variant 16: Outline button with custom red color
@@ -194,7 +194,7 @@ $variants = [
         'text' => 'text-[#CD565A]',          // #CD565A custom red
         'font' => 'font-normal text-[12px]', // 400, 12px
         'border' => 'border border-border-light', // 1px border with border_light
-        'hover' => 'hover:bg-white-secondary active:scale-95',
+        'hover' => 'hover:bg-white-secondary active:scale-[0.97]',
     ],
     
     // Variant 17: Text button without icon (variant 13 style without icon)
@@ -216,7 +216,7 @@ $variants = [
         'text' => 'text-[#CD565A]',          // #CD565A (outline_red)
         'font' => 'font-normal text-[12px]', // 400, 12px
         'border' => 'border border-border-light', // 1px border with border_light
-        'hover' => 'hover:bg-white-secondary active:scale-95',
+        'hover' => 'hover:bg-white-secondary active:scale-[0.97]',
     ],
     
     // Variant 19: WhatsApp test button (full width, outline)
@@ -228,7 +228,7 @@ $variants = [
         'font' => 'font-bold text-base',     // 700, 16px
         'border' => 'border border-white-soft', // 1px border with white_soft
         'fullWidth' => 'center',             // full width with center alignment
-        'hover' => 'hover:bg-white-secondary active:scale-95',
+        'hover' => 'hover:bg-white-secondary active:scale-[0.97]',
     ],
 ];
 

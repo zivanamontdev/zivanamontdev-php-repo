@@ -127,20 +127,34 @@ function isArticlesPage($path) {
 </nav>
 
 <script>
-    // Mobile menu toggle
+    // Mobile menu: buka/tutup dengan fade + geser 4px (150ms)
+    var mobileMenuTimer = null;
+    function openMobileMenu() {
+        var menu = document.getElementById('mobile-menu');
+        clearTimeout(mobileMenuTimer);
+        menu.classList.remove('hidden');
+        requestAnimationFrame(function() { requestAnimationFrame(function() { menu.classList.add('is-open'); }); });
+    }
+    function closeMobileMenu() {
+        var menu = document.getElementById('mobile-menu');
+        menu.classList.remove('is-open');
+        clearTimeout(mobileMenuTimer);
+        mobileMenuTimer = setTimeout(function() { menu.classList.add('hidden'); }, 150);
+    }
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('hidden');
+        var menu = document.getElementById('mobile-menu');
+        if (menu.classList.contains('is-open')) closeMobileMenu(); else openMobileMenu();
     });
     
     // Close mobile menu when clicking on menu items
     document.querySelectorAll('#mobile-menu a').forEach(function(link) {
         link.addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.add('hidden');
+            closeMobileMenu();
         });
     });
     
     // Close mobile menu when clicking on mobile logo
     document.getElementById('mobile-logo').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.add('hidden');
+        closeMobileMenu();
     });
 </script>
