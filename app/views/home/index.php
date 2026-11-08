@@ -157,6 +157,11 @@ $keunggulanItems = [
     </div>
 </section>
 
+<!-- Banner Pendaftaran SD -->
+<div class="mt-[120px]">
+    <?php component('widget/home/home_banner_sd'); ?>
+</div>
+
 <!-- FAQ Section -->
 <section class="mt-[120px] relative z-10">
     <div class="container mx-auto">

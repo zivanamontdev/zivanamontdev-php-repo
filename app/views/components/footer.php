@@ -104,8 +104,11 @@ $ctaButtonHref = $ctaButtonHref ?? '#';
             </div>
             
             <!-- Copyright -->
-            <div class="text-left text-white-neutral">
+            <div class="flex flex-col md:flex-row md:justify-between gap-4 text-left text-white-neutral">
                 <p class="font-normal text-[16px] leading-[100%]">©2025 Sekolah Zivana Montessori</p>
+                <a href="https://primary.sekolahzivanamontessori.sch.id/id/" class="font-normal text-[16px] leading-[100%] text-pale-accent hover:text-white-neutral transition-colors">
+                    Mencari sekolah dasar? Kunjungi Zivana Montessori School - Primary
+                </a>
             </div>
         </div>
     </footer>
@@ -172,8 +175,11 @@ $ctaButtonHref = $ctaButtonHref ?? '#';
         </div>
         
         <!-- Copyright -->
-        <div class="text-left text-white-neutral">
+        <div class="flex flex-col md:flex-row md:justify-between gap-4 text-left text-white-neutral">
             <p class="font-normal text-[16px] leading-[100%]">©2025 Sekolah Zivana Montessori</p>
+            <a href="https://primary.sekolahzivanamontessori.sch.id/id/" class="font-normal text-[16px] leading-[100%] text-pale-accent hover:text-white-neutral transition-colors">
+                Mencari sekolah dasar? Kunjungi Zivana Montessori School - Primary
+            </a>
         </div>
     </div>
 </footer>
