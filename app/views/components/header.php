@@ -127,34 +127,20 @@ function isArticlesPage($path) {
 </nav>
 
 <script>
-    // Mobile menu: buka/tutup dengan fade + geser 4px (150ms)
-    var mobileMenuTimer = null;
-    function openMobileMenu() {
-        var menu = document.getElementById('mobile-menu');
-        clearTimeout(mobileMenuTimer);
-        menu.classList.remove('hidden');
-        requestAnimationFrame(function() { requestAnimationFrame(function() { menu.classList.add('is-open'); }); });
-    }
-    function closeMobileMenu() {
-        var menu = document.getElementById('mobile-menu');
-        menu.classList.remove('is-open');
-        clearTimeout(mobileMenuTimer);
-        mobileMenuTimer = setTimeout(function() { menu.classList.add('hidden'); }, 150);
-    }
+    // Mobile menu toggle
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        var menu = document.getElementById('mobile-menu');
-        if (menu.classList.contains('is-open')) closeMobileMenu(); else openMobileMenu();
+        document.getElementById('mobile-menu').classList.toggle('hidden');
     });
     
     // Close mobile menu when clicking on menu items
     document.querySelectorAll('#mobile-menu a').forEach(function(link) {
         link.addEventListener('click', function() {
-            closeMobileMenu();
+            document.getElementById('mobile-menu').classList.add('hidden');
         });
     });
     
     // Close mobile menu when clicking on mobile logo
     document.getElementById('mobile-logo').addEventListener('click', function() {
-        closeMobileMenu();
+        document.getElementById('mobile-menu').classList.add('hidden');
     });
 </script>

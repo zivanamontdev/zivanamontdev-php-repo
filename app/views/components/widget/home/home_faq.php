@@ -22,7 +22,7 @@ $faqs = $faqs ?? [];
                     <?= e($faq['question']) ?>
                 </h3>
                 <svg 
-                    class="w-6 h-6 text-black-soft transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]" 
+                    class="w-6 h-6 text-black-soft transition-transform duration-300" 
                     :class="{ 'rotate-180': open }"
                     fill="none" 
                     stroke="currentColor" 
@@ -35,7 +35,7 @@ $faqs = $faqs ?? [];
             <!-- Accordion Content -->
             <div 
                 x-show="open" 
-                x-collapse.duration.200ms
+                x-collapse
                 class="mt-[16px]"
             >
                 <p class="font-normal text-[16px] md:text-[20px] leading-[140%] md:leading-[32px] text-black-soft">

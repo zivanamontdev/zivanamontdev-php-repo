@@ -31,7 +31,7 @@ $keunggulanItems = [
 <?php component('widget/home/home_hero'); ?>
 
 <!-- Keunggulan Sekolah Section -->
-<section data-motion-reveal>
+<section>
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Keunggulan Sekolah']); ?>
@@ -62,7 +62,7 @@ $keunggulanItems = [
 </section>
 
 <!-- About Section -->
-<section data-motion-reveal class="mt-[120px] relative">
+<section class="mt-[120px] relative">
     <!-- Vector About (floating between sections) -->
     <img 
         src="<?= asset('images/vectors/vector_about.png') ?>" 
@@ -83,7 +83,7 @@ $keunggulanItems = [
 </section>
 
 <!-- Program Sekolah Section -->
-<section data-motion-reveal class="mt-[120px] relative">
+<section class="mt-[120px] relative">
     <!-- Vector Program (floating between sections) -->
     <img 
         src="<?= asset('images/vectors/vector_program.png') ?>" 
@@ -128,7 +128,7 @@ $keunggulanItems = [
 </section>
 
 <!-- Testimoni Orang Tua Siswa Section -->
-<section data-motion-reveal class="mt-[120px]">
+<section class="mt-[120px]">
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Testimoni Orang Tua Siswa']); ?>
@@ -141,7 +141,7 @@ $keunggulanItems = [
 </section>
 
 <!-- Kegiatan Section -->
-<section data-motion-reveal class="mt-[120px]">
+<section class="mt-[120px]">
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Kegiatan yang Akan Datang']); ?>
@@ -206,12 +206,12 @@ $keunggulanItems = [
 </section>
 
 <!-- Banner Pendaftaran SD -->
-<section data-motion-reveal class="mt-[120px]">
+<section class="mt-[120px]">
     <?php component('widget/home/home_banner_sd'); ?>
 </section>
 
 <!-- FAQ Section -->
-<section data-motion-reveal class="mt-[120px] relative z-10">
+<section class="mt-[120px] relative z-10">
     <div class="w-full lg:container mx-auto px-5">
         <div class="flex justify-center md:justify-start">
             <?php component('badge', ['text' => 'Frequently Ask Questions (FAQs)', 'class' => 'text-[14px] md:text-[16px] px-[16px] md:px-[20px] tracking-tighter md:tracking-normal']); ?>

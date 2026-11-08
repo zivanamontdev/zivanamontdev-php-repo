@@ -26,40 +26,10 @@
 
     function initialize() {
         document.querySelectorAll('[data-reveal]').forEach(section => updateReveal(section, true));
-        initMotionReveal();
     }
 
-    // Scroll reveal: elemen [data-motion-reveal] muncul sekali saat masuk layar.
-    // Dipanggil ulang setiap page:loaded karena isi halaman diganti lewat AJAX.
-    let motionObserver = null;
-    function initMotionReveal() {
-        window.__motionReady = true;
-        const targets = document.querySelectorAll('[data-motion-reveal]:not(.is-visible)');
-        if (!('IntersectionObserver' in window)) {
-            targets.forEach(el => el.classList.add('is-visible'));
-            return;
-        }
-        if (!motionObserver) {
-            motionObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-                    entry.target.classList.add('is-visible');
-                    motionObserver.unobserve(entry.target);
-                });
-            }, { rootMargin: '0px 0px -10% 0px' });
-        }
-        targets.forEach(el => motionObserver.observe(el));
-    }
-
-    let testimonialHideTimer = null;
-    function closeTestimonial(restoreFocus = true, immediate = false) {
-        const modal = document.getElementById('modal-testimoni-detail');
-        if (modal) {
-            modal.classList.remove('is-open');
-            clearTimeout(testimonialHideTimer);
-            if (immediate) modal.classList.add('hidden');
-            else testimonialHideTimer = setTimeout(() => modal.classList.add('hidden'), 200);
-        }
+    function closeTestimonial(restoreFocus = true) {
+        document.getElementById('modal-testimoni-detail')?.classList.add('hidden');
         document.body.classList.remove('testimoni-modal-open');
         if (restoreFocus && testimonialTrigger?.isConnected) testimonialTrigger.focus();
         testimonialTrigger = null;
@@ -94,9 +64,7 @@
             image.src = trigger.dataset.image || fallback;
             image.alt = data.parent_name || 'Testimoni';
             testimonialTrigger = trigger;
-            clearTimeout(testimonialHideTimer);
             modal.classList.remove('hidden');
-            requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('is-open')));
             document.body.classList.add('testimoni-modal-open');
             modal.querySelector('#close-modal-testimoni-detail').focus();
         } else if (event.target.closest('#close-modal-testimoni-detail') || (modal && event.target === modal)) {
@@ -105,14 +73,14 @@
     });
     document.addEventListener('keydown', event => {
         const modal = document.getElementById('modal-testimoni-detail');
-        if (!modal || !modal.classList.contains('is-open')) return;
+        if (!modal || modal.classList.contains('hidden')) return;
         if (event.key === 'Escape') closeTestimonial();
         if (event.key === 'Tab') {
             event.preventDefault();
             modal.querySelector('#close-modal-testimoni-detail').focus();
         }
     });
-    document.addEventListener('page:before-replace', () => closeTestimonial(false, true));
+    document.addEventListener('page:before-replace', () => closeTestimonial(false));
     document.addEventListener('page:loaded', initialize);
     desktop.addEventListener('change', initialize);
     initialize();
