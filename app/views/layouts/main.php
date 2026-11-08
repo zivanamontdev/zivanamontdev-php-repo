@@ -13,10 +13,11 @@
     <link rel="apple-touch-icon" href="<?= asset('images/activity_logo.png') ?>">
     
     <!-- Tailwind CSS CDN -->
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.__motionReady)document.documentElement.classList.remove('js')},4000)</script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
-    <script defer src="<?= asset('assets/js/public-interactions.js') ?>?v=20260913-2"></script>
+    <script defer src="<?= asset('assets/js/public-interactions.js') ?>?v=20261108-1"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     
@@ -61,6 +62,39 @@
 
         #page-content.loading {
             opacity: 0.5;
+        }
+
+        /* ---------- Motion ----------
+         * Hanya opacity/transform supaya ringan di HP. Ada versi tanpa gerakan untuk prefers-reduced-motion.
+         * Scroll reveal memakai data-motion-reveal (data-reveal sudah dipakai fitur "tampilkan lebih banyak").
+         */
+        :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .js [data-motion-reveal] {
+                opacity: 0;
+                transform: translateY(12px);
+                transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .js [data-motion-reveal] { opacity: 0; transition: opacity 300ms ease; }
+        }
+        .js [data-motion-reveal].is-visible { opacity: 1; transform: none; }
+
+        /* Modal testimoni: latar fade, kotak fade + scale */
+        #modal-testimoni-detail { opacity: 0; transition: opacity 200ms var(--ease-out); }
+        #modal-testimoni-detail.is-open { opacity: 1; }
+        #modal-testimoni-detail > div { transform: scale(0.96); transition: transform 250ms var(--ease-out); }
+        #modal-testimoni-detail.is-open > div { transform: none; }
+
+        /* Menu mobile */
+        #mobile-menu { opacity: 0; transform: translateY(-4px); transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out); }
+        #mobile-menu.is-open { opacity: 1; transform: none; }
+
+        @media (prefers-reduced-motion: reduce) {
+            #modal-testimoni-detail > div, #mobile-menu { transform: none !important; }
+            .btn-component:active { transform: none !important; }
         }
 
         /* Remove browser default link styling only */
