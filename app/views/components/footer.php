@@ -121,8 +121,11 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
             </div>
             
             <!-- Copyright -->
-            <div class="text-center md:text-left text-white-neutral">
+            <div class="flex flex-col md:flex-row md:justify-between gap-3 text-center md:text-left text-white-neutral">
                 <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%]">©2025 Sekolah Zivana Montessori</p>
+                <a href="https://primary.sekolahzivanamontessori.sch.id/id/" class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%] text-pale-accent hover:text-white-neutral transition-colors">
+                    Mencari sekolah dasar? Kunjungi Zivana Montessori School - Primary
+                </a>
             </div>
         </div>
     </footer>
@@ -195,8 +198,11 @@ $ctaButtonHref = $ctaButtonHref ?? url('/registration');
         </div>
         
         <!-- Copyright -->
-        <div class="text-center md:text-left text-white-neutral">
+        <div class="flex flex-col md:flex-row md:justify-between gap-3 text-center md:text-left text-white-neutral">
             <p class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%]">©2025 Sekolah Zivana Montessori</p>
+            <a href="https://primary.sekolahzivanamontessori.sch.id/id/" class="font-normal text-[12px] md:text-[16px] leading-[20px] md:leading-[140%] text-pale-accent hover:text-white-neutral transition-colors">
+                Mencari sekolah dasar? Kunjungi Zivana Montessori School - Primary
+            </a>
         </div>
     </div>
 </footer>
